@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:pingk/common/app_colors.dart';
-import 'package:pingk/common/app_button_styles.dart';
+import 'package:pingk/common/my_colors.dart';
+import 'package:pingk/common/my_styles.dart';
 
-class LandingPage extends StatelessWidget {
-  const LandingPage({super.key});
+class PageLanding extends StatelessWidget {
+  const PageLanding({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: MyColors.background1,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -22,7 +22,7 @@ class LandingPage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.text1,
+                  color: MyColors.text1,
                   height: 1.4,
                 ),
               ),
@@ -38,10 +38,10 @@ class LandingPage extends StatelessWidget {
                 height: 56,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/login');
+                    Navigator.pushReplacementNamed(context, '/home');
                   },
-                  style: AppButtonStyles.bottomButton,
-                  child: Text('혜택받기', style: AppButtonStyles.bottomButtonText),
+                  style: MyStyles.bottomButton,
+                  child: Text('혜택받기', style: MyStyles.bottomButtonText),
                 ),
               ),
             ],

@@ -3,12 +3,17 @@ import 'package:flutter/material.dart';
 // ====================================================================================================
 // 앱에서 공통으로 사용하는 색상 정의
 // ====================================================================================================
-class AppColors {
-  AppColors._();
+class MyColors {
+  MyColors._();
+
+  // Background Colors
+  static const Color background1 = Color(0xFFFFFFFF);
+  static const Color background2 = Color(0xFFF2F2F2);
 
   // Main Colors
   static const Color primary = Color(0xFFFF437A);
   static const Color secondary = Color(0xFF1E1E1E);
+  static const Color tertiary = Color(0xFF949494);
 
   // Text Colors
   static const Color text1 = Color(0xFF1E1E1E);
@@ -21,4 +26,7 @@ class AppColors {
   static const Color button2 = Color(0xFFFF437A);
   static const Color button3 = Color(0xFFFFFFFF);
   static const Color button4 = Color(0xFFF4EBEF);
+
+  // Shadow Colors
+  static const Color shadow1 = Color.fromARGB(15, 191, 19, 19);
 }

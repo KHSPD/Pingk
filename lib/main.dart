@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'landing_page/landing_page.dart';
+import 'page_landing/page_landing.dart';
+import 'page_main/page_main.dart';
 
 void main() {
   runApp(const PingkApp());
@@ -11,10 +12,11 @@ class PingkApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Pingk',      
+      title: 'Pingk',
       initialRoute: '/',
       routes: {
-        '/': (context) => const LandingPage(),
+        '/': (context) => const PageLanding(),
+        '/home': (context) => const PageMain(),
         //'/login': (context) => const LoginPage(),
         //'/home': (context) => const HomePage(),
         //'/auction': (context) => const AuctionPage(),
@@ -23,4 +25,4 @@ class PingkApp extends StatelessWidget {
       },
     );
   }
-} 
+}
