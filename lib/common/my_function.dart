@@ -1,8 +1,8 @@
 // ====================================================================================================
 // 앱에서 공통으로 사용하는 함수 Util
 // ====================================================================================================
-class MyFunction {
-  MyFunction._();
+class MyFN {
+  MyFN._();
 
   // ----- 숫자에 3자리마다 콤마를 찍어서 문자열로 반환하 -----
   static String formatNumberWithComma(dynamic number) {
@@ -26,5 +26,11 @@ class MyFunction {
     }
 
     return formattedInteger + decimalPart;
+  }
+
+  // ----- 할인률 계산 -----
+  static int discountRate(int originalPrice, int price) {
+    if (originalPrice <= 0) return 0;
+    return ((originalPrice - price) / originalPrice * 100).floor();
   }
 }

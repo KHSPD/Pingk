@@ -29,4 +29,5 @@ class MyColors {
 
   // Shadow Colors
   static const Color shadow1 = Color.fromARGB(15, 191, 19, 19);
+  static const Color shadow2 = Color.fromARGB(15, 0, 0, 0);
 }
