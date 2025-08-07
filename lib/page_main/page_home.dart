@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pingk/page_main/page_home_always_discount.dart';
+import 'package:pingk/page_main/page_home_discount.dart';
 import 'package:pingk/page_main/page_home_auction.dart';
+import 'package:pingk/page_main/page_home_best.dart';
 import 'package:pingk/page_main/page_home_hotdeal.dart';
 import '../common/my_colors.dart';
 
@@ -15,7 +16,9 @@ class PageHome extends StatefulWidget {
 }
 
 class _PageHomeState extends State<PageHome> {
-  // ========== build ==========
+  // --------------------------------------------------
+  // build
+  // --------------------------------------------------
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -30,6 +33,8 @@ class _PageHomeState extends State<PageHome> {
                 const HomeAuctionItems(),
                 // ----- 핫딜 상품 목록 -----
                 const HomeHotdealItems(),
+                // ----- 베스트 상품 목록 -----
+                const HomeBestItems(),
                 // ----- 상시 할인 상품 목록 -----
                 const HomeAlwaysDiscountItems(),
               ],

@@ -6,17 +6,17 @@ import 'package:pingk/common/item_info.dart';
 import 'package:pingk/common/_temp_items.dart';
 
 // ====================================================================================================
-// 홈 - 핫딜 상품 목록
+// 홈 - 상시 할인 상품 목록
 // ====================================================================================================
-class HomeHotdealItems extends StatefulWidget {
-  const HomeHotdealItems({super.key});
+class HomeAlwaysDiscountItems extends StatefulWidget {
+  const HomeAlwaysDiscountItems({super.key});
 
   @override
-  State<HomeHotdealItems> createState() => _HomeHotdealItemsState();
+  State<HomeAlwaysDiscountItems> createState() => _HomeAlwaysDiscountItemsState();
 }
 
-class _HomeHotdealItemsState extends State<HomeHotdealItems> {
-  final List<GeneralItem> itemList = TempItems.hotdealItems.sublist(0, 7);
+class _HomeAlwaysDiscountItemsState extends State<HomeAlwaysDiscountItems> {
+  final List<GeneralItem> itemList = TempItems.alwaysDiscountItems.sublist(0, 7);
 
   // --------------------------------------------------
   // build
@@ -36,10 +36,10 @@ class _HomeHotdealItemsState extends State<HomeHotdealItems> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Lottie.asset('assets/lottie/icon_2.json', width: 46, height: 46, fit: BoxFit.cover),
+                Lottie.asset('assets/lottie/icon_3.json', width: 46, height: 46, fit: BoxFit.cover),
                 const SizedBox(width: 4),
                 const Text(
-                  '오늘의 핫딜',
+                  '상시 할인',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: MyColors.text1),
                 ),
                 const Spacer(),
@@ -94,10 +94,11 @@ class _HomeHotdealItemsState extends State<HomeHotdealItems> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // ----- 상품 이미지와 찜 버튼 -----
           Stack(
             alignment: Alignment.bottomRight,
             children: [
-              // ----- 상품 이미지 -----
+              // 상품 이미지
               Container(
                 decoration: BoxDecoration(
                   border: Border.all(
@@ -123,7 +124,7 @@ class _HomeHotdealItemsState extends State<HomeHotdealItems> {
                   ),
                 ),
               ),
-              // ----- 찜 버튼 -----
+              // 찜 버튼
               Padding(
                 padding: const EdgeInsets.only(bottom: 10, right: 10),
                 child: GestureDetector(
@@ -163,7 +164,7 @@ class _HomeHotdealItemsState extends State<HomeHotdealItems> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
                       decoration: BoxDecoration(
-                        color: MyColors.primary,
+                        color: MyColors.secondary,
                         borderRadius: BorderRadius.circular(8), // 모서리 라운드 처리
                       ),
                       alignment: Alignment.center,

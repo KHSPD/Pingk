@@ -14,9 +14,5 @@ class MyStyles {
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     minimumSize: const Size(double.infinity, 56),
   );
-  static TextStyle get bottomButtonText => const TextStyle(
-    fontSize: 20,
-    fontWeight: FontWeight.bold,
-    color: MyColors.text4,
-  );
+  static TextStyle get bottomButtonText => const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: MyColors.text4);
 }

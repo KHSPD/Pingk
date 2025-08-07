@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'page_landing/page_landing.dart';
 import 'page_main/page_main.dart';
+import 'common/_temp_items.dart';
 
 void main() {
+  // TempItems 초기화
+  TempItems();
   runApp(const PingkApp());
 }
 

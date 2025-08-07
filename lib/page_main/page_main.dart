@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pingk/page_main/page_hotdeal.dart';
 import '../common/my_colors.dart';
 import 'page_home.dart';
 
@@ -18,52 +19,60 @@ class PageMain extends StatefulWidget {
 class _PageMainState extends State<PageMain> {
   int _selectedIndex = 0;
 
-  // ========== IndexedStack으로 모든 페이지 생성 ==========
+  // --------------------------------------------------
+  // IndexedStack으로 모든 페이지 생성
+  // --------------------------------------------------
   Widget _pageStack() {
     return IndexedStack(
       index: _selectedIndex,
       children: [
         const PageHome(),
-        const Center(child: Text('검색 페이지', style: TextStyle(fontSize: 20))),
-        const Center(child: Text('쿠폰함 페이지', style: TextStyle(fontSize: 20))),
-        const Center(child: Text('찜 페이지', style: TextStyle(fontSize: 20))),
-        const Center(child: Text('알림 페이지', style: TextStyle(fontSize: 20))),
+        const PageHotdeal(),
+        const Center(child: Text('쿠폰함', style: TextStyle(fontSize: 20))),
+        const Center(child: Text('베스트', style: TextStyle(fontSize: 20))),
+        const Center(child: Text('상시할인', style: TextStyle(fontSize: 20))),
       ],
     );
   }
 
-  // ========== build ==========
+  // --------------------------------------------------
+  // build
+  // --------------------------------------------------
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: MyColors.background1,
       // ----- 상단바 -----
       appBar: AppBar(
-        backgroundColor: MyColors.background1,
+        backgroundColor: MyColors.background2,
         automaticallyImplyLeading: false,
         actions: [
-          // 사용자 정보 버튼
           Container(
             margin: const EdgeInsets.only(right: 16),
-            child: IconButton(
-              onPressed: () {
-                // 사용자 정보 페이지로 이동
-              },
-              icon: Icon(
-                Icons.person_outline,
-                size: 30,
-                color: MyColors.secondary,
-              ),
+            child: Row(
+              children: [
+                // 찜 목록 버튼
+                IconButton(
+                  onPressed: () {},
+                  icon: Icon(Icons.favorite, size: 30, color: MyColors.secondary),
+                ),
+                // 사용자 정보 버튼
+                IconButton(
+                  onPressed: () {},
+                  icon: Icon(Icons.person, size: 30, color: MyColors.secondary),
+                ),
+                // 설정 버튼
+                IconButton(
+                  onPressed: () {},
+                  icon: Icon(Icons.settings, size: 30, color: MyColors.secondary),
+                ),
+              ],
             ),
           ),
         ],
       ),
       // ----- Body -----
-      body: SizedBox(
-        width: double.infinity,
-        height: double.infinity,
-        child: _pageStack(),
-      ),
+      body: Container(color: MyColors.background2, width: double.infinity, height: double.infinity, child: _pageStack()),
 
       // ----- 쿠폰함 버튼 -----
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -84,45 +93,32 @@ class _PageMainState extends State<PageMain> {
             const SizedBox(height: 4),
             const Text(
               '쿠폰함',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.black54,
-                fontWeight: FontWeight.w500,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.black54, fontWeight: FontWeight.w500),
             ),
           ],
         ),
       ),
       // ----- 하단 메뉴바 -----
       bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Color.fromRGBO(0, 0, 0, 0.1),
-              blurRadius: 8,
-              offset: const Offset(0, -2),
-            ),
-          ],
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
+        color: MyColors.background2,
+        child: Container(
+          decoration: BoxDecoration(
+            boxShadow: [BoxShadow(color: MyColors.shadow2, blurRadius: 8, offset: const Offset(0, -2))],
+            borderRadius: const BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
           ),
-        ),
-        child: ClipRRect(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(16),
-            topRight: Radius.circular(16),
-          ),
-          child: BottomAppBar(
-            color: MyColors.background1,
-            child: Row(
-              children: [
-                _menuButton(Icons.home_outlined, '홈', 0),
-                _menuButton(Icons.search_outlined, '검색', 1),
-                const SizedBox(width: 84),
-                _menuButton(Icons.favorite_outline, '찜', 3),
-                _menuButton(Icons.notifications_outlined, '알림', 4),
-              ],
+          child: ClipRRect(
+            borderRadius: const BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+            child: BottomAppBar(
+              color: MyColors.background1,
+              child: Row(
+                children: [
+                  _menuButton(Icons.home, '홈', 0),
+                  _menuButton(Icons.local_fire_department, '핫딜', 1),
+                  const SizedBox(width: 84),
+                  _menuButton(Icons.thumb_up, '베스트', 3),
+                  _menuButton(Icons.sell, '상시할인', 4),
+                ],
+              ),
             ),
           ),
         ),
@@ -130,14 +126,18 @@ class _PageMainState extends State<PageMain> {
     );
   }
 
-  // ========== 페이지 전환 메서드 ==========
+  // --------------------------------------------------
+  // 페이지 전환 메서드
+  // --------------------------------------------------
   void _changePage(int pageIndex) {
     setState(() {
       _selectedIndex = pageIndex;
     });
   }
 
-  // ========== 메뉴 버튼 위젯 ==========
+  // --------------------------------------------------
+  // 메뉴 버튼 위젯
+  // --------------------------------------------------
   Widget _menuButton(IconData iconData, String label, int index) {
     // 일반 메뉴 버튼
     return Expanded(
@@ -149,23 +149,9 @@ class _PageMainState extends State<PageMain> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(
-              iconData,
-              size: 28,
-              color: _selectedIndex == index
-                  ? MyColors.primary
-                  : MyColors.text1,
-            ),
+            Icon(iconData, size: 28, color: _selectedIndex == index ? MyColors.primary : MyColors.text1),
             const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
-                color: _selectedIndex == index
-                    ? MyColors.primary
-                    : MyColors.text1,
-                fontSize: 14,
-              ),
-            ),
+            Text(label, style: TextStyle(color: _selectedIndex == index ? MyColors.primary : MyColors.text1, fontSize: 14)),
           ],
         ),
       ),

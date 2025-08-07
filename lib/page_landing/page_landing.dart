@@ -14,23 +14,18 @@ class PageLanding extends StatelessWidget {
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              const Spacer(),
+              const Spacer(flex: 2),
               // ----- 상단 텍스트 -----
               const Text(
                 '이제 쿠폰도 경매로!\n더 알뜰하게 득템해보세요!',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: MyColors.text1,
-                  height: 1.4,
-                ),
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: MyColors.text1, height: 1.2),
               ),
-              const Spacer(flex: 1),
+              const Spacer(flex: 2),
 
               // ----- 중간 이미지 -----
-              SizedBox(width: 316, height: 467, child: Placeholder()),
-              const Spacer(flex: 5),
+              SizedBox(width: 316, height: 467, child: Image.asset('assets/landing_img.png', fit: BoxFit.contain)),
+              const Spacer(flex: 4),
 
               // -----하단 혜택받기 버튼 -----
               SizedBox(
