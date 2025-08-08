@@ -8,64 +8,60 @@ import 'package:pingk/common/_temp_items.dart';
 // ====================================================================================================
 // 홈 - 상시 할인 상품 목록
 // ====================================================================================================
-class HomeAlwaysDiscountItems extends StatefulWidget {
-  const HomeAlwaysDiscountItems({super.key});
+class HomeDiscountItems extends StatefulWidget {
+  const HomeDiscountItems({super.key});
 
   @override
-  State<HomeAlwaysDiscountItems> createState() => _HomeAlwaysDiscountItemsState();
+  State<HomeDiscountItems> createState() => _HomeDiscountItemsState();
 }
 
-class _HomeAlwaysDiscountItemsState extends State<HomeAlwaysDiscountItems> {
-  final List<GeneralItem> itemList = TempItems.alwaysDiscountItems.sublist(0, 7);
+class _HomeDiscountItemsState extends State<HomeDiscountItems> {
+  final List<GeneralItem> bestCouponDatas = TempItems.bestDatas.sublist(0, 7);
+  final List<GeneralItem> discountDatas = TempItems.discountDatas.sublist(0, 7);
 
   // --------------------------------------------------
   // build
   // --------------------------------------------------
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 380,
-      margin: const EdgeInsets.only(bottom: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // ----- 타이틀 및 더보기 버튼 -----
-          Container(
-            margin: const EdgeInsets.fromLTRB(20, 0, 20, 5),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Lottie.asset('assets/lottie/icon_3.json', width: 46, height: 46, fit: BoxFit.cover),
-                const SizedBox(width: 4),
-                const Text(
-                  '상시 할인',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: MyColors.text1),
+    return ListView(
+      children: [
+        // ----- 타이틀 및 더보기 버튼 -----
+        Container(
+          margin: const EdgeInsets.fromLTRB(20, 20, 20, 5),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Lottie.asset('assets/lottie/icon_1.json', width: 40, height: 40, fit: BoxFit.contain),
+              const SizedBox(width: 4),
+              const Text(
+                '베스트쿠폰',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: MyColors.text1),
+              ),
+              const Spacer(),
+              GestureDetector(
+                onTap: () {},
+                child: const Text(
+                  '상품 더보기',
+                  style: TextStyle(fontSize: 14, color: MyColors.text2, fontWeight: FontWeight.w500),
                 ),
-                const Spacer(),
-                GestureDetector(
-                  onTap: () {},
-                  child: const Text(
-                    '상품 더보기',
-                    style: TextStyle(fontSize: 14, color: MyColors.text2, fontWeight: FontWeight.w500),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-          // ----- 상품 리스트 -----
-          Expanded(
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.only(right: 20),
-              itemCount: itemList.length,
-              itemBuilder: (context, index) {
-                return _itemCard(itemList[index], () => _toggleWish(index));
-              },
-            ),
+        ),
+        // ----- 베스트 쿠폰 리스트 -----
+        SizedBox(
+          height: 330,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.only(right: 20),
+            itemCount: bestCouponDatas.length,
+            itemBuilder: (context, index) {
+              return _itemCard(bestCouponDatas[index], () => _toggleWish(index));
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -74,7 +70,7 @@ class _HomeAlwaysDiscountItemsState extends State<HomeAlwaysDiscountItems> {
   // --------------------------------------------------
   void _toggleWish(int index) {
     setState(() {
-      itemList[index].isWished = !itemList[index].isWished;
+      bestCouponDatas[index].isWished = !bestCouponDatas[index].isWished;
     });
   }
 

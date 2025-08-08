@@ -20,9 +20,9 @@ class _PageHotdealState extends State<PageHotdeal> {
       color: MyColors.background2,
       child: ListView.builder(
         padding: const EdgeInsets.all(30),
-        itemCount: TempItems.hotdealItems.length,
+        itemCount: TempItems.todaysHotDealDatas.length,
         itemBuilder: (context, index) {
-          final item = TempItems.hotdealItems[index];
+          final item = TempItems.todaysHotDealDatas[index];
           return _itemCard(item);
         },
       ),

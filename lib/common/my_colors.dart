@@ -15,6 +15,12 @@ class MyColors {
   static const Color secondary = Color(0xFF1E1E1E);
   static const Color tertiary = Color(0xFF949494);
 
+  // 아이콘 색상
+  static const Color icon1 = Color(0xFF1E1E1E);
+  static const Color icon2 = Color(0xFFFF437A);
+  static const Color icon3 = Color(0xFF949494);
+  static const Color icon4 = Color(0xFFFFFFFF);
+
   // Text Colors
   static const Color text1 = Color(0xFF1E1E1E);
   static const Color text2 = Color(0xFF949494);
@@ -33,4 +39,7 @@ class MyColors {
 
   // Border Colors
   static const Color border1 = Color.fromARGB(255, 223, 223, 223);
+
+  // 이미지 없을때 백그라운드 색상
+  static const Color imageBgColor = Color(0xFF949494);
 }

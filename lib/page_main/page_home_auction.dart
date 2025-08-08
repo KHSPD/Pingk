@@ -33,8 +33,9 @@ class _HomeAuctionItemsState extends State<HomeAuctionItems> {
   // --------------------------------------------------
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
       height: 654,
+      color: MyColors.background2,
       child: Column(
         children: [
           // ----- 상단 문구 -----

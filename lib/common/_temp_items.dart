@@ -3,9 +3,10 @@ import 'dart:math';
 
 class TempItems {
   static final TempItems _instance = TempItems._internal();
-  static final List<GeneralItem> hotdealItems = [];
-  static final List<GeneralItem> bestItems = [];
-  static final List<GeneralItem> alwaysDiscountItems = [];
+  static final List<GeneralItem> todaysHotDealDatas = [];
+  static final List<GeneralItem> bestDatas = [];
+  static final List<GeneralItem> discountDatas = [];
+  static final List<GeneralItem> comingSoonHotDealDatas = [];
 
   factory TempItems() {
     return _instance;
@@ -18,12 +19,17 @@ class TempItems {
       generalItems[i].id = (i + 1).toString();
       generalItems[i].isWished = Random().nextBool();
     }
-    // generalItems을 3등분 해서 hotdealItems, bestItems, alwaysDiscountItems에 각각 할당
+    // generalItems을 각각 할당
     int total = generalItems.length;
     int part = (total / 3).floor();
-    hotdealItems.addAll(generalItems.sublist(0, part));
-    bestItems.addAll(generalItems.sublist(part, part * 2));
-    alwaysDiscountItems.addAll(generalItems.sublist(part * 2));
+    todaysHotDealDatas.addAll(generalItems.sublist(0, part));
+    bestDatas.addAll(generalItems.sublist(part, part * 2));
+    discountDatas.addAll(generalItems.sublist(part * 2));
+    // comingSoonItems에 랜덤하게 5개의 상품을 추가
+    final random = Random();
+    final tempList = List<GeneralItem>.from(generalItems);
+    tempList.shuffle(random);
+    comingSoonHotDealDatas.addAll(tempList.take(5));
   }
 
   static final List<AuctionItem> auctionItems = [

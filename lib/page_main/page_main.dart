@@ -54,25 +54,26 @@ class _PageMainState extends State<PageMain> {
                 // 찜 목록 버튼
                 IconButton(
                   onPressed: () {},
-                  icon: Icon(Icons.favorite, size: 30, color: MyColors.secondary),
+                  icon: Icon(Icons.favorite, size: 26, color: MyColors.secondary),
                 ),
                 // 사용자 정보 버튼
                 IconButton(
                   onPressed: () {},
-                  icon: Icon(Icons.person, size: 30, color: MyColors.secondary),
+                  icon: Icon(Icons.person, size: 26, color: MyColors.secondary),
                 ),
                 // 설정 버튼
                 IconButton(
                   onPressed: () {},
-                  icon: Icon(Icons.settings, size: 30, color: MyColors.secondary),
+                  icon: Icon(Icons.settings, size: 26, color: MyColors.secondary),
                 ),
               ],
             ),
           ),
         ],
       ),
+
       // ----- Body -----
-      body: Container(color: MyColors.background2, width: double.infinity, height: double.infinity, child: _pageStack()),
+      body: Container(color: MyColors.background1, width: double.infinity, height: double.infinity, child: _pageStack()),
 
       // ----- 쿠폰함 버튼 -----
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
