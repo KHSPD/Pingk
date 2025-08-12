@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:pingk/common/my_text.dart';
 import 'package:pingk/page_main/page_hotdeal.dart';
 import '../common/my_colors.dart';
 import 'page_home.dart';
@@ -30,7 +32,7 @@ class _PageMainState extends State<PageMain> {
         const PageHotdeal(),
         const Center(child: Text('쿠폰함', style: TextStyle(fontSize: 20))),
         const Center(child: Text('베스트', style: TextStyle(fontSize: 20))),
-        const Center(child: Text('상시할인', style: TextStyle(fontSize: 20))),
+        const Center(child: Text('상시특가', style: TextStyle(fontSize: 20))),
       ],
     );
   }
@@ -40,6 +42,8 @@ class _PageMainState extends State<PageMain> {
   // --------------------------------------------------
   @override
   Widget build(BuildContext context) {
+    const int couponButtonIndex = 2;
+
     return Scaffold(
       backgroundColor: MyColors.background1,
       // ----- 상단바 -----
@@ -77,28 +81,23 @@ class _PageMainState extends State<PageMain> {
 
       // ----- 쿠폰함 버튼 -----
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: Container(
-        margin: const EdgeInsets.only(bottom: 0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: 54),
-            FloatingActionButton(
-              onPressed: () => _changePage(2), // 가운데 버튼 인덱스
-              shape: const CircleBorder(),
-              backgroundColor: MyColors.button1,
-              foregroundColor: Colors.white,
-              elevation: 0,
-              child: const Icon(Icons.card_giftcard, size: 32),
-            ),
-            const SizedBox(height: 4),
-            const Text(
-              '쿠폰함',
-              style: TextStyle(fontSize: 14, color: Colors.black54, fontWeight: FontWeight.w500),
-            ),
-          ],
-        ),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 46),
+          FloatingActionButton(
+            onPressed: () => _changePage(couponButtonIndex), // 가운데 버튼 인덱스
+            shape: const CircleBorder(),
+            backgroundColor: _selectedIndex == couponButtonIndex ? MyColors.primary : MyColors.text1,
+            foregroundColor: Colors.white,
+            elevation: 0,
+            child: SvgPicture.asset('assets/icons/icon_coupon.svg', width: 32, height: 20),
+          ),
+          const SizedBox(height: 6),
+          MyText('쿠폰함', style: TextStyle(fontSize: 14, color: _selectedIndex == couponButtonIndex ? MyColors.primary : MyColors.text1)),
+        ],
       ),
+
       // ----- 하단 메뉴바 -----
       bottomNavigationBar: Container(
         color: MyColors.background2,
@@ -113,11 +112,11 @@ class _PageMainState extends State<PageMain> {
               color: MyColors.background1,
               child: Row(
                 children: [
-                  _menuButton(Icons.home, '홈', 0),
-                  _menuButton(Icons.local_fire_department, '핫딜', 1),
+                  _menuButton('assets/icons/icon_home.svg', 18, 18, '홈', 0),
+                  _menuButton('assets/icons/icon_like.svg', 18, 16, '찜', 1),
                   const SizedBox(width: 84),
-                  _menuButton(Icons.thumb_up, '베스트', 3),
-                  _menuButton(Icons.sell, '상시할인', 4),
+                  _menuButton('assets/icons/icon_auction.svg', 14, 19, '옥션', 3),
+                  _menuButton('assets/icons/icon_hot_deal.svg', 14, 18, '핫딜', 4),
                 ],
               ),
             ),
@@ -139,8 +138,8 @@ class _PageMainState extends State<PageMain> {
   // --------------------------------------------------
   // 메뉴 버튼 위젯
   // --------------------------------------------------
-  Widget _menuButton(IconData iconData, String label, int index) {
-    // 일반 메뉴 버튼
+  Widget _menuButton(String svgAssetPath, double width, double height, String label, int index) {
+    // 일반 메뉴 버튼 (SvgPicture 사용)
     return Expanded(
       child: GestureDetector(
         onTap: () {
@@ -150,9 +149,14 @@ class _PageMainState extends State<PageMain> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(iconData, size: 28, color: _selectedIndex == index ? MyColors.primary : MyColors.text1),
-            const SizedBox(height: 4),
-            Text(label, style: TextStyle(color: _selectedIndex == index ? MyColors.primary : MyColors.text1, fontSize: 14)),
+            SvgPicture.asset(
+              svgAssetPath,
+              width: width,
+              height: height,
+              colorFilter: ColorFilter.mode(_selectedIndex == index ? MyColors.primary : MyColors.icon1, BlendMode.srcIn),
+            ),
+            const SizedBox(height: 10),
+            MyText(label, style: TextStyle(color: _selectedIndex == index ? MyColors.primary : MyColors.text1, fontSize: 14)),
           ],
         ),
       ),

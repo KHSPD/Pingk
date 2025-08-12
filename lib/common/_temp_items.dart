@@ -49,7 +49,7 @@ class TempItems {
       id: '2',
       brand: 'BHC',
       name: '황금올리브 치킨 1마리',
-      lastPrice: 11100,
+      lastPrice: 32800,
       endTime: DateTime.now().add(const Duration(days: 1)),
       thumbnail: 'https://cdn.imweb.me/upload/S20220826948cbdc34dca3/1e0c8bbbe23a7.jpg',
       isWished: false,

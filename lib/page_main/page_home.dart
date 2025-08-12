@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pingk/common/my_text.dart';
 import 'package:pingk/page_main/page_home_discount.dart';
 import 'package:pingk/page_main/page_home_auction.dart';
 import 'package:pingk/page_main/page_home_hot_deal.dart';
+import 'package:pingk/page_main/page_home_winners.dart';
 import '../common/my_colors.dart';
 
 // ====================================================================================================
@@ -27,7 +29,10 @@ class _PageHomeState extends State<PageHome> {
           return [
             // ----- 경매 상품 목록 -----
             SliverToBoxAdapter(child: const HomeAuctionItems()),
+            // ----- 낙찰자 목록 -----
+            SliverToBoxAdapter(child: const HomeWinnersList()),
             // ----- 탭바 (스크롤시 상단 고정) -----
+            SliverToBoxAdapter(child: SizedBox(height: 40)),
             SliverPersistentHeader(
               pinned: true, // 탭바를 상단에 고정
               delegate: _SliverAppBarDelegate(
@@ -36,8 +41,12 @@ class _PageHomeState extends State<PageHome> {
                   labelColor: MyColors.text3,
                   unselectedLabelColor: MyColors.text1,
                   tabs: [
-                    Tab(child: Text('핫딜', style: TextStyle(fontSize: 18))),
-                    Tab(child: Text('상시할인', style: TextStyle(fontSize: 18))),
+                    Tab(
+                      child: MyText('핫딜', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+                    ),
+                    Tab(
+                      child: MyText('상시특가', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+                    ),
                   ],
                 ),
               ),

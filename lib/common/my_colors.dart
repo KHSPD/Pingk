@@ -9,6 +9,8 @@ class MyColors {
   // Background Colors
   static const Color background1 = Color(0xFFFFFFFF);
   static const Color background2 = Color(0xFFF2F2F2);
+  static const Color background3 = Color(0xFFF0F0F0);
+  static const Color background4 = Color(0xFF000000);
 
   // Main Colors
   static const Color primary = Color(0xFFFF437A);
@@ -22,8 +24,8 @@ class MyColors {
   static const Color icon4 = Color(0xFFFFFFFF);
 
   // Text Colors
-  static const Color text1 = Color(0xFF1E1E1E);
-  static const Color text2 = Color(0xFF949494);
+  static const Color text1 = Color(0xFF000000);
+  static const Color text2 = Color(0xFF9A9A9A);
   static const Color text3 = Color(0xFFFF437A);
   static const Color text4 = Color(0xFFFFFFFF);
 

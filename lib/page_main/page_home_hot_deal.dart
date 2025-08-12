@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:pingk/common/my_colors.dart';
 import 'package:pingk/common/my_function.dart';
 import 'package:pingk/common/item_info.dart';
@@ -20,66 +20,61 @@ class _HomeHotDealItemsState extends State<HomeHotDealItems> {
   final List<GeneralItem> todaysHotDealDatas = TempItems.todaysHotDealDatas.sublist(0, 7);
   final List<GeneralItem> comingSoonHotDealDatas = TempItems.comingSoonHotDealDatas;
 
-  // --------------------------------------------------
+  // ------------------------------------------- -------
   // build
   // --------------------------------------------------
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        // ----- 타이틀 및 더보기 버튼 -----
-        Container(
-          margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Lottie.asset('assets/lottie/icon_2.json', width: 40, height: 40, fit: BoxFit.contain),
-              const SizedBox(width: 4),
-              const MyText(
-                '오늘의 핫딜',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: MyColors.text1),
-              ),
-              const Spacer(),
-              GestureDetector(
-                onTap: () {},
-                child: const Text(
-                  '상품 더보기',
-                  style: TextStyle(fontSize: 14, color: MyColors.text2, fontWeight: FontWeight.w500),
+    return Container(
+      margin: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+      child: ListView(
+        children: [
+          // ----- 타이틀 및 더보기 버튼 -----
+          Container(
+            margin: const EdgeInsets.fromLTRB(30, 20, 30, 0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const MyText(
+                  '오늘의 핫딜',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: MyColors.text1),
                 ),
-              ),
-            ],
+                const Spacer(),
+                SvgPicture.asset('assets/icons/icon_arrow_right.svg', width: 16, height: 11, colorFilter: ColorFilter.mode(MyColors.icon1, BlendMode.srcIn)),
+              ],
+            ),
           ),
-        ),
-        // ----- 오늘의 핫딜 리스트 -----
-        SizedBox(
-          height: 330,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.only(right: 20),
-            itemCount: todaysHotDealDatas.length,
-            itemBuilder: (context, index) {
-              return _todaysHotDealCard(todaysHotDealDatas[index], () => _toggleWish(index));
-            },
+          // ----- 오늘의 핫딜 리스트 -----
+          SizedBox(
+            height: 336,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.only(right: 20),
+              itemCount: todaysHotDealDatas.length,
+              itemBuilder: (context, index) {
+                return _todaysHotDealCard(todaysHotDealDatas[index], () => _toggleWish(index));
+              },
+            ),
           ),
-        ),
 
-        // ----- 다가올 핫딜 타이틀 -----
-        Container(
-          margin: const EdgeInsets.fromLTRB(20, 30, 20, 10),
-          child: const Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                '다가올 핫딜',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: MyColors.text1),
-              ),
-            ],
+          // ----- 다가올 핫딜 타이틀 -----
+          Container(
+            margin: const EdgeInsets.fromLTRB(30, 60, 30, 10),
+            child: const Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  '다가올 핫딜',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: MyColors.text1),
+                ),
+              ],
+            ),
           ),
-        ),
-        // ----- 다가올 핫딜 리스트 -----
-        Column(children: comingSoonHotDealDatas.map((item) => _comingSoonHotDealCard(item, isNotified: false, onToggleNotify: () {})).toList()),
-        SizedBox(height: 20),
-      ],
+          // ----- 다가올 핫딜 리스트 -----
+          Column(children: comingSoonHotDealDatas.map((item) => _comingSoonHotDealCard(item, isNotified: false, onToggleNotify: () {})).toList()),
+          SizedBox(height: 20),
+        ],
+      ),
     );
   }
 
@@ -97,9 +92,8 @@ class _HomeHotDealItemsState extends State<HomeHotDealItems> {
   // --------------------------------------------------
   Widget _todaysHotDealCard(GeneralItem item, VoidCallback onWishToggle) {
     return Container(
-      width: 220,
+      width: 250,
       margin: const EdgeInsets.fromLTRB(20, 5, 0, 5),
-      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: MyColors.background1,
         borderRadius: BorderRadius.circular(12),
@@ -108,112 +102,107 @@ class _HomeHotDealItemsState extends State<HomeHotDealItems> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Stack(
-            alignment: Alignment.bottomRight,
-            children: [
-              // ----- 상품 이미지 -----
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: MyColors.border1, // 얇은 회색 선
-                    width: 0.5,
-                  ),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: AspectRatio(
-                    aspectRatio: 1, // 정사각형 비율 유지
-                    child: Image.network(
-                      item.thumbnail,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: MyColors.background2,
-                          child: const Icon(Icons.image_not_supported, color: MyColors.text2, size: 40),
-                        );
-                      },
-                    ),
-                  ),
+          // ----- 상품 이미지 -----
+          Container(
+            width: double.infinity,
+            height: 216,
+            decoration: BoxDecoration(
+              color: MyColors.background2,
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12)),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12)),
+              child: AspectRatio(
+                aspectRatio: 1, // 정사각형 비율 유지
+                child: Image.network(
+                  item.thumbnail,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      color: MyColors.background2,
+                      child: const Icon(Icons.image_not_supported, color: MyColors.text2, size: 40),
+                    );
+                  },
                 ),
               ),
-              // ----- 찜 버튼 -----
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10, right: 10),
-                child: GestureDetector(
-                  onTap: onWishToggle,
-                  child: Icon(item.isWished ? Icons.favorite : Icons.favorite_border, color: item.isWished ? MyColors.primary : MyColors.secondary, size: 24),
-                ),
-              ),
-            ],
+            ),
           ),
           // ----- 상품 정보 -----
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 브랜드명
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: Text(
-                  item.brand,
-                  style: const TextStyle(fontSize: 12, color: MyColors.text2, fontWeight: FontWeight.w400),
+          Container(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 브랜드명
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Text(
+                    item.brand,
+                    style: const TextStyle(fontSize: 12, color: MyColors.text2, fontWeight: FontWeight.w400),
+                  ),
                 ),
-              ),
-              // 상품명
-              Text(
-                item.name,
-                style: const TextStyle(fontSize: 14, color: MyColors.text1, fontWeight: FontWeight.w600),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
+                // 상품명
+                Text(
+                  item.name,
+                  style: const TextStyle(fontSize: 14, color: MyColors.text1, fontWeight: FontWeight.w600),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
 
-              Container(
-                width: double.infinity,
-                margin: const EdgeInsets.only(top: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // ----- 할인률 -----
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: MyColors.primary,
-                        borderRadius: BorderRadius.circular(8), // 모서리 라운드 처리
-                      ),
-                      alignment: Alignment.center,
-                      child: RichText(
-                        text: TextSpan(
-                          text: '${MyFN.discountRate(item.originalPrice, item.price)}',
-                          style: const TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
-                          children: [
-                            const TextSpan(
-                              text: '%',
-                              style: TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold),
-                            ),
-                          ],
+                Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.only(top: 10),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // ----- 할인률 -----
+                      Container(
+                        width: 52,
+                        height: 23,
+
+                        decoration: BoxDecoration(color: MyColors.background4, borderRadius: BorderRadius.circular(20)),
+                        alignment: Alignment.center,
+                        child: RichText(
+                          text: TextSpan(
+                            text: '${MyFN.discountRate(item.originalPrice, item.price)}%',
+                            style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600),
+                          ),
                         ),
                       ),
-                    ),
 
-                    // ----- 가격 정보 -----
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          '${MyFN.formatNumberWithComma(item.originalPrice)}원',
-                          style: const TextStyle(fontSize: 11, color: MyColors.text2, decoration: TextDecoration.lineThrough, decorationColor: MyColors.text2),
-                        ),
-                        Text(
-                          '${MyFN.formatNumberWithComma(item.price)}원',
-                          style: const TextStyle(fontSize: 16, color: MyColors.text1, fontWeight: FontWeight.bold),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ],
+                      // ----- 가격 정보 -----
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            '${MyFN.formatNumberWithComma(item.originalPrice)}원',
+                            style: const TextStyle(fontSize: 11, color: MyColors.text2, decoration: TextDecoration.lineThrough, decorationColor: MyColors.text2),
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                MyFN.formatNumberWithComma(item.price),
+                                style: const TextStyle(fontSize: 23, color: MyColors.text1, fontWeight: FontWeight.w800),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Container(
+                                margin: const EdgeInsets.fromLTRB(2, 0, 0, 4),
+                                child: Text(
+                                  '원',
+                                  style: const TextStyle(fontSize: 11, color: MyColors.text1, fontWeight: FontWeight.w300),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
@@ -225,8 +214,8 @@ class _HomeHotDealItemsState extends State<HomeHotDealItems> {
   // --------------------------------------------------
   Widget _comingSoonHotDealCard(GeneralItem item, {required bool isNotified, required VoidCallback onToggleNotify}) {
     return Container(
-      margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-      padding: const EdgeInsets.fromLTRB(10, 16, 10, 16),
+      margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+      padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
       decoration: const BoxDecoration(
         border: Border(bottom: BorderSide(color: MyColors.border1, width: 0.5)),
       ),
@@ -263,39 +252,30 @@ class _HomeHotDealItemsState extends State<HomeHotDealItems> {
               children: [
                 Text(
                   item.brand,
-                  style: const TextStyle(fontSize: 13, color: MyColors.text2, fontWeight: FontWeight.w500),
+                  style: const TextStyle(fontSize: 13, color: MyColors.text2, fontWeight: FontWeight.w600),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 4),
                 Text(
                   item.name,
-                  style: const TextStyle(fontSize: 16, color: MyColors.text1, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 16, color: MyColors.text1, fontWeight: FontWeight.w400),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    const Icon(Icons.access_time, size: 16, color: MyColors.primary),
-                    const SizedBox(width: 4),
-                    Text(
-                      'D-3',
-                      style: const TextStyle(fontSize: 12, color: MyColors.primary, fontWeight: FontWeight.w500),
-                    ),
-                  ],
                 ),
               ],
             ),
           ),
           // ----- 알림 종 아이콘 -----
-          GestureDetector(
-            onTap: onToggleNotify,
-            child: Container(
-              width: 50,
-              height: 26,
-              decoration: BoxDecoration(color: isNotified ? MyColors.primary : MyColors.secondary, borderRadius: BorderRadius.circular(25)),
-              child: Icon(isNotified ? Icons.notifications_active : Icons.notifications_none, color: MyColors.icon4, size: 20),
+          Container(
+            width: 48,
+            height: 26,
+            decoration: BoxDecoration(color: MyColors.secondary, borderRadius: BorderRadius.circular(25)),
+            alignment: Alignment.center,
+            child: MyText(
+              'D-3',
+              style: TextStyle(fontSize: 15, color: MyColors.text4, fontWeight: FontWeight.w700),
+              textAlign: TextAlign.center,
             ),
           ),
         ],
