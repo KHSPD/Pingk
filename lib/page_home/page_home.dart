@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pingk/common/my_text.dart';
-import 'package:pingk/page_main/page_home_discount.dart';
-import 'package:pingk/page_main/page_home_auction.dart';
-import 'package:pingk/page_main/page_home_hot_deal.dart';
-import 'package:pingk/page_main/page_home_winners.dart';
+import 'package:pingk/page_home/page_home_%08always_deal.dart';
+import 'package:pingk/page_home/page_home_auction.dart';
+import 'package:pingk/page_home/page_home_limited_deal.dart';
+import 'package:pingk/page_home/page_home_winners.dart';
 import '../common/my_colors.dart';
 
 // ====================================================================================================
@@ -31,10 +31,10 @@ class _PageHomeState extends State<PageHome> {
             SliverToBoxAdapter(child: const HomeAuctionItems()),
             // ----- 낙찰자 목록 -----
             SliverToBoxAdapter(child: const HomeWinnersList()),
-            // ----- 탭바 (스크롤시 상단 고정) -----
+            // ----- 탭바 (한정특가 / 상시특가) -----
             SliverToBoxAdapter(child: SizedBox(height: 40)),
             SliverPersistentHeader(
-              pinned: true, // 탭바를 상단에 고정
+              pinned: true,
               delegate: _SliverAppBarDelegate(
                 const TabBar(
                   indicatorColor: MyColors.primary,
@@ -42,7 +42,7 @@ class _PageHomeState extends State<PageHome> {
                   unselectedLabelColor: MyColors.text1,
                   tabs: [
                     Tab(
-                      child: MyText('핫딜', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+                      child: MyText('한정특가', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
                     ),
                     Tab(
                       child: MyText('상시특가', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
@@ -53,6 +53,7 @@ class _PageHomeState extends State<PageHome> {
             ),
           ];
         },
+        // ----- 탭바 뷰 (한정특가 / 상시특가) -----
         body: TabBarView(children: [HomeHotDealItems(), HomeDiscountItems()]),
       ),
     );
@@ -60,7 +61,7 @@ class _PageHomeState extends State<PageHome> {
 }
 
 // ====================================================================================================
-// SliverAppBarDelegate - 탭바를 SliverPersistentHeader로 만들기 위한 델리게이트
+// SliverAppBarDelegate
 // ====================================================================================================
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   _SliverAppBarDelegate(this._tabBar);

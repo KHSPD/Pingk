@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pingk/page_main/page_main_tab_index.dart';
+import 'package:provider/provider.dart';
 import 'page_landing/page_landing.dart';
 import 'page_main/page_main.dart';
 import 'common/_temp_items.dart';
@@ -6,7 +8,7 @@ import 'common/_temp_items.dart';
 void main() {
   // TempItems 초기화
   TempItems();
-  runApp(const PingkApp());
+  runApp(ChangeNotifierProvider(create: (context) => MainTabIdx(), child: const PingkApp()));
 }
 
 class PingkApp extends StatelessWidget {
@@ -19,7 +21,7 @@ class PingkApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const PageLanding(),
-        '/home': (context) => const PageMain(),
+        '/main': (context) => const PageMain(),
         //'/login': (context) => const LoginPage(),
         //'/home': (context) => const HomePage(),
         //'/auction': (context) => const AuctionPage(),

@@ -34,13 +34,14 @@ class MyColors {
   static const Color button2 = Color(0xFFFF437A);
   static const Color button3 = Color(0xFFFFFFFF);
   static const Color button4 = Color(0xFFF4EBEF);
+  static const Color button5 = Color(0xFFF0F0F0);
 
   // Shadow Colors
   static const Color shadow1 = Color.fromARGB(15, 191, 19, 19);
-  static const Color shadow2 = Color.fromARGB(15, 0, 0, 0);
+  static const Color shadow2 = Color.fromARGB(25, 0, 0, 0);
 
   // Border Colors
-  static const Color border1 = Color.fromARGB(255, 223, 223, 223);
+  static const Color border1 = Color(0xFFD9D9D9);
 
   // 이미지 없을때 백그라운드 색상
   static const Color imageBgColor = Color(0xFF949494);
