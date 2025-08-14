@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:pingk/common/constants.dart';
 import 'package:pingk/common/my_text.dart';
 import 'package:pingk/page_auction/page_auction.dart';
-import 'package:pingk/page_main/page_main_tab_index.dart';
+import 'package:pingk/common/change_notifiers.dart';
+import 'package:pingk/page_general/page_limited_deal.dart';
+import 'package:pingk/page_main/modal_my_coupons.dart';
 import 'package:provider/provider.dart';
 import '../common/my_colors.dart';
 import '../page_home/page_home.dart';
@@ -21,22 +24,20 @@ class PageMain extends StatefulWidget {
 // Main - State
 // ====================================================================================================
 class _PageMainState extends State<PageMain> {
-  // --------------------------------------------------
-  // IndexedStack으로 모든 페이지 생성
-  // --------------------------------------------------
   Widget _pageStack() {
-    return Consumer<MainTabIdx>(
-      builder: (context, tabIndex, child) {
-        return IndexedStack(
-          index: tabIndex.selectedIdx,
-          children: [
-            const PageHome(),
-            const Center(child: Text('찜', style: TextStyle(fontSize: 20))),
-            const Center(child: Text('쿠폰함', style: TextStyle(fontSize: 20))),
-            const PageAuction(),
-            const Center(child: Text('한정특가', style: TextStyle(fontSize: 20))),
-          ],
-        );
+    return Selector<MyChangeNotifier, MainMenu>(
+      selector: (context, notifier) => notifier.selectedMainMenu,
+      builder: (context, selectedMainMenu, child) {
+        switch (selectedMainMenu) {
+          case MainMenu.home:
+            return const PageHome();
+          case MainMenu.jjim:
+            return const Center(child: Text('', style: TextStyle(fontSize: 20)));
+          case MainMenu.pingkAuction:
+            return const PageAuction();
+          case MainMenu.limitedDeal:
+            return const PageLimitedDeal();
+        }
       },
     );
   }
@@ -46,8 +47,6 @@ class _PageMainState extends State<PageMain> {
   // --------------------------------------------------
   @override
   Widget build(BuildContext context) {
-    const int couponButtonIndex = 2;
-
     return Scaffold(
       backgroundColor: MyColors.background1,
       // ----- 상단바 -----
@@ -67,25 +66,23 @@ class _PageMainState extends State<PageMain> {
 
       // ----- 쿠폰함 버튼 -----
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: Consumer<MainTabIdx>(
-        builder: (context, tabIndex, child) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: 46),
-              FloatingActionButton(
-                onPressed: () => tabIndex.changeIdx(couponButtonIndex),
-                shape: const CircleBorder(),
-                backgroundColor: MyColors.primary,
-                foregroundColor: Colors.white,
-                elevation: 0,
-                child: SvgPicture.asset('assets/icons/icon_coupon.svg', width: 32, height: 20),
-              ),
-              const SizedBox(height: 6),
-              MyText('쿠폰함', style: TextStyle(fontSize: 14, color: tabIndex.selectedIdx == couponButtonIndex ? MyColors.text3 : MyColors.text1)),
-            ],
-          );
-        },
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 46),
+          FloatingActionButton(
+            onPressed: () {
+              showModalBottomSheet(context: context, isScrollControlled: true, backgroundColor: Colors.transparent, builder: (context) => const ModalMyCoupons());
+            },
+            shape: const CircleBorder(),
+            backgroundColor: MyColors.primary,
+            foregroundColor: Colors.white,
+            elevation: 0,
+            child: SvgPicture.asset('assets/icons/icon_coupon.svg', width: 32, height: 20),
+          ),
+          const SizedBox(height: 6),
+          MyText('쿠폰함', style: TextStyle(fontSize: 14, color: MyColors.text3)),
+        ],
       ),
 
       // ----- 하단 메뉴바 -----
@@ -101,12 +98,13 @@ class _PageMainState extends State<PageMain> {
             child: BottomAppBar(
               color: MyColors.background1,
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _menuButton('assets/icons/icon_home.svg', 18, 18, '홈', 0),
-                  _menuButton('assets/icons/icon_like.svg', 18, 16, '찜', 1),
+                  _menuButton('assets/icons/icon_home.svg', 18, 18, '홈', MainMenu.home),
+                  _menuButton('assets/icons/icon_like.svg', 18, 16, '찜', MainMenu.jjim),
                   const SizedBox(width: 84),
-                  _menuButton('assets/icons/icon_auction.svg', 14, 19, '핑크옥션', 3),
-                  _menuButton('assets/icons/icon_hot_deal.svg', 14, 18, '한정특가', 4),
+                  _menuButton('assets/icons/icon_auction.svg', 14, 19, '핑크옥션', MainMenu.pingkAuction),
+                  _menuButton('assets/icons/icon_hot_deal.svg', 14, 18, '한정특가', MainMenu.limitedDeal),
                 ],
               ),
             ),
@@ -119,26 +117,33 @@ class _PageMainState extends State<PageMain> {
   // --------------------------------------------------
   // 메뉴 버튼 위젯
   // --------------------------------------------------
-  Widget _menuButton(String svgAssetPath, double width, double height, String label, int index) {
-    return Consumer<MainTabIdx>(
-      builder: (context, tabIndex, child) {
-        return Expanded(
-          child: GestureDetector(
+  Widget _menuButton(String svgAssetPath, double width, double height, String label, MainMenu menu) {
+    return Selector<MyChangeNotifier, MainMenu>(
+      selector: (context, notifier) => notifier.selectedMainMenu,
+      builder: (context, selectedMainMenu, child) {
+        return Container(
+          width: 60,
+          height: 60,
+          alignment: Alignment.center,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(16),
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            hoverColor: Colors.transparent,
             onTap: () {
-              tabIndex.changeIdx(index);
+              context.read<MyChangeNotifier>().setMainMenu(menu);
             },
             child: Column(
-              mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 SvgPicture.asset(
                   svgAssetPath,
                   width: width,
                   height: height,
-                  colorFilter: ColorFilter.mode(tabIndex.selectedIdx == index ? MyColors.primary : MyColors.icon1, BlendMode.srcIn),
+                  colorFilter: ColorFilter.mode(selectedMainMenu == menu ? MyColors.primary : MyColors.icon1, BlendMode.srcIn),
                 ),
                 const SizedBox(height: 10),
-                MyText(label, style: TextStyle(color: tabIndex.selectedIdx == index ? MyColors.primary : MyColors.text1, fontSize: 14)),
+                MyText(label, style: TextStyle(color: selectedMainMenu == menu ? MyColors.primary : MyColors.text1, fontSize: 14)),
               ],
             ),
           ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:lottie/lottie.dart';
 import 'package:pingk/common/my_colors.dart';
 import 'package:pingk/common/my_function.dart';
 import 'package:pingk/common/item_info.dart';
@@ -66,111 +65,116 @@ class _HomeDiscountItemsState extends State<HomeDiscountItems> {
   // 베스트 쿠폰 상품 카드
   // --------------------------------------------------
   Widget _bestDealCard(GeneralItem item, VoidCallback onWishToggle) {
-    return Container(
-      width: double.infinity,
-      height: 126,
-      margin: const EdgeInsets.fromLTRB(30, 15, 30, 15),
-      child: Stack(
-        children: [
-          // ----- 상품 이미지 -----
-          Positioned(
-            top: 0,
-            left: 0,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(5),
-              child: Container(
-                width: 126,
-                height: 126,
-                decoration: BoxDecoration(color: MyColors.background3, borderRadius: BorderRadius.circular(5)),
-                child: AspectRatio(
-                  aspectRatio: 1,
-                  child: Image.network(
-                    item.thumbnail,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: MyColors.background2,
-                        child: const Icon(Icons.image_not_supported, color: MyColors.text2, size: 40),
-                      );
-                    },
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, '/deal-detail', arguments: item.id);
+      },
+      child: Container(
+        width: double.infinity,
+        height: 126,
+        margin: const EdgeInsets.fromLTRB(30, 15, 30, 15),
+        child: Stack(
+          children: [
+            // ----- 상품 이미지 -----
+            Positioned(
+              top: 0,
+              left: 0,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(5),
+                child: Container(
+                  width: 126,
+                  height: 126,
+                  decoration: BoxDecoration(color: MyColors.background3, borderRadius: BorderRadius.circular(5)),
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: Image.network(
+                      item.thumbnail,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: MyColors.background2,
+                          child: const Icon(Icons.image_not_supported, color: MyColors.text2, size: 40),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
 
-          // ----- 찜 버튼 -----
-          Positioned(
-            top: 96,
-            left: 96,
-            child: GestureDetector(
-              onTap: onWishToggle,
-              child: Icon(item.isWished ? Icons.favorite : Icons.favorite_border, color: item.isWished ? MyColors.primary : MyColors.secondary, size: 22),
+            // ----- 찜 버튼 -----
+            Positioned(
+              top: 96,
+              left: 96,
+              child: GestureDetector(
+                onTap: onWishToggle,
+                child: Icon(item.isWished ? Icons.favorite : Icons.favorite_border, color: item.isWished ? MyColors.primary : MyColors.secondary, size: 22),
+              ),
             ),
-          ),
 
-          // ----- 브랜드 -----
-          Positioned(
-            top: 2,
-            left: 140,
-            child: MyText(
-              item.brand,
-              style: const TextStyle(fontSize: 13, color: MyColors.text2, fontWeight: FontWeight.w600),
+            // ----- 브랜드 -----
+            Positioned(
+              top: 2,
+              left: 140,
+              child: MyText(
+                item.brand,
+                style: const TextStyle(fontSize: 13, color: MyColors.text2, fontWeight: FontWeight.w600),
+              ),
             ),
-          ),
 
-          // ----- 상품명 -----
-          Positioned(
-            top: 20,
-            left: 140,
-            right: 100,
-            child: MyText(
-              item.name,
-              style: const TextStyle(fontSize: 16, color: MyColors.text1, fontWeight: FontWeight.w400),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+            // ----- 상품명 -----
+            Positioned(
+              top: 20,
+              left: 140,
+              right: 100,
+              child: MyText(
+                item.name,
+                style: const TextStyle(fontSize: 16, color: MyColors.text1, fontWeight: FontWeight.w400),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-          ),
 
-          // ----- 할인률 -----
-          Positioned(
-            bottom: 0,
-            left: 140,
-            child: Container(
-              width: 52,
-              height: 23,
-              decoration: BoxDecoration(color: MyColors.background4, borderRadius: BorderRadius.circular(20)),
-              alignment: Alignment.center,
-              child: RichText(
-                text: TextSpan(
-                  text: '${MyFN.discountRate(item.originalPrice, item.price)}%',
-                  style: const TextStyle(fontFamily: 'Pretendard', fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600),
+            // ----- 할인률 -----
+            Positioned(
+              bottom: 0,
+              left: 140,
+              child: Container(
+                width: 52,
+                height: 23,
+                decoration: BoxDecoration(color: MyColors.background4, borderRadius: BorderRadius.circular(20)),
+                alignment: Alignment.center,
+                child: RichText(
+                  text: TextSpan(
+                    text: '${MyFN.discountRate(item.originalPrice, item.price)}%',
+                    style: const TextStyle(fontFamily: 'Pretendard', fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600),
+                  ),
                 ),
               ),
             ),
-          ),
 
-          // ----- 판매가  -----
-          Positioned(
-            bottom: 0,
-            right: 16,
-            child: MyText(
-              MyFN.formatNumberWithComma(item.price),
-              style: const TextStyle(fontSize: 23, color: MyColors.text1, fontWeight: FontWeight.w800),
-              overflow: TextOverflow.ellipsis,
+            // ----- 판매가  -----
+            Positioned(
+              bottom: 0,
+              right: 16,
+              child: MyText(
+                MyFN.formatNumberWithComma(item.price),
+                style: const TextStyle(fontSize: 23, color: MyColors.text1, fontWeight: FontWeight.w800),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-          ),
 
-          Positioned(
-            bottom: 2,
-            right: 0,
-            child: MyText(
-              '원',
-              style: const TextStyle(fontSize: 16, color: MyColors.text1, fontWeight: FontWeight.w300),
-              overflow: TextOverflow.ellipsis,
+            Positioned(
+              bottom: 2,
+              right: 0,
+              child: MyText(
+                '원',
+                style: const TextStyle(fontSize: 16, color: MyColors.text1, fontWeight: FontWeight.w300),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

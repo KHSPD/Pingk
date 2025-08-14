@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:pingk/common/_temp_items.dart';
 import 'package:pingk/common/item_info.dart';
 import 'package:pingk/common/my_colors.dart';
@@ -75,9 +74,13 @@ class _PageAuctionState extends State<PageAuction> {
             SliverPersistentHeader(
               pinned: true,
               delegate: _CategoryHeaderDelegate(
-                height: 30,
+                height: 50,
                 child: Container(
-                  color: MyColors.background2,
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  decoration: const BoxDecoration(
+                    color: MyColors.background2,
+                    border: Border(bottom: BorderSide(color: MyColors.border1, width: 0.5)),
+                  ),
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: _categories.length,
@@ -129,130 +132,135 @@ class _PageAuctionState extends State<PageAuction> {
   // 경매 상품 카드
   // --------------------------------------------------
   Widget _itemAuctionCard(AuctionItem item) {
-    return Container(
-      width: double.infinity,
-      height: 286,
-      margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
-      decoration: BoxDecoration(
-        color: MyColors.background1,
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [BoxShadow(color: MyColors.shadow2, spreadRadius: 4, blurRadius: 6, offset: const Offset(0, 0))],
-      ),
-      child: Stack(
-        children: [
-          // ----- 카운트 다운 -----
-          Positioned(
-            top: 10,
-            right: 10,
-            child: Container(
-              width: 90,
-              height: 27,
-              decoration: BoxDecoration(color: MyColors.button5, borderRadius: BorderRadius.circular(15)),
-              child: Center(
-                child: TweenAnimationBuilder<Duration>(
-                  duration: item.endTime.difference(DateTime.now()),
-                  tween: Tween<Duration>(begin: item.endTime.difference(DateTime.now()), end: Duration.zero),
-                  onEnd: () {
-                    setState(() {});
-                  },
-                  builder: (BuildContext context, Duration value, Widget? child) {
-                    final hours = value.inHours.toString().padLeft(2, '0');
-                    final minutes = (value.inMinutes % 60).toString().padLeft(2, '0');
-                    final seconds = (value.inSeconds % 60).toString().padLeft(2, '0');
-                    return MyText(
-                      '$hours:$minutes:$seconds',
-                      style: const TextStyle(fontSize: 16, color: MyColors.text1, fontWeight: FontWeight.w600),
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    );
-                  },
-                ),
-              ),
-            ),
-          ),
-
-          // ----- 상품명  -----
-          Positioned(
-            top: 64,
-            left: 24,
-            child: MyText(
-              item.name,
-              style: const TextStyle(fontSize: 21, color: MyColors.text1, fontWeight: FontWeight.w500),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-            ),
-          ),
-
-          // ----- 브랜드 -----
-          Positioned(
-            top: 90,
-            left: 24,
-            child: MyText(
-              item.brand,
-              style: const TextStyle(fontSize: 13, color: MyColors.text1, fontWeight: FontWeight.w300),
-            ),
-          ),
-
-          // ----- Last Price -----
-          Positioned(
-            top: 180,
-            left: 24,
-            child: MyText(
-              'Last Price',
-              style: const TextStyle(fontSize: 12, color: MyColors.text2, fontWeight: FontWeight.w300),
-            ),
-          ),
-
-          // ----- 최종 가격 -----
-          Positioned(
-            top: 190,
-            left: 24,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                MyText(
-                  MyFN.formatNumberWithComma(item.lastPrice),
-                  style: const TextStyle(fontSize: 40, fontWeight: FontWeight.w700, color: MyColors.text1),
-                ),
-                const SizedBox(width: 4),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: const MyText(
-                    '원',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300, color: MyColors.text1),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // ----- 상품 이미지 -----
-          Positioned(
-            top: 124,
-            right: 24,
-            width: 113,
-            height: 113,
-            child: ClipOval(
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, '/auction-detail', arguments: item.id);
+      },
+      child: Container(
+        width: double.infinity,
+        height: 286,
+        margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+        decoration: BoxDecoration(
+          color: MyColors.background1,
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [BoxShadow(color: MyColors.shadow2, spreadRadius: 4, blurRadius: 6, offset: const Offset(0, 0))],
+        ),
+        child: Stack(
+          children: [
+            // ----- 카운트 다운 -----
+            Positioned(
+              top: 10,
+              right: 10,
               child: Container(
-                decoration: BoxDecoration(color: MyColors.background3),
-                child: AspectRatio(
-                  aspectRatio: 1,
-                  child: Image.network(
-                    item.thumbnail,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: MyColors.background3,
-                        child: const Icon(Icons.image_not_supported, color: MyColors.text2, size: 40),
+                width: 90,
+                height: 27,
+                decoration: BoxDecoration(color: MyColors.button5, borderRadius: BorderRadius.circular(15)),
+                child: Center(
+                  child: TweenAnimationBuilder<Duration>(
+                    duration: item.endTime.difference(DateTime.now()),
+                    tween: Tween<Duration>(begin: item.endTime.difference(DateTime.now()), end: Duration.zero),
+                    onEnd: () {
+                      setState(() {});
+                    },
+                    builder: (BuildContext context, Duration value, Widget? child) {
+                      final hours = value.inHours.toString().padLeft(2, '0');
+                      final minutes = (value.inMinutes % 60).toString().padLeft(2, '0');
+                      final seconds = (value.inSeconds % 60).toString().padLeft(2, '0');
+                      return MyText(
+                        '$hours:$minutes:$seconds',
+                        style: const TextStyle(fontSize: 16, color: MyColors.text1, fontWeight: FontWeight.w600),
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       );
                     },
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+
+            // ----- 상품명  -----
+            Positioned(
+              top: 64,
+              left: 24,
+              child: MyText(
+                item.name,
+                style: const TextStyle(fontSize: 21, color: MyColors.text1, fontWeight: FontWeight.w500),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            ),
+
+            // ----- 브랜드 -----
+            Positioned(
+              top: 90,
+              left: 24,
+              child: MyText(
+                item.brand,
+                style: const TextStyle(fontSize: 13, color: MyColors.text1, fontWeight: FontWeight.w300),
+              ),
+            ),
+
+            // ----- Last Price -----
+            Positioned(
+              top: 180,
+              left: 24,
+              child: MyText(
+                'Last Price',
+                style: const TextStyle(fontSize: 12, color: MyColors.text2, fontWeight: FontWeight.w300),
+              ),
+            ),
+
+            // ----- 최종 가격 -----
+            Positioned(
+              top: 190,
+              left: 24,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  MyText(
+                    MyFN.formatNumberWithComma(item.lastPrice),
+                    style: const TextStyle(fontSize: 40, fontWeight: FontWeight.w700, color: MyColors.text1),
+                  ),
+                  const SizedBox(width: 4),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: const MyText(
+                      '원',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300, color: MyColors.text1),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // ----- 상품 이미지 -----
+            Positioned(
+              top: 124,
+              right: 24,
+              width: 113,
+              height: 113,
+              child: ClipOval(
+                child: Container(
+                  decoration: BoxDecoration(color: MyColors.background3),
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: Image.network(
+                      item.thumbnail,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: MyColors.background3,
+                          child: const Icon(Icons.image_not_supported, color: MyColors.text2, size: 40),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

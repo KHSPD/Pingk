@@ -124,140 +124,147 @@ class _HomeAuctionItemsState extends State<HomeAuctionItems> {
   // 경매 상품 카드
   // --------------------------------------------------
   Widget _itemAuctionCard(AuctionItem item) {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
-      decoration: BoxDecoration(
-        color: MyColors.background1,
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [BoxShadow(color: MyColors.shadow2, spreadRadius: 4, blurRadius: 6, offset: const Offset(0, 0))],
-      ),
-      child: Stack(
-        children: [
-          // ----- 상세보기 버튼 -----
-          Positioned(
-            top: 24,
-            right: 24,
-            child: Container(
-              width: 30,
-              height: 30,
-              decoration: BoxDecoration(color: MyColors.button2, shape: BoxShape.circle),
-              child: Center(child: SvgPicture.asset('assets/icons/icon_arrow_ne.svg', width: 13, height: 12)),
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, '/auction-detail', arguments: item.id);
+      },
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+        decoration: BoxDecoration(
+          color: MyColors.background1,
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [BoxShadow(color: MyColors.shadow2, spreadRadius: 4, blurRadius: 6, offset: const Offset(0, 0))],
+        ),
+        child: Stack(
+          children: [
+            // ----- 상세보기 버튼 -----
+            Positioned(
+              top: 24,
+              right: 24,
+              child: Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(color: MyColors.button2, shape: BoxShape.circle),
+                child: Center(child: SvgPicture.asset('assets/icons/icon_arrow_ne.svg', width: 13, height: 12)),
+              ),
             ),
-          ),
 
-          // ----- 상품명  -----
-          Positioned(
-            top: 70,
-            left: 24,
-            child: MyText(
-              item.name,
-              style: const TextStyle(fontSize: 30, color: MyColors.text1, fontWeight: FontWeight.w600),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
+            // ----- 상품명  -----
+            Positioned(
+              top: 70,
+              left: 24,
+              right: 24,
+              child: MyText(
+                item.name,
+                style: const TextStyle(fontSize: 30, color: MyColors.text1, fontWeight: FontWeight.w600),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
             ),
-          ),
 
-          // ----- 브랜드 -----
-          Positioned(
-            top: 112,
-            left: 24,
-            child: MyText(
-              item.brand,
-              style: const TextStyle(fontSize: 16, color: MyColors.text1, fontWeight: FontWeight.w300),
+            // ----- 브랜드 -----
+            Positioned(
+              top: 112,
+              left: 24,
+              right: 24,
+              child: MyText(
+                item.brand,
+                style: const TextStyle(fontSize: 16, color: MyColors.text1, fontWeight: FontWeight.w300),
+              ),
             ),
-          ),
 
-          // ----- Last Price -----
-          Positioned(
-            top: 196,
-            left: 24,
-            child: MyText(
-              'Last Price',
-              style: const TextStyle(fontSize: 16, color: MyColors.text2, fontWeight: FontWeight.w300),
+            // ----- Last Price -----
+            Positioned(
+              top: 196,
+              left: 24,
+              child: MyText(
+                'Last Price',
+                style: const TextStyle(fontSize: 16, color: MyColors.text2, fontWeight: FontWeight.w300),
+              ),
             ),
-          ),
 
-          // ----- 최종 가격 -----
-          Positioned(
-            top: 210,
-            left: 24,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                MyText(
-                  MyFN.formatNumberWithComma(item.lastPrice),
-                  style: const TextStyle(fontSize: 40, fontWeight: FontWeight.w700, color: MyColors.text1),
-                ),
-                const SizedBox(width: 4),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: const MyText(
-                    '원',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300, color: MyColors.text1),
+            // ----- 최종 가격 -----
+            Positioned(
+              top: 210,
+              left: 24,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  MyText(
+                    MyFN.formatNumberWithComma(item.lastPrice),
+                    style: const TextStyle(fontSize: 40, fontWeight: FontWeight.w700, color: MyColors.text1),
+                  ),
+                  const SizedBox(width: 4),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: const MyText(
+                      '원',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300, color: MyColors.text1),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // ----- 상품 이미지 -----
+            Positioned(
+              top: 140,
+              right: 24,
+              width: 120,
+              height: 120,
+              child: ClipOval(
+                child: Container(
+                  decoration: BoxDecoration(color: MyColors.background3),
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: Image.network(
+                      item.thumbnail,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: MyColors.background3,
+                          child: const Icon(Icons.image_not_supported, color: MyColors.text2, size: 40),
+                        );
+                      },
+                    ),
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
 
-          // ----- 상품 이미지 -----
-          Positioned(
-            top: 140,
-            right: 24,
-            width: 120,
-            height: 120,
-            child: ClipOval(
+            // ----- 카운트 다운 -----
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
               child: Container(
-                decoration: BoxDecoration(color: MyColors.background3),
-                child: AspectRatio(
-                  aspectRatio: 1,
-                  child: Image.network(
-                    item.thumbnail,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: MyColors.background3,
-                        child: const Icon(Icons.image_not_supported, color: MyColors.text2, size: 40),
+                height: 70,
+                decoration: BoxDecoration(color: MyColors.button2, borderRadius: BorderRadius.circular(15)),
+                child: Center(
+                  child: TweenAnimationBuilder<Duration>(
+                    duration: item.endTime.difference(DateTime.now()),
+                    tween: Tween<Duration>(begin: item.endTime.difference(DateTime.now()), end: Duration.zero),
+                    onEnd: () {
+                      setState(() {});
+                    },
+                    builder: (BuildContext context, Duration value, Widget? child) {
+                      final hours = value.inHours.toString().padLeft(2, '0');
+                      final minutes = (value.inMinutes % 60).toString().padLeft(2, '0');
+                      final seconds = (value.inSeconds % 60).toString().padLeft(2, '0');
+                      return MyText(
+                        '$hours:$minutes:$seconds',
+                        style: const TextStyle(color: MyColors.text4, fontWeight: FontWeight.w600, fontSize: 40),
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       );
                     },
                   ),
                 ),
               ),
             ),
-          ),
-
-          // ----- 카운트 다운 -----
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: 70,
-              decoration: BoxDecoration(color: MyColors.button2, borderRadius: BorderRadius.circular(15)),
-              child: Center(
-                child: TweenAnimationBuilder<Duration>(
-                  duration: item.endTime.difference(DateTime.now()),
-                  tween: Tween<Duration>(begin: item.endTime.difference(DateTime.now()), end: Duration.zero),
-                  onEnd: () {
-                    setState(() {});
-                  },
-                  builder: (BuildContext context, Duration value, Widget? child) {
-                    final hours = value.inHours.toString().padLeft(2, '0');
-                    final minutes = (value.inMinutes % 60).toString().padLeft(2, '0');
-                    final seconds = (value.inSeconds % 60).toString().padLeft(2, '0');
-                    return MyText(
-                      '$hours:$minutes:$seconds',
-                      style: const TextStyle(color: MyColors.text4, fontWeight: FontWeight.w600, fontSize: 40),
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    );
-                  },
-                ),
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

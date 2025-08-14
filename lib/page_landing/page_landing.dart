@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pingk/common/my_buttons.dart';
 import 'package:pingk/common/my_colors.dart';
-import 'package:pingk/common/my_styles.dart';
 import 'package:pingk/common/my_text.dart';
 
 class PageLanding extends StatelessWidget {
@@ -29,17 +29,7 @@ class PageLanding extends StatelessWidget {
               const Spacer(flex: 4),
 
               // -----하단 혜택받기 버튼 -----
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/main');
-                  },
-                  style: MyStyles.bottomButton,
-                  child: MyText('혜택받기', style: MyStyles.bottomButtonText),
-                ),
-              ),
+              MyButtons.myElevatedButton(context, '혜택받기', () => Navigator.pushReplacementNamed(context, '/main')),
             ],
           ),
         ),
