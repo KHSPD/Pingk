@@ -1,1 +1,2 @@
-enum MainMenu { home, jjim, pingkAuction, limitedDeal }
+// ----- 메인 메뉴 -----
+enum MainMenu { home, favorite, pingkAuction, limitedDeal }

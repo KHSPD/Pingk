@@ -31,7 +31,7 @@ class _PageMainState extends State<PageMain> {
         switch (selectedMainMenu) {
           case MainMenu.home:
             return const PageHome();
-          case MainMenu.jjim:
+          case MainMenu.favorite:
             return const Center(child: Text('', style: TextStyle(fontSize: 20)));
           case MainMenu.pingkAuction:
             return const PageAuction();
@@ -93,6 +93,7 @@ class _PageMainState extends State<PageMain> {
             boxShadow: [BoxShadow(color: MyColors.shadow2, blurRadius: 8, offset: const Offset(0, -2))],
             borderRadius: const BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
           ),
+          width: null,
           child: ClipRRect(
             borderRadius: const BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
             child: BottomAppBar(
@@ -101,7 +102,7 @@ class _PageMainState extends State<PageMain> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _menuButton('assets/icons/icon_home.svg', 18, 18, '홈', MainMenu.home),
-                  _menuButton('assets/icons/icon_like.svg', 18, 16, '찜', MainMenu.jjim),
+                  _menuButton('assets/icons/icon_like.svg', 18, 16, '찜', MainMenu.favorite),
                   const SizedBox(width: 84),
                   _menuButton('assets/icons/icon_auction.svg', 14, 19, '핑크옥션', MainMenu.pingkAuction),
                   _menuButton('assets/icons/icon_hot_deal.svg', 14, 18, '한정특가', MainMenu.limitedDeal),

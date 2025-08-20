@@ -5,7 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:pingk/common/change_notifiers.dart';
 import 'package:pingk/common/constants.dart';
 import 'package:pingk/common/my_colors.dart';
-import 'package:pingk/common/my_function.dart';
+import 'package:pingk/common/my_functions.dart';
 import 'package:pingk/common/item_info.dart';
 import 'package:pingk/common/_temp_items.dart';
 import 'package:pingk/common/my_text.dart';
