@@ -2,6 +2,19 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<!-- 생체인증 사용 설명 (필수) -->
+    <key>NSFaceIDUsageDescription</key>
+    <string>간편 로그인을 위해 Face ID를 사용합니다.</string>    
+    <!-- 생체인증 사용 설명 (Touch ID용) -->
+    <key>NSFaceIDUsageDescription</key>
+    <string>간편 로그인을 위해 Touch ID를 사용합니다.</string>    
+    <!-- 키체인 접근 그룹 설정 -->
+    <key>keychain-access-groups</key>
+    <array>
+        <string>$(AppIdentifierPrefix)com.gkpin.pingk</string>
+    </array>
+
+
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -44,6 +57,6 @@
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
+	<true/>	
 </dict>
 </plist>

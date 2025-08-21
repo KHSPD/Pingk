@@ -11,6 +11,7 @@ class MyColors {
   static const Color background2 = Color(0xFFF2F2F2);
   static const Color background3 = Color(0xFFF0F0F0);
   static const Color background4 = Color(0xFF000000);
+  static const Color background5 = Color(0xFFFF437A);
 
   // Main Colors
   static const Color primary = Color(0xFFFF437A);
