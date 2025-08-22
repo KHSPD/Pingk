@@ -16,8 +16,6 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   // ----- 임시 데이터 처리 -----
   TempItems();
-  //SecureStorage.instance.saveLoginInfo(id: '', password: '', jwtToken: '');
-  //SecureStorage.instance.saveBiometricStatus(statusNotSet);
   //
   runApp(ChangeNotifierProvider(create: (context) => MyChangeNotifier(), child: const PingkApp()));
 }

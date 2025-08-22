@@ -90,7 +90,13 @@ class _PageLandingState extends State<PageLanding> {
             const Spacer(flex: 2),
 
             // ----- 중간 이미지 -----
-            SizedBox(width: 316, height: 467, child: Image.asset('assets/landing_img.png', fit: BoxFit.contain)),
+            GestureDetector(
+              onTap: () {
+                SecureStorage.instance.saveLoginInfo(id: '', password: '');
+                SecureStorage.instance.saveBiometricStatus(statusNotSet);
+              },
+              child: SizedBox(width: 316, height: 467, child: Image.asset('assets/landing_img.png', fit: BoxFit.contain)),
+            ),
             const Spacer(flex: 4),
 
             // -----혜택받기(회원가입) 버튼 -----
