@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pingk/common/my_text.dart';
+import 'package:pingk/common/my_widget.dart';
 import 'package:pingk/page_home/page_home_%08always_deal.dart';
 import 'package:pingk/page_home/page_home_auction.dart';
 import 'package:pingk/page_home/page_home_limited_deal.dart';

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pingk/common/constants.dart';
-import 'package:pingk/common/my_buttons.dart';
 import 'package:pingk/common/my_colors.dart';
-import 'package:pingk/common/my_text.dart';
+import 'package:pingk/common/my_widget.dart';
 import 'package:pingk/common/secure_storage.dart';
 import 'package:pingk/common/biometric_auth.dart';
 
@@ -31,41 +30,42 @@ class _PageLandingState extends State<PageLanding> {
   // 페이지 이동
   // --------------------------------------------------
   void goJoinPage() {
-    Navigator.pushReplacementNamed(context, '/join');
+    Navigator.pushNamedAndRemoveUntil(context, '/join', (route) => false);
   }
 
   void goMainPage() {
-    Navigator.pushReplacementNamed(context, '/main');
+    Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);
   }
 
   void goLoginPage() {
-    Navigator.pushReplacementNamed(context, '/login');
+    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
   }
 
   // --------------------------------------------------
   // 다음 단계 확인
   // --------------------------------------------------
   void checkNextStep() async {
-    final Map<String, String> loginInfo = await SecureStorage.instance.getLoginInfo();
+    final Map<String, String> loginInfo = await SecureStorage.instance.loadLoginInfo();
     final password = loginInfo['password'] ?? '';
-    final isBiometricAvailable = await BiometricAuth.instance.isBiometricAvailable();
-    final biometricStatus = await SecureStorage.instance.getBiometricStatus();
     if (password.isEmpty) {
       // ----- 저장된 비밀번호가 없는 경우 -----
       setState(() {
         _showJoinButton = true;
       });
-    } else if (isBiometricAvailable && biometricStatus == BiometricStatus.enabled) {
-      // ----- 바이오인증 로그인 -----
-      final bool isAuthenticated = await BiometricAuth.instance.authenticate();
-      if (isAuthenticated) {
-        goMainPage();
+    } else {
+      // ----- 저장된 비밀번호가 있는 경우 -----
+      final isBiometricAvailable = await BiometricAuth.instance.isBiometricAvailable();
+      final biometricStatus = await SecureStorage.instance.loadBiometricStatus();
+      if (isBiometricAvailable && biometricStatus == statusEnabled) {
+        final bool isAuthenticated = await BiometricAuth.instance.authenticate();
+        if (isAuthenticated) {
+          goMainPage();
+        } else {
+          goLoginPage();
+        }
       } else {
         goLoginPage();
       }
-    } else {
-      // ----- 비밀번호 로그인 -----
-      goLoginPage();
     }
   }
 
@@ -94,7 +94,7 @@ class _PageLandingState extends State<PageLanding> {
             const Spacer(flex: 4),
 
             // -----혜택받기(회원가입) 버튼 -----
-            if (_showJoinButton) MyButtons.myElevatedButton(context, '혜택받기', () => goJoinPage()),
+            if (_showJoinButton) BottomLongButton('혜택받기', () => goJoinPage()),
           ],
         ),
       ),

@@ -8,17 +8,18 @@ class BiometricAuth {
   BiometricAuth._privateConstructor();
   static final BiometricAuth _instance = BiometricAuth._privateConstructor();
   static BiometricAuth get instance => _instance;
-
+  //
   final LocalAuthentication _localAuth = LocalAuthentication();
 
   // --------------------------------------------------
-  // 바이오인증이 사용 가능한지 확인
+  // 바이오인증 가능 여부 확인 (하드웨어 지원 여부, 바이오인증 사용 가능 여부)
   // --------------------------------------------------
   Future<bool> isBiometricAvailable() async {
     try {
-      final bool canAuthenticateWithBiometrics = await _localAuth.canCheckBiometrics;
-      final bool canAuthenticate = canAuthenticateWithBiometrics || await _localAuth.isDeviceSupported();
-      return canAuthenticate;
+      final bool isDeviceSupported = await _localAuth.isDeviceSupported();
+      if (!isDeviceSupported) return false;
+      final bool canCheckBiometrics = await _localAuth.canCheckBiometrics;
+      return canCheckBiometrics;
     } on PlatformException catch (_) {
       return false;
     }
@@ -27,11 +28,11 @@ class BiometricAuth {
   // --------------------------------------------------
   // 사용자의 바이오인증 설정 상태 확인
   // --------------------------------------------------
-  Future<BiometricStatus> getBiometricStatus() async {
+  Future<String> getBiometricStatus() async {
     try {
-      return await SecureStorage.instance.getBiometricStatus();
+      return await SecureStorage.instance.loadBiometricStatus();
     } catch (_) {
-      return BiometricStatus.notSet;
+      return statusNotSet;
     }
   }
 
@@ -47,7 +48,7 @@ class BiometricAuth {
         options: const AuthenticationOptions(stickyAuth: true, biometricOnly: true),
       );
       if (didAuthenticate) {
-        await SecureStorage.instance.saveBiometricStatus(BiometricStatus.enabled);
+        await SecureStorage.instance.saveBiometricStatus(statusEnabled);
         return true;
       }
       return false;
@@ -62,7 +63,7 @@ class BiometricAuth {
   // --------------------------------------------------
   Future<bool> disableBiometric() async {
     try {
-      await SecureStorage.instance.saveBiometricStatus(BiometricStatus.disabled);
+      await SecureStorage.instance.saveBiometricStatus(statusDisabled);
       return true;
     } catch (_) {
       return false;
@@ -74,8 +75,8 @@ class BiometricAuth {
   // --------------------------------------------------
   Future<bool> authenticate() async {
     try {
-      final BiometricStatus status = await getBiometricStatus();
-      if (status != BiometricStatus.enabled) return false;
+      final String status = await getBiometricStatus();
+      if (status != 'enabled') return false;
 
       final bool didAuthenticate = await _localAuth.authenticate(
         localizedReason: '사용자 인증을 위해 바이오인증을 사용해주세요',

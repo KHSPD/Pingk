@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pingk/common/change_notifiers.dart';
 import 'package:pingk/common/constants.dart';
-import 'package:pingk/common/secure_storage.dart';
 import 'package:pingk/page_general/page_general_detail.dart';
 import 'package:pingk/page_join/page_join.dart';
 import 'package:pingk/page_join/page_set_biometric.dart';
@@ -17,8 +16,8 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   // ----- 임시 데이터 처리 -----
   TempItems();
-  SecureStorage.instance.saveLoginInfo(id: '', password: '', jwtToken: '');
-  SecureStorage.instance.saveBiometricStatus(BiometricStatus.disabled);
+  //SecureStorage.instance.saveLoginInfo(id: '', password: '', jwtToken: '');
+  //SecureStorage.instance.saveBiometricStatus(statusNotSet);
   //
   runApp(ChangeNotifierProvider(create: (context) => MyChangeNotifier(), child: const PingkApp()));
 }
@@ -31,6 +30,7 @@ class PingkApp extends StatelessWidget {
     return MaterialApp(
       title: 'Pingk',
       initialRoute: '/',
+      scaffoldMessengerKey: snackbarKey,
       onGenerateRoute: (settings) {
         switch (settings.name) {
           case '/':

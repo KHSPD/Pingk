@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pingk/common/_temp_items.dart';
 import 'package:pingk/common/item_info.dart';
-import 'package:pingk/common/my_buttons.dart';
 import 'package:pingk/common/my_colors.dart';
 import 'package:pingk/common/my_functions.dart';
-import 'package:pingk/common/my_text.dart';
+import 'package:pingk/common/my_widget.dart';
 
 class PageGeneralDetail extends StatefulWidget {
   final String itemId;
@@ -54,7 +53,7 @@ class _PageGeneralDetailState extends State<PageGeneralDetail> {
           color: MyColors.background1,
           border: Border(top: BorderSide(color: Colors.grey, width: 0.5)),
         ),
-        child: MyButtons.myElevatedButton(context, '구매하기', () => {}),
+        child: BottomLongButton('구매하기', () => {}),
       ),
       body: SingleChildScrollView(
         child: SizedBox(

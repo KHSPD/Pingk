@@ -5,12 +5,11 @@ class SecureStorage {
   SecureStorage._privateConstructor();
   static final SecureStorage _instance = SecureStorage._privateConstructor();
   static SecureStorage get instance => _instance;
-
-  // FlutterSecureStorage
+  //
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   // --------------------------------------------------
-  // 로그인 정보 저장
+  // 로그인 정보 Save
   // --------------------------------------------------
   Future<void> saveLoginInfo({String? id, String? password, String? jwtToken}) async {
     try {
@@ -29,9 +28,9 @@ class SecureStorage {
   }
 
   // --------------------------------------------------
-  // 로그인 정보 조회
+  // 로그인 정보 Load
   // --------------------------------------------------
-  Future<Map<String, String>> getLoginInfo() async {
+  Future<Map<String, String>> loadLoginInfo() async {
     try {
       String? id = await _storage.read(key: 'id');
       String? password = await _storage.read(key: 'password');
@@ -43,7 +42,7 @@ class SecureStorage {
   }
 
   // --------------------------------------------------
-  // 로그인 정보 삭제
+  // 로그인 정보 Delete
   // --------------------------------------------------
   Future<void> deleteLoginInfo() async {
     try {
@@ -56,30 +55,24 @@ class SecureStorage {
   }
 
   // --------------------------------------------------
-  // 바이오 인증 사용 설정 저장
+  // 바이오 인증 사용 설정 Save
   // --------------------------------------------------
-  Future<void> saveBiometricStatus(BiometricStatus status) async {
+  Future<void> saveBiometricStatus(String status) async {
     try {
-      await _storage.write(key: 'biometric_status', value: status.stringValue);
+      await _storage.write(key: 'biometric_status', value: status);
     } catch (_) {
       rethrow;
     }
   }
 
   // --------------------------------------------------
-  // 바이오 인증 사용 설정 조회
+  // 바이오 인증 사용 설정 Load
   // --------------------------------------------------
-  Future<BiometricStatus> getBiometricStatus() async {
+  Future<String> loadBiometricStatus() async {
     try {
-      String result = await _storage.read(key: 'biometric_status') ?? '';
-      for (BiometricStatus status in BiometricStatus.values) {
-        if (status.name == result) {
-          return status;
-        }
-      }
-      return BiometricStatus.notSet;
+      return await _storage.read(key: 'biometric_status') ?? statusNotSet;
     } catch (_) {
-      return BiometricStatus.notSet;
+      return statusNotSet;
     }
   }
 }

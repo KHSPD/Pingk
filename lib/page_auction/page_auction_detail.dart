@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pingk/common/_temp_items.dart';
 import 'package:pingk/common/item_info.dart';
-import 'package:pingk/common/my_buttons.dart';
 import 'package:pingk/common/my_colors.dart';
 import 'package:pingk/common/my_functions.dart';
-import 'package:pingk/common/my_text.dart';
+import 'package:pingk/common/my_widget.dart';
 
 class PageAuctionDetail extends StatefulWidget {
   final String itemId;
@@ -63,7 +62,7 @@ class _PageAuctionDetailState extends State<PageAuctionDetail> {
           color: MyColors.background1,
           border: Border(top: BorderSide(color: Colors.grey, width: 0.5)),
         ),
-        child: MyButtons.myElevatedButton(context, '경매참여하기', () => _showBidModal(context)),
+        child: BottomLongButton('경매참여하기', () => _showBidModal(context)),
       ),
       body: SingleChildScrollView(
         child: SizedBox(
@@ -330,7 +329,7 @@ class _PageAuctionDetailState extends State<PageAuctionDetail> {
 
               SizedBox(height: 20),
 
-              MyButtons.myElevatedButton(context, '경매참여하기', () => {}),
+              BottomLongButton('경매참여하기', () {}),
             ],
           ),
         );

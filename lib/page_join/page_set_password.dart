@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pingk/common/my_colors.dart';
-import 'package:pingk/common/my_text.dart';
+import 'package:pingk/common/my_widget.dart';
 import 'package:pingk/common/secure_storage.dart';
+import 'package:pingk/common/my_functions.dart';
 
 class PageSetPassword extends StatefulWidget {
   const PageSetPassword({super.key});
@@ -12,7 +13,7 @@ class PageSetPassword extends StatefulWidget {
 
 class _PageSetPasswordState extends State<PageSetPassword> {
   final int _passwordLength = 6;
-  String _password = '';
+  String _inputPassword = '';
   String _confirmPassword = '';
   bool _isConfirming = false;
 
@@ -24,13 +25,13 @@ class _PageSetPasswordState extends State<PageSetPassword> {
       if (digit == '-') {
         if (_isConfirming && _confirmPassword.isNotEmpty) {
           _confirmPassword = _confirmPassword.substring(0, _confirmPassword.length - 1);
-        } else if (!_isConfirming && _password.isNotEmpty) {
-          _password = _password.substring(0, _password.length - 1);
+        } else if (!_isConfirming && _inputPassword.isNotEmpty) {
+          _inputPassword = _inputPassword.substring(0, _inputPassword.length - 1);
         }
       } else {
-        if (!_isConfirming && _password.length < _passwordLength) {
-          _password += digit;
-          if (_password.length == _passwordLength) _isConfirming = true;
+        if (!_isConfirming && _inputPassword.length < _passwordLength) {
+          _inputPassword += digit;
+          if (_inputPassword.length == _passwordLength) _isConfirming = true;
         } else if (_isConfirming && _confirmPassword.length < _passwordLength) {
           _confirmPassword += digit;
           if (_confirmPassword.length == _passwordLength) {
@@ -46,30 +47,18 @@ class _PageSetPasswordState extends State<PageSetPassword> {
   // 비밀번호 확인
   // --------------------------------------------------
   void _checkPassword() {
-    if (_password == _confirmPassword) {
+    if (_inputPassword == _confirmPassword) {
       // 비밀번호 일치
-      SecureStorage.instance.saveLoginInfo(password: _password);
+      SecureStorage.instance.saveLoginInfo(password: _inputPassword);
       Navigator.pushReplacementNamed(context, '/set-biometric');
     } else {
       // 비밀번호 불일치
       setState(() {
-        _password = '';
+        _inputPassword = '';
         _confirmPassword = '';
         _isConfirming = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: MyText(
-            '비밀번호가 일치하지 않습니다. 다시 입력해주세요.',
-            style: const TextStyle(fontSize: 16.0, color: MyColors.text4),
-            textAlign: TextAlign.center,
-          ),
-          duration: const Duration(seconds: 2),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          backgroundColor: MyColors.background5,
-        ),
-      );
+      MyFN.showSnackBar(message: '비밀번호가 일치하지 않습니다.\n다시 입력해주세요.');
     }
   }
 
@@ -111,7 +100,7 @@ class _PageSetPasswordState extends State<PageSetPassword> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(_passwordLength, (index) {
-                  bool isFilled = _isConfirming ? index < _confirmPassword.length : index < _password.length;
+                  bool isFilled = _isConfirming ? index < _confirmPassword.length : index < _inputPassword.length;
 
                   return Container(
                     margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -128,79 +117,61 @@ class _PageSetPasswordState extends State<PageSetPassword> {
               Column(
                 children: [
                   // 1-3
-                  Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [_digitButton('1'), _digitButton('2'), _digitButton('3')]),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      NumpadDigitButton('1', onTap: () => _onDigitPadPressed('1')),
+                      NumpadDigitButton('2', onTap: () => _onDigitPadPressed('2')),
+                      NumpadDigitButton('3', onTap: () => _onDigitPadPressed('3')),
+                    ],
+                  ),
                   const SizedBox(height: 16),
                   // 4-6
-                  Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [_digitButton('4'), _digitButton('5'), _digitButton('6')]),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      NumpadDigitButton('4', onTap: () => _onDigitPadPressed('4')),
+                      NumpadDigitButton('5', onTap: () => _onDigitPadPressed('5')),
+                      NumpadDigitButton('6', onTap: () => _onDigitPadPressed('6')),
+                    ],
+                  ),
                   const SizedBox(height: 16),
                   // 7-9
-                  Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [_digitButton('7'), _digitButton('8'), _digitButton('9')]),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      NumpadDigitButton('7', onTap: () => _onDigitPadPressed('7')),
+                      NumpadDigitButton('8', onTap: () => _onDigitPadPressed('8')),
+                      NumpadDigitButton('9', onTap: () => _onDigitPadPressed('9')),
+                    ],
+                  ),
                   const SizedBox(height: 16),
                   // 0, 삭제
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       const SizedBox(width: 80), // 빈 공간
-                      _digitButton('0'),
-                      _deleteButton(),
+                      NumpadDigitButton('0', onTap: () => _onDigitPadPressed('0')),
+                      NumpadDeleteButton(
+                        onTap: () => _onDigitPadPressed('-'),
+                        onLongPress: () => {
+                          setState(() {
+                            if (_isConfirming) {
+                              _confirmPassword = '';
+                            } else {
+                              _inputPassword = '';
+                            }
+                          }),
+                        },
+                      ),
                     ],
                   ),
                 ],
               ),
-
               const SizedBox(height: 40),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  // --------------------------------------------------
-  // 숫자 패드 버튼
-  // --------------------------------------------------
-  Widget _digitButton(String number) {
-    return GestureDetector(
-      onTap: () => _onDigitPadPressed(number),
-      child: Container(
-        width: 80,
-        height: 80,
-        decoration: BoxDecoration(
-          color: MyColors.background1,
-          borderRadius: BorderRadius.circular(40),
-          boxShadow: [BoxShadow(color: MyColors.shadow2, blurRadius: 8, offset: const Offset(0, 2))],
-        ),
-        child: Center(
-          child: MyText(number, style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600)),
-        ),
-      ),
-    );
-  }
-
-  // --------------------------------------------------
-  // 삭제 버튼
-  // --------------------------------------------------
-  Widget _deleteButton() {
-    return GestureDetector(
-      onTap: () => _onDigitPadPressed('-'),
-      onLongPress: () {
-        setState(() {
-          if (_isConfirming) {
-            _confirmPassword = '';
-          } else {
-            _password = '';
-          }
-        });
-      },
-      child: Container(
-        width: 80,
-        height: 80,
-        decoration: BoxDecoration(
-          color: MyColors.background1,
-          borderRadius: BorderRadius.circular(40),
-          boxShadow: [BoxShadow(color: MyColors.shadow2, blurRadius: 8, offset: const Offset(0, 2))],
-        ),
-        child: const Center(child: Icon(Icons.backspace_outlined, size: 32, color: Colors.grey)),
       ),
     );
   }

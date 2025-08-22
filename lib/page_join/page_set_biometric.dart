@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pingk/common/biometric_auth.dart';
 import 'package:pingk/common/my_colors.dart';
-import 'package:pingk/common/my_text.dart';
+import 'package:pingk/common/my_widget.dart';
 
 class PageSetBiometric extends StatefulWidget {
   const PageSetBiometric({super.key});
@@ -48,7 +48,7 @@ class _PageSetBiometricState extends State<PageSetBiometric> {
                   child: ElevatedButton(
                     onPressed: () {
                       BiometricAuth.instance.disableBiometric();
-                      Navigator.pushReplacementNamed(context, '/main');
+                      Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.transparent,
@@ -68,7 +68,7 @@ class _PageSetBiometricState extends State<PageSetBiometric> {
                     onPressed: () async {
                       final value = await BiometricAuth.instance.enableBiometric();
                       if (value && context.mounted) {
-                        Navigator.pushReplacementNamed(context, '/main');
+                        Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);
                       }
                     },
                     style: ElevatedButton.styleFrom(

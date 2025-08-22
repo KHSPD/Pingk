@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pingk/common/constants.dart';
-import 'package:pingk/common/my_text.dart';
+import 'package:pingk/common/my_widget.dart';
 import 'package:pingk/page_auction/page_auction.dart';
 import 'package:pingk/common/change_notifiers.dart';
 import 'package:pingk/page_general/page_limited_deal.dart';
@@ -10,9 +10,6 @@ import 'package:provider/provider.dart';
 import '../common/my_colors.dart';
 import '../page_home/page_home.dart';
 
-// ====================================================================================================
-// Main - StatefulWidget
-// ====================================================================================================
 class PageMain extends StatefulWidget {
   const PageMain({super.key});
 
@@ -20,9 +17,6 @@ class PageMain extends StatefulWidget {
   State<PageMain> createState() => _PageMainState();
 }
 
-// ====================================================================================================
-// Main - State
-// ====================================================================================================
 class _PageMainState extends State<PageMain> {
   Widget _pageStack() {
     return Selector<MyChangeNotifier, MainMenu>(
