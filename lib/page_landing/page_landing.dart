@@ -22,7 +22,7 @@ class _PageLandingState extends State<PageLanding> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 1), () {
-      checkNextStep();
+      checkNextPage();
     });
   }
 
@@ -42,9 +42,9 @@ class _PageLandingState extends State<PageLanding> {
   }
 
   // --------------------------------------------------
-  // 다음 단계 확인
+  // 다음 페이지 확인
   // --------------------------------------------------
-  void checkNextStep() async {
+  void checkNextPage() async {
     final Map<String, String> loginInfo = await SecureStorage.instance.loadLoginInfo();
     final password = loginInfo['password'] ?? '';
     if (password.isEmpty) {
@@ -54,10 +54,11 @@ class _PageLandingState extends State<PageLanding> {
       });
     } else {
       // ----- 저장된 비밀번호가 있는 경우 -----
-      final isBiometricAvailable = await BiometricAuth.instance.isBiometricAvailable();
-      final biometricStatus = await SecureStorage.instance.loadBiometricStatus();
-      if (isBiometricAvailable && biometricStatus == statusEnabled) {
-        final bool isAuthenticated = await BiometricAuth.instance.authenticate();
+      BioAuth biometricAuth = BioAuth.instance;
+      final isBiometricAvailable = await biometricAuth.isBioAvailable();
+      final biometricStatus = await biometricAuth.loadUseBioAuth();
+      if (isBiometricAvailable && biometricStatus == BioAuth.statusEnabled) {
+        final bool isAuthenticated = await biometricAuth.runBioAuth();
         if (isAuthenticated) {
           goMainPage();
         } else {
@@ -93,7 +94,7 @@ class _PageLandingState extends State<PageLanding> {
             GestureDetector(
               onTap: () {
                 SecureStorage.instance.saveLoginInfo(id: '', password: '');
-                SecureStorage.instance.saveBiometricStatus(statusNotSet);
+                BioAuth.instance.saveUseBioAuth(BioAuth.statusNotSet);
               },
               child: SizedBox(width: 316, height: 467, child: Image.asset('assets/landing_img.png', fit: BoxFit.contain)),
             ),

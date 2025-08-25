@@ -5,8 +5,3 @@ final GlobalKey<ScaffoldMessengerState> snackbarKey = GlobalKey<ScaffoldMessenge
 
 // ----- 메인 메뉴 -----
 enum MainMenu { home, favorite, pingkAuction, limitedDeal }
-
-// ----- 바이오인증 상태 -----
-const String statusEnabled = 'enabled';
-const String statusDisabled = 'disabled';
-const String statusNotSet = 'notSet';

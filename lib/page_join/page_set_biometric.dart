@@ -47,7 +47,7 @@ class _PageSetBiometricState extends State<PageSetBiometric> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      BiometricAuth.instance.disableBiometric();
+                      BioAuth.instance.disableBioAuth();
                       Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);
                     },
                     style: ElevatedButton.styleFrom(
@@ -66,7 +66,7 @@ class _PageSetBiometricState extends State<PageSetBiometric> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () async {
-                      final value = await BiometricAuth.instance.enableBiometric();
+                      final value = await BioAuth.instance.enableBioAuth();
                       if (value && context.mounted) {
                         Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);
                       }

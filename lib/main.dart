@@ -12,8 +12,9 @@ import 'page_main/page_main.dart';
 import 'page_auction/page_auction_detail.dart';
 import 'common/_temp_items.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   // ----- 임시 데이터 처리 -----
   TempItems();
   //
