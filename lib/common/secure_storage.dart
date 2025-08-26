@@ -3,45 +3,40 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class SecureStorage {
   SecureStorage._privateConstructor();
   static final SecureStorage _instance = SecureStorage._privateConstructor();
-  static SecureStorage get instance => _instance;
+  factory SecureStorage() => _instance;
   //
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
+  final String _keyPassword = 'password';
 
   // --------------------------------------------------
-  // 로그인 정보 관련
+  // 비밀번호 Save / Load / Delete
   // --------------------------------------------------
-  // ----- 로그인 정보 Save -----
-  Future<void> saveLoginInfo({String? id, String? password}) async {
+  Future<bool> savePassword({required String password}) async {
     try {
-      if (id != null) {
-        await _storage.write(key: 'id', value: id);
-      }
-      if (password != null) {
-        await _storage.write(key: 'password', value: password);
-      }
+      await _storage.write(key: _keyPassword, value: password);
+      return true;
     } catch (_) {
-      rethrow;
+      return false;
     }
   }
 
-  // ----- 로그인 정보 Load -----
-  Future<Map<String, String>> loadLoginInfo() async {
+  // ----- 비밀번호 Load -----
+  Future<String> loadPassword() async {
     try {
-      String? id = await _storage.read(key: 'id');
-      String? password = await _storage.read(key: 'password');
-      return {'id': id ?? '', 'password': password ?? ''};
+      String? password = await _storage.read(key: _keyPassword);
+      return password ?? '';
     } catch (_) {
-      rethrow;
+      return '';
     }
   }
 
-  // ----- 로그인 정보 Delete -----
-  Future<void> deleteLoginInfo() async {
+  // ----- 비밀번호 Delete -----
+  Future<bool> deletePassword() async {
     try {
-      await _storage.delete(key: 'id');
-      await _storage.delete(key: 'password');
+      await _storage.delete(key: _keyPassword);
+      return true;
     } catch (_) {
-      rethrow;
+      return false;
     }
   }
 }

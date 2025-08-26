@@ -44,7 +44,7 @@ class MyFN {
   // --------------------------------------------------
   static void showSnackBar({
     required String message,
-    Duration duration = const Duration(seconds: 2),
+    Duration duration = const Duration(seconds: 3),
     Color? backgroundColor,
     Color? textColor,
     double? fontSize,

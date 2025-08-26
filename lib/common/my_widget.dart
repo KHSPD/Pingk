@@ -112,3 +112,38 @@ class BottomLongButton extends StatelessWidget {
     );
   }
 }
+
+// --------------------------------------------------
+// 로딩 화면
+// --------------------------------------------------
+class Loading {
+  static final Loading _instance = Loading._privateConstructor();
+  factory Loading() => _instance;
+  Loading._privateConstructor();
+
+  OverlayEntry? _overlayEntry;
+  bool _isShowing = false;
+
+  // ----- 로딩 화면 표시 -----
+  void show(BuildContext context) {
+    if (_isShowing) return;
+    _overlayEntry = OverlayEntry(
+      builder: (context) => Container(
+        color: Colors.black.withValues(alpha: 0.4),
+        child: const Center(
+          child: SizedBox(width: 60.0, height: 60.0, child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(MyColors.primary))),
+        ),
+      ),
+    );
+    Overlay.of(context).insert(_overlayEntry!);
+    _isShowing = true;
+  }
+
+  // ----- 로딩 화면 숨기기 -----
+  void hide() {
+    if (!_isShowing) return;
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+    _isShowing = false;
+  }
+}

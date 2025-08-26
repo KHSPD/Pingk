@@ -3,7 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class JwtTokenController {
   static final JwtTokenController _instance = JwtTokenController._privateConstructor();
-  static JwtTokenController get instance => _instance;
+  factory JwtTokenController() => _instance;
   JwtTokenController._privateConstructor();
 
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
@@ -15,24 +15,32 @@ class JwtTokenController {
   // --------------------------------------------------
   // 엑세스 토큰 반환
   // --------------------------------------------------
-  Future<String?> getAccessToken() async {
+  Future<String> loadAccessToken() async {
     try {
-      return await _secureStorage.read(key: _keyAccessToken);
+      String? token = await _secureStorage.read(key: _keyAccessToken);
+      if (token == null || token.isEmpty) {
+        return '';
+      }
+      return token;
     } catch (e) {
       debugPrint('엑세스 토큰 조회 실패: $e');
-      return null;
+      return '';
     }
   }
 
   // --------------------------------------------------
   // 리프레시 토큰 반환
   // --------------------------------------------------
-  Future<String?> getRefreshToken() async {
+  Future<String> loadRefreshToken() async {
     try {
-      return await _secureStorage.read(key: _keyRefreshToken);
+      String? token = await _secureStorage.read(key: _keyRefreshToken);
+      if (token == null || token.isEmpty) {
+        return '';
+      }
+      return token;
     } catch (e) {
       debugPrint('리프레시 토큰 조회 실패: $e');
-      return null;
+      return '';
     }
   }
 
@@ -56,35 +64,6 @@ class JwtTokenController {
       return true;
     } catch (e) {
       debugPrint('엑세스 토큰 저장 실패: $e');
-      return false;
-    }
-  }
-
-  // --------------------------------------------------
-  // 리프레시 토큰으로 엑세스 토큰 갱신
-  // --------------------------------------------------
-  Future<bool> _refreshAccessToken() async {
-    try {
-      final refreshToken = await getRefreshToken();
-      if (refreshToken == null) return false;
-
-      // TODO: 실제 API 호출로 리프레시 토큰을 사용하여 새 엑세스 토큰 요청
-      // 예시 코드:
-      // final response = await http.post(
-      //   Uri.parse('your_refresh_endpoint'),
-      //   headers: {'Authorization': 'Bearer $refreshToken'},
-      // );
-      //
-      // if (response.statusCode == 200) {
-      //   final newAccessToken = jsonDecode(response.body)['access_token'];
-      //   await saveAccessToken(newAccessToken);
-      //   return true;
-      // }
-
-      // 임시로 false 반환 (실제 구현 시 위 주석 코드 사용)
-      return false;
-    } catch (e) {
-      debugPrint('엑세스 토큰 갱신 실패: $e');
       return false;
     }
   }

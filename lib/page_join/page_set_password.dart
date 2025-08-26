@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:pingk/common/constants.dart';
+import 'package:pingk/common/jwt_token_controller.dart';
 import 'package:pingk/common/my_colors.dart';
 import 'package:pingk/common/my_widget.dart';
-import 'package:pingk/common/secure_storage.dart';
 import 'package:pingk/common/my_functions.dart';
 
 class PageSetPassword extends StatefulWidget {
@@ -49,7 +50,7 @@ class _PageSetPasswordState extends State<PageSetPassword> {
   void _checkPassword() {
     if (_inputPassword == _confirmPassword) {
       // 비밀번호 일치
-      SecureStorage.instance.saveLoginInfo(password: _inputPassword);
+      JwtTokenController().saveTokens(accessToken: tempAccessToken, refreshToken: tempRefreshToken);
       Navigator.pushReplacementNamed(context, '/set-biometric');
     } else {
       // 비밀번호 불일치

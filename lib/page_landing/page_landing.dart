@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:pingk/common/constants.dart';
+import 'package:pingk/common/jwt_token_controller.dart';
 import 'package:pingk/common/my_colors.dart';
 import 'package:pingk/common/my_widget.dart';
-import 'package:pingk/common/secure_storage.dart';
 import 'package:pingk/common/biometric_auth.dart';
+import 'package:pingk/common/secure_storage.dart';
 
 class PageLanding extends StatefulWidget {
   const PageLanding({super.key});
@@ -22,52 +22,34 @@ class _PageLandingState extends State<PageLanding> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 1), () {
-      checkNextPage();
+      _checkRefreshTokenAndPasswordExist();
     });
+  }
+
+  // --------------------------------------------------
+  // 저장된 Refresh Token & 비밀번호 존재 여부 확인
+  // --------------------------------------------------
+  void _checkRefreshTokenAndPasswordExist() async {
+    final refreshToken = await JwtTokenController().loadRefreshToken();
+    final password = await SecureStorage().loadPassword();
+    if (refreshToken.isNotEmpty && password.isNotEmpty) {
+      _goLoginPage();
+    } else {
+      setState(() {
+        _showJoinButton = true;
+      });
+    }
   }
 
   // --------------------------------------------------
   // 페이지 이동
   // --------------------------------------------------
-  void goJoinPage() {
+  void _goJoinPage() {
     Navigator.pushNamedAndRemoveUntil(context, '/join', (route) => false);
   }
 
-  void goMainPage() {
-    Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);
-  }
-
-  void goLoginPage() {
+  void _goLoginPage() {
     Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
-  }
-
-  // --------------------------------------------------
-  // 다음 페이지 확인
-  // --------------------------------------------------
-  void checkNextPage() async {
-    final Map<String, String> loginInfo = await SecureStorage.instance.loadLoginInfo();
-    final password = loginInfo['password'] ?? '';
-    if (password.isEmpty) {
-      // ----- 저장된 비밀번호가 없는 경우 -----
-      setState(() {
-        _showJoinButton = true;
-      });
-    } else {
-      // ----- 저장된 비밀번호가 있는 경우 -----
-      BioAuth biometricAuth = BioAuth.instance;
-      final isBiometricAvailable = await biometricAuth.isBioAvailable();
-      final biometricStatus = await biometricAuth.loadUseBioAuth();
-      if (isBiometricAvailable && biometricStatus == BioAuth.statusEnabled) {
-        final bool isAuthenticated = await biometricAuth.runBioAuth();
-        if (isAuthenticated) {
-          goMainPage();
-        } else {
-          goLoginPage();
-        }
-      } else {
-        goLoginPage();
-      }
-    }
   }
 
   // --------------------------------------------------
@@ -93,15 +75,15 @@ class _PageLandingState extends State<PageLanding> {
             // ----- 중간 이미지 -----
             GestureDetector(
               onTap: () {
-                SecureStorage.instance.saveLoginInfo(id: '', password: '');
-                BioAuth.instance.saveUseBioAuth(BioAuth.statusNotSet);
+                JwtTokenController().saveTokens(accessToken: '', refreshToken: '');
+                BioAuth().saveUseBioAuth(BioAuth.statusNotSet);
               },
               child: SizedBox(width: 316, height: 467, child: Image.asset('assets/landing_img.png', fit: BoxFit.contain)),
             ),
             const Spacer(flex: 4),
 
             // -----혜택받기(회원가입) 버튼 -----
-            if (_showJoinButton) BottomLongButton('혜택받기', () => goJoinPage()),
+            if (_showJoinButton) BottomLongButton('혜택받기', () => _goJoinPage()),
           ],
         ),
       ),

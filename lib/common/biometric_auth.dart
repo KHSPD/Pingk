@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class BioAuth {
   static final BioAuth _instance = BioAuth._privateConstructor();
-  static BioAuth get instance => _instance;
+  factory BioAuth() => _instance;
   BioAuth._privateConstructor();
   //
   static const String statusEnabled = 'enabled';
