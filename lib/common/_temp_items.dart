@@ -1,3 +1,4 @@
+import 'package:pingk/common/constants.dart';
 import 'package:pingk/common/item_info.dart';
 import 'dart:math';
 
@@ -42,7 +43,7 @@ class TempItems {
       name: '아이스아메리카노 Tall',
       lastPrice: 1350,
       endTime: DateTime.now().add(const Duration(days: 1)),
-      thumbnail: 'https://image.istarbucks.co.kr/upload/store/skuimg/2025/06/[106509]_20250626092521572.jpg',
+      thumbnail: '$imageServerURL/test.jpg',
       isWished: false,
     ),
     AuctionItem(

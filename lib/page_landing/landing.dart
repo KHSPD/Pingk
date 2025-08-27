@@ -5,14 +5,14 @@ import 'package:pingk/common/my_widget.dart';
 import 'package:pingk/common/biometric_auth.dart';
 import 'package:pingk/common/secure_storage.dart';
 
-class PageLanding extends StatefulWidget {
-  const PageLanding({super.key});
+class Landing extends StatefulWidget {
+  const Landing({super.key});
 
   @override
-  State<PageLanding> createState() => _PageLandingState();
+  State<Landing> createState() => _LandingState();
 }
 
-class _PageLandingState extends State<PageLanding> {
+class _LandingState extends State<Landing> {
   bool _showJoinButton = false;
 
   // --------------------------------------------------
@@ -33,7 +33,7 @@ class _PageLandingState extends State<PageLanding> {
     final refreshToken = await JwtTokenController().loadRefreshToken();
     final password = await SecureStorage().loadPassword();
     if (refreshToken.isNotEmpty && password.isNotEmpty) {
-      _goLoginPage();
+      _navigateToSignInPage();
     } else {
       setState(() {
         _showJoinButton = true;
@@ -44,12 +44,12 @@ class _PageLandingState extends State<PageLanding> {
   // --------------------------------------------------
   // 페이지 이동
   // --------------------------------------------------
-  void _goJoinPage() {
-    Navigator.pushNamedAndRemoveUntil(context, '/join', (route) => false);
+  void _navigateToSignUpPage() {
+    Navigator.pushNamedAndRemoveUntil(context, '/sign_up', (route) => false);
   }
 
-  void _goLoginPage() {
-    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+  void _navigateToSignInPage() {
+    Navigator.pushNamedAndRemoveUntil(context, '/sign_in', (route) => false);
   }
 
   // --------------------------------------------------
@@ -64,11 +64,12 @@ class _PageLandingState extends State<PageLanding> {
         child: Column(
           children: [
             const Spacer(flex: 2),
+
             // ----- 상단 텍스트 -----
-            const MyText(
+            const Text(
               '이제 쿠폰도 경매로!\n더 알뜰하게 득템해보세요!',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700, color: MyColors.text1, height: 1.2),
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700, color: MyColors.text1, height: 1.2, decoration: TextDecoration.none),
             ),
             const Spacer(flex: 2),
 
@@ -83,7 +84,7 @@ class _PageLandingState extends State<PageLanding> {
             const Spacer(flex: 4),
 
             // -----혜택받기(회원가입) 버튼 -----
-            if (_showJoinButton) BottomLongButton('혜택받기', () => _goJoinPage()),
+            if (_showJoinButton) BottomLongButton('혜택받기', () => _navigateToSignUpPage()),
           ],
         ),
       ),

@@ -1,18 +1,26 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:pingk/common/constants.dart';
-import 'package:pingk/common/jwt_token_controller.dart';
 import 'package:pingk/common/my_colors.dart';
 import 'package:pingk/common/my_widget.dart';
 import 'package:pingk/common/my_functions.dart';
+import 'package:pingk/common/secure_storage.dart';
+import 'package:pingk/page_sign_up/sign_up.dart';
+import 'package:pingk/page_sign_up/set_bio_auth.dart';
 
-class PageSetPassword extends StatefulWidget {
-  const PageSetPassword({super.key});
-
+// ====================================================================================================
+// 간편 비밀번호 설정 페이지
+// ====================================================================================================
+class SetPassword extends StatefulWidget {
+  final SignUpData signUpData;
+  const SetPassword(this.signUpData, {super.key});
   @override
-  State<PageSetPassword> createState() => _PageSetPasswordState();
+  State<SetPassword> createState() => _SetPasswordState();
 }
 
-class _PageSetPasswordState extends State<PageSetPassword> {
+class _SetPasswordState extends State<SetPassword> {
   final int _passwordLength = 6;
   String _inputPassword = '';
   String _confirmPassword = '';
@@ -50,8 +58,8 @@ class _PageSetPasswordState extends State<PageSetPassword> {
   void _checkPassword() {
     if (_inputPassword == _confirmPassword) {
       // 비밀번호 일치
-      JwtTokenController().saveTokens(accessToken: tempAccessToken, refreshToken: tempRefreshToken);
-      Navigator.pushReplacementNamed(context, '/set-biometric');
+      widget.signUpData.password = _inputPassword;
+      _callSignUpApi();
     } else {
       // 비밀번호 불일치
       setState(() {
@@ -61,6 +69,47 @@ class _PageSetPasswordState extends State<PageSetPassword> {
       });
       MyFN.showSnackBar(message: '비밀번호가 일치하지 않습니다.\n다시 입력해주세요.');
     }
+  }
+
+  // --------------------------------------------------
+  // API - 회원 가입
+  // --------------------------------------------------
+  Future<void> _callSignUpApi() async {
+    Loading().show(context);
+    try {
+      final response = await http
+          .post(
+            Uri.parse('$appServerURL/api/auth/signup'),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              'phoneNumber': widget.signUpData.phoneNumber,
+              'password': widget.signUpData.password,
+              'name': widget.signUpData.name,
+              'registerType': widget.signUpData.carrier,
+            }),
+          )
+          .timeout(const Duration(seconds: apiTimeout));
+
+      if (response.statusCode == 200) {
+        // TODO: 응답 코드에 따른 처리 필요
+        await SecureStorage().savePassword(password: widget.signUpData.password);
+        _navigateToBioAuthPage();
+      } else {
+        MyFN.showSnackBar(message: messageError);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+      MyFN.showSnackBar(message: messageError);
+    } finally {
+      Loading().hide();
+    }
+  }
+
+  // --------------------------------------------------
+  // 바이오인증 페이지로 이동
+  // --------------------------------------------------
+  void _navigateToBioAuthPage() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => SetBioAuth(widget.signUpData)));
   }
 
   // --------------------------------------------------
@@ -78,7 +127,7 @@ class _PageSetPasswordState extends State<PageSetPassword> {
               const SizedBox(height: 60),
 
               // 제목
-              MyText(
+              Text(
                 _isConfirming ? '비밀번호 확인' : '비밀번호 설정',
                 style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.w700),
                 textAlign: TextAlign.center,
@@ -88,7 +137,7 @@ class _PageSetPasswordState extends State<PageSetPassword> {
               Container(
                 height: 70,
                 padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-                child: MyText(
+                child: Text(
                   _isConfirming ? '비밀번호를 한번 더 입력해주세요' : '앱 실행시 사용할 6자리 비밀번호를 입력해주세요.',
                   style: const TextStyle(fontSize: 16.0, color: MyColors.text2),
                   textAlign: TextAlign.center,

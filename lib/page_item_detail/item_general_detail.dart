@@ -97,7 +97,7 @@ class _PageGeneralDetailState extends State<PageGeneralDetail> {
                     Positioned(
                       top: 0,
                       left: 0,
-                      child: MyText(
+                      child: Text(
                         _itemData!.brand,
                         style: const TextStyle(fontSize: 13, color: MyColors.text1, fontWeight: FontWeight.w300),
                       ),
@@ -107,7 +107,7 @@ class _PageGeneralDetailState extends State<PageGeneralDetail> {
                     Positioned(
                       top: 20,
                       left: 0,
-                      child: MyText(
+                      child: Text(
                         _itemData!.name,
                         style: const TextStyle(fontSize: 24, color: MyColors.text1, fontWeight: FontWeight.w600),
                         textAlign: TextAlign.left,
@@ -139,7 +139,7 @@ class _PageGeneralDetailState extends State<PageGeneralDetail> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(bottom: 3),
-                            child: MyText(
+                            child: Text(
                               '${MyFN.formatNumberWithComma(_itemData!.originalPrice)}원',
                               style: const TextStyle(
                                 fontSize: 16,
@@ -151,14 +151,14 @@ class _PageGeneralDetailState extends State<PageGeneralDetail> {
                             ),
                           ),
                           const SizedBox(width: 10),
-                          MyText(
+                          Text(
                             MyFN.formatNumberWithComma(_itemData!.price),
                             style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w800, color: MyColors.text1),
                           ),
                           const SizedBox(width: 2),
                           Padding(
                             padding: const EdgeInsets.only(bottom: 3),
-                            child: const MyText(
+                            child: const Text(
                               '원',
                               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300, color: MyColors.text1),
                             ),
@@ -182,52 +182,52 @@ class _PageGeneralDetailState extends State<PageGeneralDetail> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: 40),
-                    MyText(
+                    Text(
                       '확인해주세요!',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: MyColors.text1),
                     ),
                     SizedBox(height: 10),
-                    MyText(
+                    Text(
                       '- 1일 1회 참여가능합니다.\n- 경매는 48시간 진행됩니다.\n- 쿠폰 금액에 따라 10원 단위 또는 100원 단위로\n   경매참여가 가능합니다.',
                       style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300, color: MyColors.text2),
                     ),
                     Divider(color: MyColors.text2, thickness: 0.5, height: 50),
-                    MyText(
+                    Text(
                       '상세정보',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: MyColors.text1),
                     ),
                     SizedBox(height: 10),
-                    MyText(
+                    Text(
                       '- 상품 소진 시 이벤트 기관에 상관없이 조기 종료 될 수 있습니다.\n- 핫딜 상품은 1인 1개 구매가능하며, 기간 연장이 불가합니다.',
                       style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300, color: MyColors.text2),
                     ),
                     SizedBox(height: 30),
-                    MyText(
+                    Text(
                       '사용장소',
                       style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: MyColors.text2),
                     ),
                     SizedBox(height: 8),
-                    MyText(
+                    Text(
                       '사용가능매장 : BHC 전매장\n사용불가매장 : 제주지역, 공항, 리조트, 휴게소, 군부대 등 특화 매장',
                       style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300, color: MyColors.text2),
                     ),
                     SizedBox(height: 30),
-                    MyText(
+                    Text(
                       '상품 주문시 유의사항',
                       style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: MyColors.text2),
                     ),
                     SizedBox(height: 8),
-                    MyText(
+                    Text(
                       '개인용도, 재판매, 현금유통, 재산상이득 행위(카드깡 등)의 주문 이력이 확인 될 경우 주문취소 및 서비스 이용이 제한 됩니다. 발송 실패 된 주문은 주문자에게 환불(캐쉬환불 또는 결제취소)처리 되며 유효기간 이내에 주문정보 수정 후 재발송 가능합니다. 빠른 환불 문의는 1:1문의 접수 바랍니다.',
                       style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300, color: MyColors.text2),
                     ),
                     SizedBox(height: 30),
-                    MyText(
+                    Text(
                       '이용안내',
                       style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: MyColors.text2),
                     ),
                     SizedBox(height: 8),
-                    MyText(
+                    Text(
                       '1.BHC 홈페이지 접속   >    2. 온라인 주문 클릭   >    3. 배달지 등록 및 배달지 선택 >    4.모바일쿠폰 주문클릭 후 번호 입력    >    5.결제하기',
                       style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300, color: MyColors.text2),
                     ),

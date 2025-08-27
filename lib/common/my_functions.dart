@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pingk/common/constants.dart';
-import 'package:pingk/common/my_widget.dart';
 import 'my_colors.dart';
 
 // ====================================================================================================
@@ -53,7 +52,7 @@ class MyFN {
   }) {
     snackbarKey.currentState?.showSnackBar(
       SnackBar(
-        content: MyText(
+        content: Text(
           message,
           style: TextStyle(fontSize: fontSize ?? 16.0, color: textColor ?? MyColors.text4),
           textAlign: TextAlign.center,

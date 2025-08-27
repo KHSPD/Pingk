@@ -3,12 +3,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:pingk/common/my_functions.dart';
 import 'package:pingk/common/item_info.dart';
 import 'package:pingk/common/_temp_items.dart';
-import 'package:pingk/common/my_widget.dart';
-import '../common/my_colors.dart';
+import '../../common/my_colors.dart';
 
-// ====================================================================================================
-// 홈 - 경매 상품 목록
-// ====================================================================================================
 class HomeAuctionItems extends StatefulWidget {
   const HomeAuctionItems({super.key});
 
@@ -154,7 +150,7 @@ class _HomeAuctionItemsState extends State<HomeAuctionItems> {
               top: 70,
               left: 24,
               right: 24,
-              child: MyText(
+              child: Text(
                 item.name,
                 style: const TextStyle(fontSize: 30, color: MyColors.text1, fontWeight: FontWeight.w600),
                 overflow: TextOverflow.ellipsis,
@@ -167,7 +163,7 @@ class _HomeAuctionItemsState extends State<HomeAuctionItems> {
               top: 112,
               left: 24,
               right: 24,
-              child: MyText(
+              child: Text(
                 item.brand,
                 style: const TextStyle(fontSize: 16, color: MyColors.text1, fontWeight: FontWeight.w300),
               ),
@@ -177,7 +173,7 @@ class _HomeAuctionItemsState extends State<HomeAuctionItems> {
             Positioned(
               top: 196,
               left: 24,
-              child: MyText(
+              child: Text(
                 'Last Price',
                 style: const TextStyle(fontSize: 16, color: MyColors.text2, fontWeight: FontWeight.w300),
               ),
@@ -190,14 +186,14 @@ class _HomeAuctionItemsState extends State<HomeAuctionItems> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  MyText(
+                  Text(
                     MyFN.formatNumberWithComma(item.lastPrice),
                     style: const TextStyle(fontSize: 40, fontWeight: FontWeight.w700, color: MyColors.text1),
                   ),
                   const SizedBox(width: 4),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 8),
-                    child: const MyText(
+                    child: const Text(
                       '원',
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300, color: MyColors.text1),
                     ),
@@ -251,7 +247,7 @@ class _HomeAuctionItemsState extends State<HomeAuctionItems> {
                       final hours = value.inHours.toString().padLeft(2, '0');
                       final minutes = (value.inMinutes % 60).toString().padLeft(2, '0');
                       final seconds = (value.inSeconds % 60).toString().padLeft(2, '0');
-                      return MyText(
+                      return Text(
                         '$hours:$minutes:$seconds',
                         style: const TextStyle(color: MyColors.text4, fontWeight: FontWeight.w600, fontSize: 40),
                         textAlign: TextAlign.center,

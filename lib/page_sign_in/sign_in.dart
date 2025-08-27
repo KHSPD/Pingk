@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:pingk/common/biometric_auth.dart';
 import 'package:pingk/common/constants.dart';
@@ -11,14 +10,17 @@ import 'package:pingk/common/my_widget.dart';
 import 'package:http/http.dart' as http;
 import 'package:pingk/common/secure_storage.dart';
 
-class PageLogin extends StatefulWidget {
-  const PageLogin({super.key});
-
+// ====================================================================================================
+// 로그인 페이지
+// ====================================================================================================
+class SignIn extends StatefulWidget {
+  final String? phoneNumber;
+  const SignIn({this.phoneNumber, super.key});
   @override
-  State<PageLogin> createState() => _PageLoginState();
+  State<SignIn> createState() => _SignInState();
 }
 
-class _PageLoginState extends State<PageLogin> {
+class _SignInState extends State<SignIn> {
   bool _showPasswordInputUI = false;
   final int _passwordLength = 6;
   String _userPassword = '';
@@ -30,30 +32,27 @@ class _PageLoginState extends State<PageLogin> {
   @override
   void initState() {
     super.initState();
-    _loadUserPassword();
-    _checkBioAuthAvailable();
+    _checkProcess();
   }
 
   // --------------------------------------------------
-  // 페이지 이동
+  // 비밀번호, 바이오인증, JWT 토큰 확인해서 프로세스 진행
   // --------------------------------------------------
-  void _goMainPage() {
-    Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);
-  }
+  void _checkProcess() async {
+    _userPassword = await SecureStorage().loadPassword();
+    final isBioAuthAvailable = await BioAuth().isBioAuthAvailable();
+    final refreshToken = await JwtTokenController().loadRefreshToken();
 
-  // --------------------------------------------------
-  // 저장된 비밀번호 Load
-  // --------------------------------------------------
-  Future<void> _loadUserPassword() async {
-    final password = await SecureStorage().loadPassword();
-    _userPassword = password;
+    if (refreshToken.isEmpty && _userPassword.isNotEmpty && !isBioAuthAvailable) {
+      // 비밀번호 직접 입력
+    }
   }
 
   // --------------------------------------------------
   // 바이오 인증 실행 여부 판단
   // --------------------------------------------------
   void _checkBioAuthAvailable() async {
-    final isBiometricAvailable = await BioAuth().isBioAvailable();
+    final isBiometricAvailable = await BioAuth().isBioAuthAvailable();
     final biometricStatus = await BioAuth().loadUseBioAuth();
     if (isBiometricAvailable && biometricStatus == BioAuth.statusEnabled) {
       final bool isAuthenticated = await BioAuth().runBioAuth();
@@ -118,26 +117,29 @@ class _PageLoginState extends State<PageLogin> {
       final refreshToken = await JwtTokenController().loadRefreshToken();
       if (refreshToken.isEmpty) {
         // 토큰 없음 - 안내 후 회원 인증 페이지로 이동.
-        Loading().hide();
         return;
       }
       // 서버에 토큰 유효성 검증 요청
       final response = await http
-          .post(Uri.parse('$appServerURL/api/auth/login'), headers: {'Content-Type': 'application/json'}, body: jsonEncode({'phoneNumber': '01012345678', 'password': '123456'}))
+          .post(Uri.parse('$appServerURL/api/auth/login'), headers: {'Content-Type': 'application/json'}, body: jsonEncode({'phoneNumber': '01089283972', 'password': '123456'}))
           .timeout(const Duration(seconds: apiTimeout));
 
-      debugPrint('response: ${response.statusCode}');
-      debugPrint('response: ${response.body}');
-
-      Loading().hide();
-
       if (response.statusCode == 200) {
-        _goMainPage();
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        final Map<String, String> result = jsonDecode(responseData['result']);
+        final String? accessToken = result['accessToken'];
+        final String? refreshToken = result['refreshToken'];
+        // JWT 토큰 저장
+        if (accessToken != null && accessToken.isNotEmpty && refreshToken != null && refreshToken.isNotEmpty) {
+          await JwtTokenController().saveTokens(accessToken: accessToken, refreshToken: refreshToken);
+        }
+        // 메인 페이지로 이동
+        _navigateMainPage();
       } else if (response.statusCode == 401) {
       } else {}
     } catch (e) {
       debugPrint(e.toString());
-      MyFN.showSnackBar(message: messageNetworkError);
+      MyFN.showSnackBar(message: messageError);
     } finally {
       Loading().hide();
     }
@@ -163,7 +165,7 @@ class _PageLoginState extends State<PageLogin> {
           const SizedBox(height: 60),
 
           // 제목
-          MyText(
+          Text(
             '바이오 인증',
             style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.w700),
             textAlign: TextAlign.center,
@@ -175,7 +177,7 @@ class _PageLoginState extends State<PageLogin> {
           Container(
             height: 70,
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-            child: MyText(
+            child: Text(
               '바이오 인증을 진행합니다.\n지문 또는 얼굴 인식으로 로그인해주세요.',
               style: const TextStyle(fontSize: 16.0, color: MyColors.text2),
               textAlign: TextAlign.center,
@@ -199,7 +201,7 @@ class _PageLoginState extends State<PageLogin> {
           const SizedBox(height: 60),
 
           // 제목
-          MyText(
+          Text(
             '비밀번호 입력',
             style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.w700),
             textAlign: TextAlign.center,
@@ -209,7 +211,7 @@ class _PageLoginState extends State<PageLogin> {
           Container(
             height: 70,
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-            child: MyText(
+            child: Text(
               '비밀번호 6자리를 입력해주세요.',
               style: const TextStyle(fontSize: 16.0, color: MyColors.text2),
               textAlign: TextAlign.center,
@@ -289,5 +291,12 @@ class _PageLoginState extends State<PageLogin> {
         ],
       ),
     );
+  }
+
+  // --------------------------------------------------
+  // 페이지 이동
+  // --------------------------------------------------
+  void _navigateMainPage() {
+    Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);
   }
 }

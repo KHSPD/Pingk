@@ -1,29 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:pingk/common/change_notifiers.dart';
-import 'package:pingk/common/constants.dart';
 import 'package:pingk/common/my_colors.dart';
 import 'package:pingk/common/my_functions.dart';
 import 'package:pingk/common/item_info.dart';
 import 'package:pingk/common/_temp_items.dart';
-import 'package:pingk/common/my_widget.dart';
+import 'package:pingk/page_main/main_page.dart';
 import 'package:provider/provider.dart';
 
-// ====================================================================================================
-// 홈 - 핫딜 상품 목록
-// ====================================================================================================
-class HomeHotDealItems extends StatefulWidget {
-  const HomeHotDealItems({super.key});
+class HomeLimitedDeal extends StatefulWidget {
+  const HomeLimitedDeal({super.key});
 
   @override
-  State<HomeHotDealItems> createState() => _HomeHotDealItemsState();
+  State<HomeLimitedDeal> createState() => _HomeLimitedDealState();
 }
 
-class _HomeHotDealItemsState extends State<HomeHotDealItems> {
+class _HomeLimitedDealState extends State<HomeLimitedDeal> {
   final List<GeneralItem> todaysHotDealDatas = TempItems.todaysHotDealDatas.sublist(0, 7);
   final List<GeneralItem> comingSoonHotDealDatas = TempItems.comingSoonHotDealDatas;
 
-  // ------------------------------------------- -------
+  // --------------------------------------------------
   // build
   // --------------------------------------------------
   @override
@@ -32,19 +27,19 @@ class _HomeHotDealItemsState extends State<HomeHotDealItems> {
       children: [
         SizedBox(height: 30),
         // ----- 타이틀 및 더보기 버튼 -----
-        Selector<MyChangeNotifier, MainMenu>(
-          selector: (context, notifier) => notifier.selectedMainMenu,
+        Selector<MainMenuData, MainMenu>(
+          selector: (context, notifier) => notifier.selectedMenu,
           builder: (context, selectedMainMenu, child) {
             return GestureDetector(
               onTap: () {
-                context.read<MyChangeNotifier>().setMainMenu(MainMenu.limitedDeal);
+                context.read<MainMenuData>().setSelectedMenu(MainMenu.limitedDeal);
               },
               child: Container(
                 margin: const EdgeInsets.fromLTRB(30, 20, 30, 0),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const MyText(
+                    const Text(
                       '오늘의 한정특가',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: MyColors.text1),
                     ),
@@ -71,19 +66,19 @@ class _HomeHotDealItemsState extends State<HomeHotDealItems> {
         ),
 
         // ----- 다가올 한정특가 타이틀 -----
-        Selector<MyChangeNotifier, MainMenu>(
-          selector: (context, notifier) => notifier.selectedMainMenu,
+        Selector<MainMenuData, MainMenu>(
+          selector: (context, notifier) => notifier.selectedMenu,
           builder: (context, selectedMainMenu, child) {
             return GestureDetector(
               onTap: () {
-                context.read<MyChangeNotifier>().setMainMenu(MainMenu.limitedDeal);
+                context.read<MainMenuData>().setSelectedMenu(MainMenu.limitedDeal);
               },
               child: Container(
                 margin: const EdgeInsets.fromLTRB(30, 40, 30, 20),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const MyText(
+                    const Text(
                       '다가올 한정특가',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: MyColors.text1),
                     ),
@@ -160,7 +155,7 @@ class _HomeHotDealItemsState extends State<HomeHotDealItems> {
             Positioned(
               top: 220,
               left: 16,
-              child: MyText(
+              child: Text(
                 item.brand,
                 style: const TextStyle(fontSize: 13, color: MyColors.text2, fontWeight: FontWeight.w600),
               ),
@@ -170,7 +165,7 @@ class _HomeHotDealItemsState extends State<HomeHotDealItems> {
             Positioned(
               top: 240,
               left: 16,
-              child: MyText(
+              child: Text(
                 item.name,
                 style: const TextStyle(fontSize: 16, color: MyColors.text1, fontWeight: FontWeight.w400),
                 maxLines: 1,
@@ -198,7 +193,7 @@ class _HomeHotDealItemsState extends State<HomeHotDealItems> {
             Positioned(
               bottom: 38,
               right: 16,
-              child: MyText(
+              child: Text(
                 '${MyFN.formatNumberWithComma(item.originalPrice)}원',
                 style: const TextStyle(fontSize: 16, color: MyColors.text2, fontWeight: FontWeight.w300, decoration: TextDecoration.lineThrough, decorationColor: MyColors.text2),
               ),
@@ -207,7 +202,7 @@ class _HomeHotDealItemsState extends State<HomeHotDealItems> {
             Positioned(
               bottom: 12,
               right: 32,
-              child: MyText(
+              child: Text(
                 MyFN.formatNumberWithComma(item.price),
                 style: const TextStyle(fontSize: 23, color: MyColors.text1, fontWeight: FontWeight.w800),
                 overflow: TextOverflow.ellipsis,
@@ -217,7 +212,7 @@ class _HomeHotDealItemsState extends State<HomeHotDealItems> {
             Positioned(
               bottom: 15,
               right: 16,
-              child: MyText(
+              child: Text(
                 '원',
                 style: const TextStyle(fontSize: 16, color: MyColors.text1, fontWeight: FontWeight.w300),
                 overflow: TextOverflow.ellipsis,
@@ -267,7 +262,7 @@ class _HomeHotDealItemsState extends State<HomeHotDealItems> {
             Positioned(
               top: 14,
               left: 80,
-              child: MyText(
+              child: Text(
                 item.brand,
                 style: const TextStyle(fontSize: 13, color: MyColors.text2, fontWeight: FontWeight.w600),
                 maxLines: 1,
@@ -279,7 +274,7 @@ class _HomeHotDealItemsState extends State<HomeHotDealItems> {
               top: 30,
               left: 80,
               right: 80,
-              child: MyText(
+              child: Text(
                 item.name,
                 style: const TextStyle(fontSize: 16, color: MyColors.text1, fontWeight: FontWeight.w400),
                 maxLines: 1,
@@ -295,7 +290,7 @@ class _HomeHotDealItemsState extends State<HomeHotDealItems> {
                 height: 26,
                 decoration: BoxDecoration(color: MyColors.secondary, borderRadius: BorderRadius.circular(25)),
                 alignment: Alignment.center,
-                child: MyText(
+                child: Text(
                   'D-3',
                   style: TextStyle(fontSize: 15, color: MyColors.text4, fontWeight: FontWeight.w700),
                   textAlign: TextAlign.center,

@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:pingk/common/my_widget.dart';
-import 'package:pingk/page_home/page_home_always_deal.dart';
-import 'package:pingk/page_home/page_home_auction.dart';
-import 'package:pingk/page_home/page_home_limited_deal.dart';
-import 'package:pingk/page_home/page_home_winners.dart';
-import '../common/my_colors.dart';
+import 'package:pingk/page_main/home/home_always_deal.dart';
+import 'package:pingk/page_main/home/home_auction.dart';
+import 'package:pingk/page_main/home/home_limited_deal.dart';
+import 'package:pingk/page_main/home/home_winners.dart';
+import '../../common/my_colors.dart';
 
-// ====================================================================================================
-// 홈 - StatefulWidget
-// ====================================================================================================
-class PageHome extends StatefulWidget {
-  const PageHome({super.key});
+class Home extends StatefulWidget {
+  const Home({super.key});
 
   @override
-  State<PageHome> createState() => _PageHomeState();
+  State<Home> createState() => _HomeState();
 }
 
-class _PageHomeState extends State<PageHome> {
+class _HomeState extends State<Home> {
   // --------------------------------------------------
   // build
   // --------------------------------------------------
@@ -42,10 +38,10 @@ class _PageHomeState extends State<PageHome> {
                   unselectedLabelColor: MyColors.text1,
                   tabs: [
                     Tab(
-                      child: MyText('한정특가', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+                      child: Text('한정특가', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
                     ),
                     Tab(
-                      child: MyText('상시특가', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+                      child: Text('상시특가', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
                     ),
                   ],
                 ),
@@ -54,7 +50,7 @@ class _PageHomeState extends State<PageHome> {
           ];
         },
         // ----- 탭바 뷰 (한정특가 / 상시특가) -----
-        body: TabBarView(children: [HomeHotDealItems(), HomeDiscountItems()]),
+        body: TabBarView(children: [HomeLimitedDeal(), HomeAlwaysDeal()]),
       ),
     );
   }

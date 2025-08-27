@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:pingk/common/_temp_items.dart';
 import 'package:pingk/common/item_info.dart';
 import 'package:pingk/common/my_colors.dart';
-import 'package:pingk/common/my_widget.dart';
 
-class ModalMyCoupons extends StatefulWidget {
-  const ModalMyCoupons({super.key});
+class MyCoupon extends StatefulWidget {
+  const MyCoupon({super.key});
 
   @override
-  State<ModalMyCoupons> createState() => _ModalMyCouponsState();
+  State<MyCoupon> createState() => _MyCouponState();
 }
 
-class _ModalMyCouponsState extends State<ModalMyCoupons> {
+class _MyCouponState extends State<MyCoupon> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   final int _totalPages = 3;
@@ -155,7 +154,7 @@ class _ModalMyCouponsState extends State<ModalMyCoupons> {
             Positioned(
               top: 14,
               left: 80,
-              child: MyText(
+              child: Text(
                 item.brand,
                 style: const TextStyle(fontSize: 13, color: MyColors.text2, fontWeight: FontWeight.w600),
                 maxLines: 1,
@@ -167,7 +166,7 @@ class _ModalMyCouponsState extends State<ModalMyCoupons> {
               top: 30,
               left: 80,
               right: 80,
-              child: MyText(
+              child: Text(
                 item.name,
                 style: const TextStyle(fontSize: 16, color: MyColors.text1, fontWeight: FontWeight.w400),
                 maxLines: 1,
@@ -183,7 +182,7 @@ class _ModalMyCouponsState extends State<ModalMyCoupons> {
                 height: 26,
                 decoration: BoxDecoration(color: MyColors.secondary, borderRadius: BorderRadius.circular(25)),
                 alignment: Alignment.center,
-                child: MyText(
+                child: Text(
                   'D-12',
                   style: TextStyle(fontSize: 15, color: MyColors.text4, fontWeight: FontWeight.w700),
                   textAlign: TextAlign.center,

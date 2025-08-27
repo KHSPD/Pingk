@@ -17,9 +17,9 @@ class BioAuth {
   final String _keyUseBioAuth = 'use_bio_auth';
 
   // --------------------------------------------------
-  // 바이오인증 가능 여부 확인 (하드웨어 지원 여부, 바이오인증 사용 가능 여부)
+  // 바이오인증 가능 여부 확인 (하드웨어 지원 여부, 바이오인증 허용 여부)
   // --------------------------------------------------
-  Future<bool> isBioAvailable() async {
+  Future<bool> isBioAuthAvailable() async {
     try {
       final bool isDeviceSupported = await _localAuth.isDeviceSupported();
       if (!isDeviceSupported) return false;
@@ -36,13 +36,10 @@ class BioAuth {
   // --------------------------------------------------
   Future<bool> enableBioAuth() async {
     try {
-      final bool isAvailable = await isBioAvailable();
+      final bool isAvailable = await isBioAuthAvailable();
       if (!isAvailable) return false;
-      final bool didAuthenticate = await _localAuth.authenticate(
-        localizedReason: '바이오인증을 활성화하려면 인증해주세요',
-        options: const AuthenticationOptions(stickyAuth: true, biometricOnly: true),
-      );
-      if (didAuthenticate) {
+      final bool isSuccess = await _localAuth.authenticate(localizedReason: '바이오인증을 활성화하려면 인증해주세요', options: const AuthenticationOptions(stickyAuth: true, biometricOnly: true));
+      if (isSuccess) {
         await saveUseBioAuth(statusEnabled);
         return true;
       }

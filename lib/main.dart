@@ -1,49 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:pingk/common/change_notifiers.dart';
 import 'package:pingk/common/constants.dart';
-import 'package:pingk/page_general/page_general_detail.dart';
-import 'package:pingk/page_join/page_join.dart';
-import 'package:pingk/page_join/page_set_biometric.dart';
-import 'package:pingk/page_join/page_set_password.dart';
-import 'package:pingk/page_login/page_login.dart';
-import 'package:provider/provider.dart';
-import 'page_landing/page_landing.dart';
-import 'page_main/page_main.dart';
-import 'page_auction/page_auction_detail.dart';
+import 'package:pingk/page_item_detail/item_general_detail.dart';
+import 'package:pingk/page_sign_up/sign_up.dart';
+import 'package:pingk/page_sign_in/sign_in.dart';
+import 'page_landing/landing.dart';
+import 'page_main/main_page.dart';
+import 'page_item_detail/item_auction_detail.dart';
 import 'common/_temp_items.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  // ----- 임시 데이터 처리 -----
-  TempItems();
-  //
-  runApp(ChangeNotifierProvider(create: (context) => MyChangeNotifier(), child: const PingkApp()));
-}
-
+// ====================================================================================================
+// 앱 진입점
+// ====================================================================================================
 class PingkApp extends StatelessWidget {
   const PingkApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    FocusScope.of(context).unfocus();
     return MaterialApp(
       title: 'Pingk',
-      initialRoute: '/',
+      initialRoute: '/landing',
       scaffoldMessengerKey: snackbarKey,
+      theme: ThemeData(
+        // 앱 기본 폰트 설정
+        fontFamily: 'Pretendard',
+      ),
       onGenerateRoute: (settings) {
         switch (settings.name) {
-          case '/':
-            return MaterialPageRoute(builder: (context) => const PageLanding());
-          case '/login':
-            return MaterialPageRoute(builder: (context) => const PageLogin());
-          case '/join':
-            return MaterialPageRoute(builder: (context) => const PageJoin());
-          case '/set-password':
-            return MaterialPageRoute(builder: (context) => const PageSetPassword());
-          case '/set-biometric':
-            return MaterialPageRoute(builder: (context) => const PageSetBiometric());
+          case '/landing':
+            return MaterialPageRoute(builder: (context) => const Landing());
+          case '/sign_in':
+            final phoneNumber = settings.arguments as String?;
+            return MaterialPageRoute(builder: (context) => SignIn(phoneNumber: phoneNumber));
+          case '/sign_up':
+            return MaterialPageRoute(builder: (context) => const SignUp());
           case '/main':
-            return MaterialPageRoute(builder: (context) => const PageMain());
+            return MaterialPageRoute(builder: (context) => const Main());
           case '/auction-detail':
             final itemId = settings.arguments as String? ?? '';
             if (itemId.isNotEmpty) {
@@ -55,10 +47,22 @@ class PingkApp extends StatelessWidget {
               return MaterialPageRoute(builder: (context) => PageGeneralDetail(itemId: itemId));
             }
           default:
-            return MaterialPageRoute(builder: (context) => const PageLanding());
+            return MaterialPageRoute(builder: (context) => const Landing());
         }
         return null;
       },
     );
   }
+}
+
+// ====================================================================================================
+// 메인 함수
+// ====================================================================================================
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // ----- 임시 데이터 처리 -----
+  TempItems();
+  //
+  runApp(const PingkApp());
 }

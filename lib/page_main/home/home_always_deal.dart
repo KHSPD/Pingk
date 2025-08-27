@@ -4,19 +4,15 @@ import 'package:pingk/common/my_colors.dart';
 import 'package:pingk/common/my_functions.dart';
 import 'package:pingk/common/item_info.dart';
 import 'package:pingk/common/_temp_items.dart';
-import 'package:pingk/common/my_widget.dart';
 
-// ====================================================================================================
-// 홈 - 상시특가 상품 목록
-// ====================================================================================================
-class HomeDiscountItems extends StatefulWidget {
-  const HomeDiscountItems({super.key});
+class HomeAlwaysDeal extends StatefulWidget {
+  const HomeAlwaysDeal({super.key});
 
   @override
-  State<HomeDiscountItems> createState() => _HomeDiscountItemsState();
+  State<HomeAlwaysDeal> createState() => _HomeAlwaysDealState();
 }
 
-class _HomeDiscountItemsState extends State<HomeDiscountItems> {
+class _HomeAlwaysDealState extends State<HomeAlwaysDeal> {
   final List<GeneralItem> bestCouponDatas = TempItems.bestDatas.sublist(0, 7);
   final List<GeneralItem> discountDatas = TempItems.discountDatas.sublist(0, 7);
 
@@ -34,7 +30,7 @@ class _HomeDiscountItemsState extends State<HomeDiscountItems> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const MyText(
+              const Text(
                 '베스트 쿠폰',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: MyColors.text1),
               ),
@@ -116,7 +112,7 @@ class _HomeDiscountItemsState extends State<HomeDiscountItems> {
             Positioned(
               top: 2,
               left: 140,
-              child: MyText(
+              child: Text(
                 item.brand,
                 style: const TextStyle(fontSize: 13, color: MyColors.text2, fontWeight: FontWeight.w600),
               ),
@@ -127,7 +123,7 @@ class _HomeDiscountItemsState extends State<HomeDiscountItems> {
               top: 20,
               left: 140,
               right: 100,
-              child: MyText(
+              child: Text(
                 item.name,
                 style: const TextStyle(fontSize: 16, color: MyColors.text1, fontWeight: FontWeight.w400),
                 maxLines: 1,
@@ -157,7 +153,7 @@ class _HomeDiscountItemsState extends State<HomeDiscountItems> {
             Positioned(
               bottom: 0,
               right: 16,
-              child: MyText(
+              child: Text(
                 MyFN.formatNumberWithComma(item.price),
                 style: const TextStyle(fontSize: 23, color: MyColors.text1, fontWeight: FontWeight.w800),
                 overflow: TextOverflow.ellipsis,
@@ -167,7 +163,7 @@ class _HomeDiscountItemsState extends State<HomeDiscountItems> {
             Positioned(
               bottom: 2,
               right: 0,
-              child: MyText(
+              child: Text(
                 '원',
                 style: const TextStyle(fontSize: 16, color: MyColors.text1, fontWeight: FontWeight.w300),
                 overflow: TextOverflow.ellipsis,

@@ -3,16 +3,15 @@ import 'package:pingk/common/_temp_items.dart';
 import 'package:pingk/common/item_info.dart';
 import 'package:pingk/common/my_colors.dart';
 import 'package:pingk/common/my_functions.dart';
-import 'package:pingk/common/my_widget.dart';
 
-class PageLimitedDeal extends StatefulWidget {
-  const PageLimitedDeal({super.key});
+class LimitedDeal extends StatefulWidget {
+  const LimitedDeal({super.key});
 
   @override
-  State<PageLimitedDeal> createState() => _PageLimitedDealState();
+  State<LimitedDeal> createState() => _LimitedDealState();
 }
 
-class _PageLimitedDealState extends State<PageLimitedDeal> {
+class _LimitedDealState extends State<LimitedDeal> {
   final List<GeneralItem> todayItemList = TempItems.todaysHotDealDatas;
   final List<GeneralItem> comingSoonItemList = TempItems.comingSoonHotDealDatas;
 
@@ -27,7 +26,7 @@ class _PageLimitedDealState extends State<PageLimitedDeal> {
             children: [
               const SizedBox(height: 30),
               // ----- 오늘의 한정특가 문구 -----
-              const MyText(
+              const Text(
                 '          오늘의 한정특가',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: MyColors.text1),
               ),
@@ -38,7 +37,7 @@ class _PageLimitedDealState extends State<PageLimitedDeal> {
 
               const SizedBox(height: 30),
               // ----- 오늘의 한정특가 문구 -----
-              const MyText(
+              const Text(
                 '          다가올 한정특가',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: MyColors.text1),
               ),
@@ -90,7 +89,7 @@ class _PageLimitedDealState extends State<PageLimitedDeal> {
                 height: 27,
                 decoration: BoxDecoration(color: MyColors.button5, borderRadius: BorderRadius.circular(15)),
                 child: Center(
-                  child: MyText(
+                  child: Text(
                     '00:30:21',
                     style: const TextStyle(fontSize: 16, color: MyColors.text1, fontWeight: FontWeight.w600),
                     textAlign: TextAlign.center,
@@ -105,7 +104,7 @@ class _PageLimitedDealState extends State<PageLimitedDeal> {
             Positioned(
               top: 58,
               left: 24,
-              child: MyText(
+              child: Text(
                 item.name,
                 style: const TextStyle(fontSize: 21, color: MyColors.text1, fontWeight: FontWeight.w500),
                 overflow: TextOverflow.ellipsis,
@@ -117,7 +116,7 @@ class _PageLimitedDealState extends State<PageLimitedDeal> {
             Positioned(
               top: 88,
               left: 24,
-              child: MyText(
+              child: Text(
                 item.brand,
                 style: const TextStyle(fontSize: 13, color: MyColors.text1, fontWeight: FontWeight.w300),
               ),
@@ -149,7 +148,7 @@ class _PageLimitedDealState extends State<PageLimitedDeal> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(bottom: 3),
-                    child: MyText(
+                    child: Text(
                       '${MyFN.formatNumberWithComma(item.originalPrice)}원',
                       style: const TextStyle(
                         fontSize: 16,
@@ -161,14 +160,14 @@ class _PageLimitedDealState extends State<PageLimitedDeal> {
                     ),
                   ),
                   const SizedBox(width: 10),
-                  MyText(
+                  Text(
                     MyFN.formatNumberWithComma(item.price),
                     style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w800, color: MyColors.text1),
                   ),
                   const SizedBox(width: 2),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 3),
-                    child: const MyText(
+                    child: const Text(
                       '원',
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300, color: MyColors.text1),
                     ),
@@ -246,7 +245,7 @@ class _PageLimitedDealState extends State<PageLimitedDeal> {
             Positioned(
               top: 14,
               left: 80,
-              child: MyText(
+              child: Text(
                 item.brand,
                 style: const TextStyle(fontSize: 13, color: MyColors.text2, fontWeight: FontWeight.w600),
                 maxLines: 1,
@@ -258,7 +257,7 @@ class _PageLimitedDealState extends State<PageLimitedDeal> {
               top: 30,
               left: 80,
               right: 80,
-              child: MyText(
+              child: Text(
                 item.name,
                 style: const TextStyle(fontSize: 16, color: MyColors.text1, fontWeight: FontWeight.w400),
                 maxLines: 1,
@@ -274,7 +273,7 @@ class _PageLimitedDealState extends State<PageLimitedDeal> {
                 height: 26,
                 decoration: BoxDecoration(color: MyColors.secondary, borderRadius: BorderRadius.circular(25)),
                 alignment: Alignment.center,
-                child: MyText(
+                child: Text(
                   'D-3',
                   style: TextStyle(fontSize: 15, color: MyColors.text4, fontWeight: FontWeight.w700),
                   textAlign: TextAlign.center,

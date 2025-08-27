@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pingk/common/my_colors.dart';
-import 'package:pingk/common/my_widget.dart';
 
 // ====================================================================================================
 // 홈 - 낙찰자 목록
@@ -27,11 +26,11 @@ class _HomeWinnersListState extends State<HomeWinnersList> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                MyText(
+                Text(
                   '낙찰을 축하합니다!',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: MyColors.text1),
                 ),
-                MyText(
+                Text(
                   '실시간 당첨자',
                   style: TextStyle(fontSize: 12, fontWeight: FontWeight.w200, color: MyColors.text2),
                 ),
@@ -49,7 +48,7 @@ class _HomeWinnersListState extends State<HomeWinnersList> {
                 const SizedBox(width: 10),
                 Expanded(
                   flex: 4,
-                  child: MyText(
+                  child: Text(
                     '달콤한 수박',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300, color: MyColors.text1),
                     maxLines: 1,
@@ -59,7 +58,7 @@ class _HomeWinnersListState extends State<HomeWinnersList> {
                 const SizedBox(width: 10),
                 Expanded(
                   flex: 6,
-                  child: MyText(
+                  child: Text(
                     '메가커피 | 아이스아메리카노',
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.w200, color: MyColors.text2),
                     maxLines: 1,
@@ -80,7 +79,7 @@ class _HomeWinnersListState extends State<HomeWinnersList> {
                 const SizedBox(width: 10),
                 Expanded(
                   flex: 4,
-                  child: MyText(
+                  child: Text(
                     '불타는 고구마',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300, color: MyColors.text1),
                     maxLines: 1,
@@ -90,7 +89,7 @@ class _HomeWinnersListState extends State<HomeWinnersList> {
                 const SizedBox(width: 10),
                 Expanded(
                   flex: 6,
-                  child: MyText(
+                  child: Text(
                     '공차 | 얼그레이 밀크티',
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.w200, color: MyColors.text2),
                     maxLines: 1,
@@ -111,7 +110,7 @@ class _HomeWinnersListState extends State<HomeWinnersList> {
                 const SizedBox(width: 10),
                 Expanded(
                   flex: 4,
-                  child: MyText(
+                  child: Text(
                     '느린 바다거북',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300, color: MyColors.text1),
                     maxLines: 1,
@@ -121,7 +120,7 @@ class _HomeWinnersListState extends State<HomeWinnersList> {
                 const SizedBox(width: 10),
                 Expanded(
                   flex: 6,
-                  child: MyText(
+                  child: Text(
                     '파파존스 | 불고기 피자',
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.w200, color: MyColors.text2),
                     maxLines: 1,

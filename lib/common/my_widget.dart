@@ -2,28 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:pingk/common/my_colors.dart';
 
 // --------------------------------------------------
-// 커스텀 텍스트
-// --------------------------------------------------
-class MyText extends StatelessWidget {
-  final String txt;
-  final TextStyle? style;
-  final int? maxLines;
-  final TextOverflow? overflow;
-  final TextAlign? textAlign;
-
-  const MyText(this.txt, {super.key, this.style, this.maxLines, this.overflow, this.textAlign});
-
-  @override
-  Widget build(BuildContext context) {
-    // 기본 스타일 정의 (폰트 웨이트 추가)
-    const defaultStyle = TextStyle(fontFamily: 'Pretendard', fontSize: 18.0, color: MyColors.text1, fontWeight: FontWeight.w400, decoration: TextDecoration.none);
-    // 전달받은 style과 기본 스타일을 병합
-    final mergedStyle = defaultStyle.merge(style);
-    return Text(txt, style: mergedStyle, maxLines: maxLines, overflow: overflow, textAlign: textAlign);
-  }
-}
-
-// --------------------------------------------------
 // 넘버패드 - 숫자 버튼
 // --------------------------------------------------
 class NumpadDigitButton extends StatelessWidget {
@@ -47,7 +25,7 @@ class NumpadDigitButton extends StatelessWidget {
           boxShadow: [BoxShadow(color: MyColors.shadow2, blurRadius: 8, offset: const Offset(0, 2))],
         ),
         child: Center(
-          child: MyText(number, style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600)),
+          child: Text(number, style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600)),
         ),
       ),
     );
