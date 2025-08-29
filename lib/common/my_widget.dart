@@ -125,3 +125,187 @@ class Loading {
     _isShowing = false;
   }
 }
+
+// --------------------------------------------------
+// 커스텀 팝업 창
+// --------------------------------------------------
+class Popup {
+  static final Popup _instance = Popup._privateConstructor();
+  factory Popup() => _instance;
+  Popup._privateConstructor();
+
+  OverlayEntry? _overlayEntry;
+  bool _isShowing = false;
+
+  // ----- 팝업 표시 -----
+  void show({
+    required BuildContext context,
+    required String title,
+    required String msg,
+    String? btTxt1,
+    String? btTxt2,
+    VoidCallback? btCB1,
+    VoidCallback? btCB2,
+    bool canCancel = false,
+  }) {
+    if (_isShowing) return;
+
+    _overlayEntry = OverlayEntry(
+      builder: (context) => _PopupOverlay(canCancel: canCancel, onDismiss: () => hide(), title: title, msg: msg, btTxt1: btTxt1, btTxt2: btTxt2, btCB1: btCB1, btCB2: btCB2),
+    );
+
+    Overlay.of(context).insert(_overlayEntry!);
+    _isShowing = true;
+  }
+
+  // ----- 팝업 숨기기 -----
+  void hide() {
+    if (!_isShowing) return;
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+    _isShowing = false;
+  }
+}
+
+// --------------------------------------------------
+// 팝업 오버레이 위젯
+// --------------------------------------------------
+class _PopupOverlay extends StatefulWidget {
+  final bool canCancel;
+  final VoidCallback onDismiss;
+  final String title;
+  final String msg;
+  final String? btTxt1;
+  final String? btTxt2;
+  final VoidCallback? btCB1;
+  final VoidCallback? btCB2;
+
+  const _PopupOverlay({required this.canCancel, required this.onDismiss, required this.title, required this.msg, this.btTxt1, this.btTxt2, this.btCB1, this.btCB2});
+
+  @override
+  State<_PopupOverlay> createState() => _PopupOverlayState();
+}
+
+class _PopupOverlayState extends State<_PopupOverlay> with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _fadeAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
+    _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOutBack));
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOut));
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: GestureDetector(
+        onTap: widget.canCancel ? widget.onDismiss : null,
+        child: Container(
+          color: const Color(0x80000000),
+          child: Center(
+            child: GestureDetector(
+              onTap: () {},
+              child: AnimatedBuilder(
+                animation: _animationController,
+                builder: (context, child) {
+                  return Transform.scale(
+                    scale: _scaleAnimation.value,
+                    child: Opacity(opacity: _fadeAnimation.value, child: _buildPopupContent()),
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPopupContent() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 40),
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [BoxShadow(color: MyColors.shadow2, blurRadius: 20, offset: const Offset(0, 10))],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            widget.title,
+            style: const TextStyle(fontSize: 18, color: MyColors.text1, fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            widget.msg,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 16, color: MyColors.text2, fontWeight: FontWeight.w400),
+          ),
+          const SizedBox(height: 24),
+          Row(
+            children: [
+              if (widget.btTxt1 != null) ...[
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {
+                      Popup().hide();
+                      if (widget.btCB1 != null) {
+                        widget.btCB1!();
+                      }
+                    },
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
+                    child: Text(
+                      widget.btTxt1!,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 14, color: MyColors.text1, fontWeight: FontWeight.w600, decoration: TextDecoration.none),
+                    ),
+                  ),
+                ),
+              ],
+              if (widget.btTxt1 != null && widget.btTxt2 != null) ...[const SizedBox(width: 12)],
+              if (widget.btTxt2 != null) ...[
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Popup().hide();
+                      if (widget.btCB2 != null) {
+                        widget.btCB2!();
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: MyColors.primary,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
+                    child: Text(
+                      widget.btTxt2!,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 14, color: MyColors.text4, fontWeight: FontWeight.w600, decoration: TextDecoration.none),
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}

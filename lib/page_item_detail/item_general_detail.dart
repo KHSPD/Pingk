@@ -5,6 +5,9 @@ import 'package:pingk/common/my_colors.dart';
 import 'package:pingk/common/my_functions.dart';
 import 'package:pingk/common/my_widget.dart';
 
+// ====================================================================================================
+// PageGeneralDetail
+// ====================================================================================================
 class PageGeneralDetail extends StatefulWidget {
   final String itemId;
 
@@ -17,14 +20,19 @@ class PageGeneralDetail extends StatefulWidget {
 class _PageGeneralDetailState extends State<PageGeneralDetail> {
   GeneralItem? _itemData;
 
+  // --------------------------------------------------
+  // Lifecycle Methods
+  // --------------------------------------------------
   @override
   void initState() {
+    debugPrint('PageGeneralDetail : initState');
     super.initState();
     _loadItemData();
   }
 
   @override
   void dispose() {
+    debugPrint('PageGeneralDetail : dispose');
     super.dispose();
   }
 

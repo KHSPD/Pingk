@@ -4,19 +4,35 @@ import 'package:pingk/common/my_colors.dart';
 import 'package:pingk/common/my_functions.dart';
 import 'package:pingk/common/item_info.dart';
 import 'package:pingk/common/_temp_items.dart';
-import 'package:pingk/page_main/main_page.dart';
-import 'package:provider/provider.dart';
 
-class HomeLimitedDeal extends StatefulWidget {
-  const HomeLimitedDeal({super.key});
+// ====================================================================================================
+// BodyHomeLimitedDeal
+// ====================================================================================================
+class BodyHomeLimitedDeal extends StatefulWidget {
+  const BodyHomeLimitedDeal({super.key});
 
   @override
-  State<HomeLimitedDeal> createState() => _HomeLimitedDealState();
+  State<BodyHomeLimitedDeal> createState() => _BodyHomeLimitedDealState();
 }
 
-class _HomeLimitedDealState extends State<HomeLimitedDeal> {
+class _BodyHomeLimitedDealState extends State<BodyHomeLimitedDeal> {
   final List<GeneralItem> todaysHotDealDatas = TempItems.todaysHotDealDatas.sublist(0, 7);
   final List<GeneralItem> comingSoonHotDealDatas = TempItems.comingSoonHotDealDatas;
+
+  // --------------------------------------------------
+  // Lifecycle Methods
+  // --------------------------------------------------
+  @override
+  void initState() {
+    debugPrint('BodyHomeLimitedDeal : initState');
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    debugPrint('BodyHomeLimitedDeal : dispose');
+    super.dispose();
+  }
 
   // --------------------------------------------------
   // build
@@ -27,29 +43,22 @@ class _HomeLimitedDealState extends State<HomeLimitedDeal> {
       children: [
         SizedBox(height: 30),
         // ----- 타이틀 및 더보기 버튼 -----
-        Selector<MainMenuData, MainMenu>(
-          selector: (context, notifier) => notifier.selectedMenu,
-          builder: (context, selectedMainMenu, child) {
-            return GestureDetector(
-              onTap: () {
-                context.read<MainMenuData>().setSelectedMenu(MainMenu.limitedDeal);
-              },
-              child: Container(
-                margin: const EdgeInsets.fromLTRB(30, 20, 30, 0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Text(
-                      '오늘의 한정특가',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: MyColors.text1),
-                    ),
-                    const Spacer(),
-                    SvgPicture.asset('assets/icons/icon_arrow_right.svg', width: 16, height: 11.34, colorFilter: ColorFilter.mode(MyColors.icon1, BlendMode.srcIn)),
-                  ],
+        GestureDetector(
+          onTap: () {},
+          child: Container(
+            margin: const EdgeInsets.fromLTRB(30, 20, 30, 0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  '오늘의 한정특가',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: MyColors.text1),
                 ),
-              ),
-            );
-          },
+                const Spacer(),
+                SvgPicture.asset('assets/icons/icon_arrow_right.svg', width: 16, height: 11.34, colorFilter: ColorFilter.mode(MyColors.icon1, BlendMode.srcIn)),
+              ],
+            ),
+          ),
         ),
         SizedBox(height: 10),
         // ----- 오늘의 한정특가 리스트 -----
@@ -66,30 +75,24 @@ class _HomeLimitedDealState extends State<HomeLimitedDeal> {
         ),
 
         // ----- 다가올 한정특가 타이틀 -----
-        Selector<MainMenuData, MainMenu>(
-          selector: (context, notifier) => notifier.selectedMenu,
-          builder: (context, selectedMainMenu, child) {
-            return GestureDetector(
-              onTap: () {
-                context.read<MainMenuData>().setSelectedMenu(MainMenu.limitedDeal);
-              },
-              child: Container(
-                margin: const EdgeInsets.fromLTRB(30, 40, 30, 20),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Text(
-                      '다가올 한정특가',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: MyColors.text1),
-                    ),
-                    const Spacer(),
-                    SvgPicture.asset('assets/icons/icon_arrow_right.svg', width: 16, height: 11.34, colorFilter: ColorFilter.mode(MyColors.icon1, BlendMode.srcIn)),
-                  ],
+        GestureDetector(
+          onTap: () {},
+          child: Container(
+            margin: const EdgeInsets.fromLTRB(30, 40, 30, 20),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  '다가올 한정특가',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: MyColors.text1),
                 ),
-              ),
-            );
-          },
+                const Spacer(),
+                SvgPicture.asset('assets/icons/icon_arrow_right.svg', width: 16, height: 11.34, colorFilter: ColorFilter.mode(MyColors.icon1, BlendMode.srcIn)),
+              ],
+            ),
+          ),
         ),
+
         // ----- 다가올 핫딜 리스트 -----
         Column(children: comingSoonHotDealDatas.map((item) => _comingSoonLimitedDealCard(item, isNotified: false, onToggleNotify: () {})).toList()),
         SizedBox(height: 20),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pingk/common/constants.dart';
+import 'package:crypto/crypto.dart';
+import 'dart:convert';
 import 'my_colors.dart';
 
 // ====================================================================================================
@@ -7,6 +9,15 @@ import 'my_colors.dart';
 // ====================================================================================================
 class MyFN {
   MyFN._();
+
+  // --------------------------------------------------
+  // 문자열을 SHA256 해시로 변환
+  // --------------------------------------------------
+  static String stringToHash(String string) {
+    var bytes = utf8.encode(string);
+    var digest = sha256.convert(bytes);
+    return digest.toString();
+  }
 
   // --------------------------------------------------
   // 숫자에 3자리마다 콤마를 찍어서 문자열로 반환

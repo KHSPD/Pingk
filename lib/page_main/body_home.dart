@@ -1,18 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:pingk/page_main/home/home_always_deal.dart';
-import 'package:pingk/page_main/home/home_auction.dart';
-import 'package:pingk/page_main/home/home_limited_deal.dart';
-import 'package:pingk/page_main/home/home_winners.dart';
-import '../../common/my_colors.dart';
+import 'package:pingk/page_main/body_home_always_deal.dart';
+import 'package:pingk/page_main/body_home_auction.dart';
+import 'package:pingk/page_main/body_home_limited_deal.dart';
+import 'package:pingk/page_main/body_home_winners.dart';
+import '../common/my_colors.dart';
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+// ====================================================================================================
+// BodyHome
+// ====================================================================================================
+class BodyHome extends StatefulWidget {
+  const BodyHome({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<BodyHome> createState() => _BodyHomeState();
 }
 
-class _HomeState extends State<Home> {
+class _BodyHomeState extends State<BodyHome> {
+  // --------------------------------------------------
+  // Lifecycle Methods
+  // --------------------------------------------------
+  @override
+  void initState() {
+    debugPrint('BodyHome : initState');
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    debugPrint('BodyHome : dispose');
+    super.dispose();
+  }
+
   // --------------------------------------------------
   // build
   // --------------------------------------------------
@@ -24,9 +42,9 @@ class _HomeState extends State<Home> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
             // ----- 경매 상품 목록 -----
-            SliverToBoxAdapter(child: const HomeAuctionItems()),
+            SliverToBoxAdapter(child: const BodyHomeAuctionItems()),
             // ----- 낙찰자 목록 -----
-            SliverToBoxAdapter(child: const HomeWinnersList()),
+            SliverToBoxAdapter(child: const BodyHomeWinnersList()),
             // ----- 탭바 (한정특가 / 상시특가) -----
             SliverToBoxAdapter(child: SizedBox(height: 40)),
             SliverPersistentHeader(
@@ -50,7 +68,7 @@ class _HomeState extends State<Home> {
           ];
         },
         // ----- 탭바 뷰 (한정특가 / 상시특가) -----
-        body: TabBarView(children: [HomeLimitedDeal(), HomeAlwaysDeal()]),
+        body: TabBarView(children: [BodyHomeLimitedDeal(), BodyHomeAlwaysDeal()]),
       ),
     );
   }

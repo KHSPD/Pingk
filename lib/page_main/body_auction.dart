@@ -4,18 +4,39 @@ import 'package:pingk/common/item_info.dart';
 import 'package:pingk/common/my_colors.dart';
 import 'package:pingk/common/my_functions.dart';
 
-class PageAuction extends StatefulWidget {
-  const PageAuction({super.key});
+// ====================================================================================================
+// BodyAuction
+// ====================================================================================================
+class BodyAuction extends StatefulWidget {
+  const BodyAuction({super.key});
 
   @override
-  State<PageAuction> createState() => _PageAuctionState();
+  State<BodyAuction> createState() => _BodyAuctionState();
 }
 
-class _PageAuctionState extends State<PageAuction> {
+class _BodyAuctionState extends State<BodyAuction> {
   final List<AuctionItem> itemList = TempItems.auctionItems;
   int _selectedCategoryIndex = 0;
   final List<String> _categories = ['카페/디저트', '외식', '배달', '생활', '취미', '일식', '양식', '분식'];
 
+  // --------------------------------------------------
+  // Lifecycle Methods
+  // --------------------------------------------------
+  @override
+  void initState() {
+    debugPrint('BodyAuction : initState');
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    debugPrint('BodyAuction : dispose');
+    super.dispose();
+  }
+
+  // --------------------------------------------------
+  // build
+  // --------------------------------------------------
   @override
   Widget build(BuildContext context) {
     return Container(

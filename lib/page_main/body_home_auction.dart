@@ -3,25 +3,35 @@ import 'package:flutter_svg/svg.dart';
 import 'package:pingk/common/my_functions.dart';
 import 'package:pingk/common/item_info.dart';
 import 'package:pingk/common/_temp_items.dart';
-import '../../common/my_colors.dart';
+import '../common/my_colors.dart';
 
-class HomeAuctionItems extends StatefulWidget {
-  const HomeAuctionItems({super.key});
+// ====================================================================================================
+// BodyHomeAuctionItems
+// ====================================================================================================
+class BodyHomeAuctionItems extends StatefulWidget {
+  const BodyHomeAuctionItems({super.key});
 
   @override
-  State<HomeAuctionItems> createState() => _HomeAuctionItemsState();
+  State<BodyHomeAuctionItems> createState() => _BodyHomeAuctionItemsState();
 }
 
-class _HomeAuctionItemsState extends State<HomeAuctionItems> {
+class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
   final List<AuctionItem> itemList = TempItems.auctionItems;
-  final PageController _pageController = PageController();
+  final PageController _pageController = PageController(viewportFraction: 0.8);
   int _selectedItemIdx = 0;
 
   // --------------------------------------------------
-  // dispose
+  // Lifecycle Methods
   // --------------------------------------------------
   @override
+  void initState() {
+    debugPrint('BodyHomeAuctionItems : initState');
+    super.initState();
+  }
+
+  @override
   void dispose() {
+    debugPrint('BodyHomeAuctionItems : dispose');
     _pageController.dispose();
     super.dispose();
   }
@@ -89,7 +99,31 @@ class _HomeAuctionItemsState extends State<HomeAuctionItems> {
               },
               itemCount: itemList.length,
               itemBuilder: (context, index) {
-                return _itemAuctionCard(itemList[index]);
+                return AnimatedBuilder(
+                  animation: _pageController,
+                  builder: (context, child) {
+                    double value = 1.0;
+                    double opacity = 1.0;
+
+                    if (_pageController.position.haveDimensions) {
+                      value = _pageController.page! - index;
+                      // 현재 페이지(가운데)에 가까울수록 1.0, 멀수록 0.9로 설정
+                      value = (1 - (value.abs() * 0.1)).clamp(0.7, 1.0);
+                      // 현재 페이지(가운데)에 가까울수록 1.0, 멀수록 0.7로 설정
+                      opacity = (1 - (value.abs() * 0.3)).clamp(0.7, 1.0);
+                    } else {
+                      // 앱 시작 시에도 현재 선택된 아이템과의 거리에 따라 크기와 투명도 설정
+                      int distance = (index - _selectedItemIdx).abs();
+                      value = (1 - (distance * 0.1)).clamp(0.7, 1.0);
+                      opacity = (1 - (distance * 0.3)).clamp(0.7, 1.0);
+                    }
+
+                    return Transform.scale(
+                      scale: value,
+                      child: Opacity(opacity: opacity, child: _itemAuctionCard(itemList[index])),
+                    );
+                  },
+                );
               },
             ),
           ),
@@ -125,7 +159,7 @@ class _HomeAuctionItemsState extends State<HomeAuctionItems> {
         Navigator.pushNamed(context, '/auction-detail', arguments: item.id);
       },
       child: Container(
-        margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+        margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
         decoration: BoxDecoration(
           color: MyColors.background1,
           borderRadius: BorderRadius.circular(15),

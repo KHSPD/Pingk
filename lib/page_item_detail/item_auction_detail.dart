@@ -5,6 +5,9 @@ import 'package:pingk/common/my_colors.dart';
 import 'package:pingk/common/my_functions.dart';
 import 'package:pingk/common/my_widget.dart';
 
+// ====================================================================================================
+// PageAuctionDetail
+// ====================================================================================================
 class PageAuctionDetail extends StatefulWidget {
   final String itemId;
 
@@ -17,8 +20,12 @@ class PageAuctionDetail extends StatefulWidget {
 class _PageAuctionDetailState extends State<PageAuctionDetail> {
   AuctionItem? _itemData;
 
+  // --------------------------------------------------
+  // Lifecycle Methods
+  // --------------------------------------------------
   @override
   void initState() {
+    debugPrint('PageAuctionDetail : initState');
     super.initState();
     _loadItemData();
   }

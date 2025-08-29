@@ -3,36 +3,58 @@ import 'package:pingk/common/_temp_items.dart';
 import 'package:pingk/common/item_info.dart';
 import 'package:pingk/common/my_colors.dart';
 
-class MyCoupon extends StatefulWidget {
-  const MyCoupon({super.key});
+// ====================================================================================================
+// CouponBox
+// ====================================================================================================
+class CouponBox extends StatefulWidget {
+  const CouponBox({super.key});
 
   @override
-  State<MyCoupon> createState() => _MyCouponState();
+  State<CouponBox> createState() => _CouponBoxState();
 }
 
-class _MyCouponState extends State<MyCoupon> {
+class _CouponBoxState extends State<CouponBox> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   final int _totalPages = 3;
 
+  // --------------------------------------------------
+  // Lifecycle Methods
+  // --------------------------------------------------
+  @override
+  void initState() {
+    debugPrint('CouponBox : initState');
+    super.initState();
+  }
+
   @override
   void dispose() {
+    debugPrint('CouponBox : dispose');
     _pageController.dispose();
     super.dispose();
   }
 
-  void _nextPage() {
-    if (_currentPage < _totalPages - 1) {
-      _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-    }
-  }
-
+  // --------------------------------------------------
+  // 이전 페이지
+  // --------------------------------------------------
   void _previousPage() {
     if (_currentPage > 0) {
       _pageController.previousPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
     }
   }
 
+  // --------------------------------------------------
+  // 다음 페이지
+  // --------------------------------------------------
+  void _nextPage() {
+    if (_currentPage < _totalPages - 1) {
+      _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+    }
+  }
+
+  // --------------------------------------------------
+  // build
+  // --------------------------------------------------
   @override
   Widget build(BuildContext context) {
     return Container(

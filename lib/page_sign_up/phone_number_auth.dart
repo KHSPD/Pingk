@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:pingk/common/constants.dart';
 import 'package:pingk/common/my_colors.dart';
 import 'package:pingk/common/my_functions.dart';
 import 'package:pingk/common/my_widget.dart';
-import 'package:pingk/page_sign_up/sign_up.dart';
-import 'package:pingk/page_sign_up/set_password.dart';
+import 'package:pingk/common/local_storage.dart';
 
 // ====================================================================================================
 // 휴대전화번호 인증 페이지
 // ====================================================================================================
 class PhoneNumberAuth extends StatefulWidget {
-  final SignUpData signUpData;
-  const PhoneNumberAuth(this.signUpData, {super.key});
+  const PhoneNumberAuth({super.key});
   @override
   State<PhoneNumberAuth> createState() => _PhoneNumberAuthState();
 }
 
 class _PhoneNumberAuthState extends State<PhoneNumberAuth> {
+  final int _authCodeLength = 4;
   final List<String> _carriers = ['SKT', 'KT', 'LGT'];
   String _selectedCarrier = 'SKT';
   String _inputPhoneNumber = '';
@@ -26,11 +28,32 @@ class _PhoneNumberAuthState extends State<PhoneNumberAuth> {
   bool _showCompleteButton = false;
 
   // --------------------------------------------------
-  // API - 인증코드 요청
+  // Lifecycle Methods
+  // --------------------------------------------------
+  @override
+  void initState() {
+    debugPrint('PhoneNumberAuth : initState');
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    debugPrint('PhoneNumberAuth : dispose');
+    super.dispose();
+  }
+
+  // --------------------------------------------------
+  // 인증코드 요청
   // --------------------------------------------------
   Future<void> _requestCode() async {
     Loading().show(context);
     try {
+      // 전화번호 형식 검사
+      if (!_inputPhoneNumber.startsWith('010') || _inputPhoneNumber.length != 11) {
+        Loading().hide();
+        MyFN.showSnackBar(message: '휴대전화 번호 형식이 잘못되었습니다.');
+        return;
+      }
       // TODO: 실제 인증코드 요청 로직 추가 할것
       await Future.delayed(const Duration(seconds: 1));
       setState(() {
@@ -45,20 +68,42 @@ class _PhoneNumberAuthState extends State<PhoneNumberAuth> {
   }
 
   // --------------------------------------------------
-  // API - 인증코드 확인
+  // 인증코드 확인
   // --------------------------------------------------
   Future<void> _checkCode() async {
+    FocusScope.of(context).unfocus();
     Loading().show(context);
     try {
-      // TODO: 실제 인증코드 확인 로직 추가 할것
-      await Future.delayed(const Duration(seconds: 1));
-      widget.signUpData.carrier = _selectedCarrier;
-      widget.signUpData.phoneNumber = _inputPhoneNumber;
-      if (mounted) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => SetPassword(widget.signUpData)));
+      final String apiUrl = '$appServerURL/api/auth/access';
+      final Map<String, dynamic> body = {'phoneNumber': _inputPhoneNumber, 'authCode': _inputAuthCode, 'registerType': _selectedCarrier};
+      final response = await http.post(Uri.parse(apiUrl), headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}, body: jsonEncode(body));
+
+      debugPrint('========== API Response: $apiUrl =====');
+      debugPrint('status: ${response.statusCode}');
+      debugPrint('body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        if (responseBody['code'] == '200') {
+          final String accessToken = responseBody['result']['accessToken'];
+          final String refreshToken = responseBody['result']['refreshToken'];
+          await LocalStorage().saveAccessToken(accessToken);
+          await LocalStorage().saveRefreshToken(refreshToken);
+          if (mounted) {
+            context.go('/set_password');
+          }
+        } else {
+          final String message = responseBody['message'];
+          MyFN.showSnackBar(message: message);
+        }
+      } else {
+        // API 응답이 실패한 경우
+        final Map<String, dynamic> errorData = jsonDecode(response.body);
+        final String errorMessage = errorData['message'] ?? '인증에 실패했습니다.';
+        MyFN.showSnackBar(message: errorMessage);
       }
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint('Exception: ${e.toString()}');
       MyFN.showSnackBar(message: messageError);
     } finally {
       Loading().hide();
@@ -74,7 +119,6 @@ class _PhoneNumberAuthState extends State<PhoneNumberAuth> {
       backgroundColor: MyColors.background1,
       resizeToAvoidBottomInset: true,
       body: GestureDetector(
-        // 위젯이 없는 빈영역까지 터치 이벤트 감지
         behavior: HitTestBehavior.opaque,
         onTap: () {
           FocusScope.of(context).unfocus();
@@ -85,7 +129,7 @@ class _PhoneNumberAuthState extends State<PhoneNumberAuth> {
               Expanded(
                 child: SingleChildScrollView(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
                     child: Column(
                       children: [
                         const SizedBox(height: 40),
@@ -220,12 +264,12 @@ class _PhoneNumberAuthState extends State<PhoneNumberAuth> {
                               border: Border.all(color: MyColors.border1),
                             ),
                             child: TextField(
-                              maxLength: 6,
+                              maxLength: _authCodeLength,
                               keyboardType: TextInputType.number,
                               style: const TextStyle(fontSize: 20),
-                              decoration: const InputDecoration(border: InputBorder.none, hintText: '(임시) 임의 숫자 6자리 입력', hintStyle: TextStyle(fontSize: 14), counterText: ''),
+                              decoration: const InputDecoration(border: InputBorder.none, hintText: '(임시) 임의 숫자 4자리 입력', hintStyle: TextStyle(fontSize: 14), counterText: ''),
                               onChanged: (value) {
-                                _showCompleteButton = value.length == 6 && RegExp(r'^[0-9]+$').hasMatch(value);
+                                _showCompleteButton = value.length == _authCodeLength && RegExp(r'^[0-9]+$').hasMatch(value);
                                 setState(() {
                                   _inputAuthCode = value;
                                 });

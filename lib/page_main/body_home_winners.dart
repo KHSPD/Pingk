@@ -5,14 +5,32 @@ import 'package:pingk/common/my_colors.dart';
 // ====================================================================================================
 // 홈 - 낙찰자 목록
 // ====================================================================================================
-class HomeWinnersList extends StatefulWidget {
-  const HomeWinnersList({super.key});
+class BodyHomeWinnersList extends StatefulWidget {
+  const BodyHomeWinnersList({super.key});
 
   @override
-  State<HomeWinnersList> createState() => _HomeWinnersListState();
+  State<BodyHomeWinnersList> createState() => _BodyHomeWinnersListState();
 }
 
-class _HomeWinnersListState extends State<HomeWinnersList> {
+class _BodyHomeWinnersListState extends State<BodyHomeWinnersList> {
+  // --------------------------------------------------
+  // Lifecycle Methods
+  // --------------------------------------------------
+  @override
+  void initState() {
+    debugPrint('BodyHomeWinnersList : initState');
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    debugPrint('BodyHomeWinnersList : dispose');
+    super.dispose();
+  }
+
+  // --------------------------------------------------
+  // build
+  // --------------------------------------------------
   @override
   Widget build(BuildContext context) {
     return Container(

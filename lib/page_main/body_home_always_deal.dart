@@ -5,18 +5,35 @@ import 'package:pingk/common/my_functions.dart';
 import 'package:pingk/common/item_info.dart';
 import 'package:pingk/common/_temp_items.dart';
 
-class HomeAlwaysDeal extends StatefulWidget {
-  const HomeAlwaysDeal({super.key});
+// ====================================================================================================
+// BodyHomeAlwaysDeal
+// ====================================================================================================
+class BodyHomeAlwaysDeal extends StatefulWidget {
+  const BodyHomeAlwaysDeal({super.key});
 
   @override
-  State<HomeAlwaysDeal> createState() => _HomeAlwaysDealState();
+  State<BodyHomeAlwaysDeal> createState() => _BodyHomeAlwaysDealState();
 }
 
-class _HomeAlwaysDealState extends State<HomeAlwaysDeal> {
+class _BodyHomeAlwaysDealState extends State<BodyHomeAlwaysDeal> {
   final List<GeneralItem> bestCouponDatas = TempItems.bestDatas.sublist(0, 7);
   final List<GeneralItem> discountDatas = TempItems.discountDatas.sublist(0, 7);
 
   // --------------------------------------------------
+  // Lifecycle Methods
+  // --------------------------------------------------
+  @override
+  void initState() {
+    debugPrint('BodyHomeAlwaysDeal : initState');
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    debugPrint('BodyHomeAlwaysDeal : dispose');
+    super.dispose();
+  }
+
   // build
   // --------------------------------------------------
   @override

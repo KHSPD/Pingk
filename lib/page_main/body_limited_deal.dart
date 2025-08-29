@@ -4,17 +4,38 @@ import 'package:pingk/common/item_info.dart';
 import 'package:pingk/common/my_colors.dart';
 import 'package:pingk/common/my_functions.dart';
 
-class LimitedDeal extends StatefulWidget {
-  const LimitedDeal({super.key});
+// ====================================================================================================
+// BodyLimitedDeal
+// ====================================================================================================
+class BodyLimitedDeal extends StatefulWidget {
+  const BodyLimitedDeal({super.key});
 
   @override
-  State<LimitedDeal> createState() => _LimitedDealState();
+  State<BodyLimitedDeal> createState() => _BodyLimitedDealState();
 }
 
-class _LimitedDealState extends State<LimitedDeal> {
+class _BodyLimitedDealState extends State<BodyLimitedDeal> {
   final List<GeneralItem> todayItemList = TempItems.todaysHotDealDatas;
   final List<GeneralItem> comingSoonItemList = TempItems.comingSoonHotDealDatas;
 
+  // --------------------------------------------------
+  // Lifecycle Methods
+  // --------------------------------------------------
+  @override
+  void initState() {
+    debugPrint('BodyLimitedDeal : initState');
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    debugPrint('BodyLimitedDeal : dispose');
+    super.dispose();
+  }
+
+  // --------------------------------------------------
+  // build
+  // --------------------------------------------------
   @override
   Widget build(BuildContext context) {
     return Scaffold(

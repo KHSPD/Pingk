@@ -1,21 +1,15 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:pingk/common/constants.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pingk/common/my_colors.dart';
 import 'package:pingk/common/my_widget.dart';
 import 'package:pingk/common/my_functions.dart';
-import 'package:pingk/common/secure_storage.dart';
-import 'package:pingk/page_sign_up/sign_up.dart';
-import 'package:pingk/page_sign_up/set_bio_auth.dart';
+import 'package:pingk/common/local_storage.dart';
 
 // ====================================================================================================
 // 간편 비밀번호 설정 페이지
 // ====================================================================================================
 class SetPassword extends StatefulWidget {
-  final SignUpData signUpData;
-  const SetPassword(this.signUpData, {super.key});
+  const SetPassword({super.key});
   @override
   State<SetPassword> createState() => _SetPasswordState();
 }
@@ -25,6 +19,21 @@ class _SetPasswordState extends State<SetPassword> {
   String _inputPassword = '';
   String _confirmPassword = '';
   bool _isConfirming = false;
+
+  // --------------------------------------------------
+  // Lifecycle Methods
+  // --------------------------------------------------
+  @override
+  void initState() {
+    debugPrint('SetPassword : initState');
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    debugPrint('SetPassword : dispose');
+    super.dispose();
+  }
 
   // --------------------------------------------------
   // 숫자 패드 버튼 클릭 이벤트
@@ -55,61 +64,25 @@ class _SetPasswordState extends State<SetPassword> {
   // --------------------------------------------------
   // 비밀번호 확인
   // --------------------------------------------------
-  void _checkPassword() {
+  Future<void> _checkPassword() async {
     if (_inputPassword == _confirmPassword) {
-      // 비밀번호 일치
-      widget.signUpData.password = _inputPassword;
-      _callSignUpApi();
+      // ----- 비밀번호 일치 -----
+      String hashedPassword = MyFN.stringToHash(_inputPassword);
+      bool result = await LocalStorage().savePassword(hashedPassword);
+      if (result && mounted) {
+        context.go('/set_bio_auth');
+      } else {
+        MyFN.showSnackBar(message: '비밀번호 저장 실패');
+      }
     } else {
-      // 비밀번호 불일치
+      // ----- 비밀번호 불일치 -----
       setState(() {
         _inputPassword = '';
         _confirmPassword = '';
-        _isConfirming = false;
       });
+      _isConfirming = false;
       MyFN.showSnackBar(message: '비밀번호가 일치하지 않습니다.\n다시 입력해주세요.');
     }
-  }
-
-  // --------------------------------------------------
-  // API - 회원 가입
-  // --------------------------------------------------
-  Future<void> _callSignUpApi() async {
-    Loading().show(context);
-    try {
-      final response = await http
-          .post(
-            Uri.parse('$appServerURL/api/auth/signup'),
-            headers: {'Content-Type': 'application/json'},
-            body: jsonEncode({
-              'phoneNumber': widget.signUpData.phoneNumber,
-              'password': widget.signUpData.password,
-              'name': widget.signUpData.name,
-              'registerType': widget.signUpData.carrier,
-            }),
-          )
-          .timeout(const Duration(seconds: apiTimeout));
-
-      if (response.statusCode == 200) {
-        // TODO: 응답 코드에 따른 처리 필요
-        await SecureStorage().savePassword(password: widget.signUpData.password);
-        _navigateToBioAuthPage();
-      } else {
-        MyFN.showSnackBar(message: messageError);
-      }
-    } catch (e) {
-      debugPrint(e.toString());
-      MyFN.showSnackBar(message: messageError);
-    } finally {
-      Loading().hide();
-    }
-  }
-
-  // --------------------------------------------------
-  // 바이오인증 페이지로 이동
-  // --------------------------------------------------
-  void _navigateToBioAuthPage() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => SetBioAuth(widget.signUpData)));
   }
 
   // --------------------------------------------------
@@ -120,11 +93,12 @@ class _SetPasswordState extends State<SetPassword> {
     return Scaffold(
       backgroundColor: MyColors.background1,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          width: double.infinity,
           child: Column(
             children: [
-              const SizedBox(height: 60),
+              const Spacer(flex: 1),
 
               // 제목
               Text(
@@ -133,18 +107,16 @@ class _SetPasswordState extends State<SetPassword> {
                 textAlign: TextAlign.center,
               ),
 
+              const SizedBox(height: 20),
+
               // 설명 문구
-              Container(
-                height: 70,
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-                child: Text(
-                  _isConfirming ? '비밀번호를 한번 더 입력해주세요' : '앱 실행시 사용할 6자리 비밀번호를 입력해주세요.',
-                  style: const TextStyle(fontSize: 16.0, color: MyColors.text2),
-                  textAlign: TextAlign.center,
-                ),
+              Text(
+                _isConfirming ? '비밀번호를 한번 더 입력해주세요' : '앱 실행시 사용할 6자리 비밀번호를 입력해주세요.',
+                style: const TextStyle(fontSize: 16.0, color: MyColors.text2),
+                textAlign: TextAlign.center,
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 40),
 
               // 비밀번호 표시 아이콘들
               Row(
@@ -161,7 +133,7 @@ class _SetPasswordState extends State<SetPassword> {
                 }),
               ),
 
-              const Spacer(),
+              const SizedBox(height: 60),
 
               // 숫자 패드
               Column(
@@ -218,7 +190,7 @@ class _SetPasswordState extends State<SetPassword> {
                   ),
                 ],
               ),
-              const SizedBox(height: 40),
+              const Spacer(flex: 1),
             ],
           ),
         ),

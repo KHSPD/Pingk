@@ -1,39 +1,77 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pingk/common/biometric_auth.dart';
+import 'package:pingk/common/local_storage.dart';
 import 'package:pingk/common/my_colors.dart';
-import 'package:pingk/page_sign_up/sign_up.dart';
+import 'package:pingk/common/my_widget.dart';
 
 // ====================================================================================================
 // 바이오인증 등록 페이지
 // ====================================================================================================
 class SetBioAuth extends StatefulWidget {
-  final SignUpData signUpData;
-  const SetBioAuth(this.signUpData, {super.key});
+  const SetBioAuth({super.key});
   @override
   State<SetBioAuth> createState() => _SetBioAuthState();
 }
 
 class _SetBioAuthState extends State<SetBioAuth> {
-  bool _isBioAvailable = false;
-
+  // --------------------------------------------------
+  // Lifecycle Methods
+  // --------------------------------------------------
   @override
   void initState() {
+    debugPrint('SetBioAuth : initState');
     super.initState();
-    _checkBioAuthAvailability();
+  }
+
+  @override
+  void dispose() {
+    debugPrint('SetBioAuth : dispose');
+    super.dispose();
   }
 
   // --------------------------------------------------
-  // 바이오 인증 가능 여부 확인
+  // 바이오인증 사용 승인시
   // --------------------------------------------------
-  Future<void> _checkBioAuthAvailability() async {
-    final isAvailable = await BioAuth().isBioAuthAvailable();
-    setState(() {
-      _isBioAvailable = isAvailable;
-    });
+  Future<void> _approveBioAuth() async {
+    final isAvailable = await BioAuth().canCheckBiometrics();
+    if (isAvailable) {
+      bool result = await BioAuth().setBioAuth();
+      if (result && mounted) {
+        LocalStorage().saveUseBioAuth(true);
+        context.go('/main/home');
+      }
+    } else {
+      // 바이오 인증이 불가능한 경우
+      if (mounted) {
+        Popup().show(
+          context: context,
+          title: '생체인증 설정 불가',
+          msg: '비밀번호 사용하여 이용해주세요.',
+          btTxt2: '확인',
+          btCB2: () {
+            context.go('/main/home');
+          },
+        );
+      }
+    }
+  }
 
-    // 바이오 인증이 불가능한 경우
-    if (!isAvailable) {
-      _navigateToSignInPage();
+  // --------------------------------------------------
+  // 바이오 등록 거부시
+  // --------------------------------------------------
+  void _rejectBioAuth() {
+    LocalStorage().saveUseBioAuth(false);
+    if (mounted) {
+      Popup().show(
+        context: context,
+        title: '로그인 안내',
+        msg: '생체인증을 건너뛰시면, 비밀번호로 로그인하게 됩니다.\n설정에서 생체인증 설정을 변경할 수 있습니다.',
+        btTxt2: '확인',
+        btCB2: () {
+          context.go('/main/home');
+        },
+      );
     }
   }
 
@@ -42,28 +80,26 @@ class _SetBioAuthState extends State<SetBioAuth> {
   // --------------------------------------------------
   @override
   Widget build(BuildContext context) {
-    if (!_isBioAvailable) {
-      return Container(
-        color: MyColors.background1,
-        padding: const EdgeInsets.all(20.0),
-        child: SafeArea(
+    return Scaffold(
+      backgroundColor: MyColors.background1,
+      body: SafeArea(
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Spacer(flex: 1),
+              const SizedBox(height: 60),
+
               const Text(
                 '빠른 이용을 위한 생체인증 설정',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, decoration: TextDecoration.none),
               ),
 
-              Container(
-                height: 70,
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-                child: Text(
-                  '생체인증으로 간편하게 Pingk를 이용하세요.\n사용자 설정에서 생체인증 설정을 변경할 수 있습니다.',
-                  style: const TextStyle(fontSize: 16.0, color: MyColors.text2),
-                  textAlign: TextAlign.center,
-                ),
+              const SizedBox(height: 20),
+
+              const Text(
+                '생체인증으로 간편하게 Pingk를 이용하세요.\n사용자 설정에서 생체인증 설정을 변경할 수 있습니다.',
+                style: TextStyle(fontSize: 16.0, color: MyColors.text2, decoration: TextDecoration.none),
               ),
               const Spacer(flex: 2),
 
@@ -73,7 +109,7 @@ class _SetBioAuthState extends State<SetBioAuth> {
                   // ----- 다음에 버튼 -----
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: _navigateToSignInPage,
+                      onPressed: () => _rejectBioAuth(),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.transparent,
                         foregroundColor: MyColors.text2,
@@ -89,12 +125,7 @@ class _SetBioAuthState extends State<SetBioAuth> {
                   // ----- 사용하기 버튼 -----
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () async {
-                        final value = await BioAuth().enableBioAuth();
-                        if (value && context.mounted) {
-                          _navigateToSignInPage();
-                        }
-                      },
+                      onPressed: () => _approveBioAuth(),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: MyColors.primary,
                         foregroundColor: Colors.white,
@@ -112,17 +143,7 @@ class _SetBioAuthState extends State<SetBioAuth> {
             ],
           ),
         ),
-      );
-    }
-    // 바이오 인증 가능 여부 확인중 일때
-    return const Center(child: CircularProgressIndicator());
-  }
-
-  // --------------------------------------------------
-  // 페이지로 이동
-  // --------------------------------------------------
-  void _navigateToSignInPage() {
-    BioAuth().disableBioAuth();
-    Navigator.pushNamedAndRemoveUntil(context, '/sign_in', (route) => false, arguments: widget.signUpData.phoneNumber);
+      ),
+    );
   }
 }
