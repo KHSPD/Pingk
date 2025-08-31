@@ -17,7 +17,7 @@ class BodyHomeAuctionItems extends StatefulWidget {
 
 class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
   final List<AuctionItem> itemList = TempItems.auctionItems;
-  final PageController _pageController = PageController(viewportFraction: 0.8);
+  final PageController _pageController = PageController(viewportFraction: 0.7);
   int _selectedItemIdx = 0;
 
   // --------------------------------------------------
@@ -89,6 +89,7 @@ class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
 
           // ----- 상품 목록 -----
           SizedBox(
+            width: double.infinity,
             height: 390,
             child: PageView.builder(
               controller: _pageController,
@@ -102,24 +103,15 @@ class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
                 return AnimatedBuilder(
                   animation: _pageController,
                   builder: (context, child) {
-                    double value = 1.0;
+                    double scale = 1.0;
                     double opacity = 1.0;
-
                     if (_pageController.position.haveDimensions) {
-                      value = _pageController.page! - index;
-                      // 현재 페이지(가운데)에 가까울수록 1.0, 멀수록 0.9로 설정
-                      value = (1 - (value.abs() * 0.1)).clamp(0.7, 1.0);
-                      // 현재 페이지(가운데)에 가까울수록 1.0, 멀수록 0.7로 설정
-                      opacity = (1 - (value.abs() * 0.3)).clamp(0.7, 1.0);
-                    } else {
-                      // 앱 시작 시에도 현재 선택된 아이템과의 거리에 따라 크기와 투명도 설정
-                      int distance = (index - _selectedItemIdx).abs();
-                      value = (1 - (distance * 0.1)).clamp(0.7, 1.0);
-                      opacity = (1 - (distance * 0.3)).clamp(0.7, 1.0);
-                    }
-
+                      final double v = (_pageController.page! - index).abs();                      
+                      scale = (1 - (v * 0.1));
+                      opacity = (1 - (v * 0.5));
+                    }                    
                     return Transform.scale(
-                      scale: value,
+                      scale: scale,
                       child: Opacity(opacity: opacity, child: _itemAuctionCard(itemList[index])),
                     );
                   },
@@ -158,7 +150,7 @@ class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
       onTap: () {
         Navigator.pushNamed(context, '/auction-detail', arguments: item.id);
       },
-      child: Container(
+      child: Container(       
         margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
         decoration: BoxDecoration(
           color: MyColors.background1,
