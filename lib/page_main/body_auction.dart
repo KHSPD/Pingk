@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pingk/common/_temp_items.dart';
 import 'package:pingk/common/item_info.dart';
-import 'package:pingk/common/my_colors.dart';
+import 'package:pingk/common/my_styles.dart';
 import 'package:pingk/common/my_functions.dart';
 
 // ====================================================================================================
@@ -40,7 +41,7 @@ class _BodyAuctionState extends State<BodyAuction> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: MyColors.background2,
+      color: Color(0xFFFFFFFF),
       child: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
@@ -98,8 +99,8 @@ class _BodyAuctionState extends State<BodyAuction> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   decoration: const BoxDecoration(
-                    color: MyColors.background2,
-                    border: Border(bottom: BorderSide(color: MyColors.border1, width: 0.5)),
+                    color: Color(0xFFFFFFFF),
+                    border: Border(bottom: BorderSide(color: MyColors.color2, width: 0.5)),
                   ),
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
@@ -116,12 +117,12 @@ class _BodyAuctionState extends State<BodyAuction> {
                           margin: const EdgeInsets.symmetric(horizontal: 5),
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           alignment: Alignment.center,
-                          decoration: BoxDecoration(color: _selectedCategoryIndex == index ? MyColors.primary : MyColors.button3, borderRadius: BorderRadius.circular(25)),
+                          decoration: BoxDecoration(color: _selectedCategoryIndex == index ? Color(0xFFFF437A) : Color(0xFF4A4A4A), borderRadius: BorderRadius.circular(25)),
                           child: Text(
                             _categories[index],
                             style: TextStyle(
                               fontSize: 13,
-                              color: _selectedCategoryIndex == index ? MyColors.text4 : MyColors.text1,
+                              color: _selectedCategoryIndex == index ? Color(0xFFFFFFFF) : Color(0xFFFFFFFF),
                               fontWeight: _selectedCategoryIndex == index ? FontWeight.w600 : FontWeight.w400,
                             ),
                           ),
@@ -154,17 +155,13 @@ class _BodyAuctionState extends State<BodyAuction> {
   Widget _itemAuctionCard(AuctionItem item) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/auction-detail', arguments: item.id);
+        context.pushNamed('auction-detail', pathParameters: {'itemId': item.id});
       },
       child: Container(
         width: double.infinity,
         height: 286,
         margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
-        decoration: BoxDecoration(
-          color: MyColors.background1,
-          borderRadius: BorderRadius.circular(15),
-          boxShadow: [BoxShadow(color: MyColors.shadow2, spreadRadius: 4, blurRadius: 6, offset: const Offset(0, 0))],
-        ),
+        decoration: BoxDecoration(color: MyColors.background1, borderRadius: BorderRadius.circular(15), boxShadow: [MyShadows.type1]),
         child: Stack(
           children: [
             // ----- 카운트 다운 -----
@@ -174,7 +171,7 @@ class _BodyAuctionState extends State<BodyAuction> {
               child: Container(
                 width: 90,
                 height: 27,
-                decoration: BoxDecoration(color: MyColors.button5, borderRadius: BorderRadius.circular(15)),
+                decoration: BoxDecoration(color: Color(0xFFFF437A), borderRadius: BorderRadius.circular(15)),
                 child: Center(
                   child: TweenAnimationBuilder<Duration>(
                     duration: item.endTime.difference(DateTime.now()),
@@ -188,7 +185,7 @@ class _BodyAuctionState extends State<BodyAuction> {
                       final seconds = (value.inSeconds % 60).toString().padLeft(2, '0');
                       return Text(
                         '$hours:$minutes:$seconds',
-                        style: const TextStyle(fontSize: 16, color: MyColors.text1, fontWeight: FontWeight.w600),
+                        style: const TextStyle(fontSize: 16, color: Color(0xFFFFFFFF), fontWeight: FontWeight.w600),
                         textAlign: TextAlign.center,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -262,7 +259,7 @@ class _BodyAuctionState extends State<BodyAuction> {
               height: 113,
               child: ClipOval(
                 child: Container(
-                  decoration: BoxDecoration(color: MyColors.background3),
+                  decoration: BoxDecoration(color: MyColors.background1),
                   child: AspectRatio(
                     aspectRatio: 1,
                     child: Image.network(
@@ -270,7 +267,7 @@ class _BodyAuctionState extends State<BodyAuction> {
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
-                          color: MyColors.background3,
+                          color: MyColors.background1,
                           child: const Icon(Icons.image_not_supported, color: MyColors.text2, size: 40),
                         );
                       },

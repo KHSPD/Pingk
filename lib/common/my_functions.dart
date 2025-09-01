@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pingk/common/constants.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
-import 'my_colors.dart';
+import 'my_styles.dart';
 
 // ====================================================================================================
 // 앱에서 공통으로 사용하는 함수 Util
@@ -65,13 +65,13 @@ class MyFN {
       SnackBar(
         content: Text(
           message,
-          style: TextStyle(fontSize: fontSize ?? 16.0, color: textColor ?? MyColors.text4),
+          style: TextStyle(fontSize: fontSize ?? 16.0, color: textColor ?? MyColors.text6),
           textAlign: TextAlign.center,
         ),
         duration: duration,
         behavior: behavior,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius)),
-        backgroundColor: backgroundColor ?? MyColors.background5,
+        backgroundColor: backgroundColor ?? MyColors.background2,
       ),
     );
   }

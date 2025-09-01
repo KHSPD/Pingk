@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pingk/common/_temp_items.dart';
 import 'package:pingk/common/item_info.dart';
-import 'package:pingk/common/my_colors.dart';
+import 'package:pingk/common/my_styles.dart';
 
 // ====================================================================================================
 // CouponBox
@@ -70,7 +70,7 @@ class _CouponBoxState extends State<CouponBox> {
             margin: const EdgeInsets.only(top: 12, bottom: 20),
             width: 40,
             height: 4,
-            decoration: BoxDecoration(color: MyColors.icon1, borderRadius: BorderRadius.circular(2)),
+            decoration: BoxDecoration(color: MyColors.color1, borderRadius: BorderRadius.circular(2)),
           ),
 
           const SizedBox(height: 20),
@@ -83,7 +83,7 @@ class _CouponBoxState extends State<CouponBox> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: MyColors.border1, width: 1),
+              border: Border.all(color: MyColors.color2, width: 1),
             ),
             child: Image.asset('assets/sample_barcode.png', width: double.infinity, height: 151, fit: BoxFit.fitWidth),
           ),
@@ -120,7 +120,7 @@ class _CouponBoxState extends State<CouponBox> {
                   top: 33,
                   child: GestureDetector(
                     onTap: _previousPage,
-                    child: const Icon(Icons.arrow_back_ios, color: MyColors.button1, size: 20),
+                    child: const Icon(Icons.arrow_back_ios, color: MyColors.color2, size: 20),
                   ),
                 ),
 
@@ -131,7 +131,7 @@ class _CouponBoxState extends State<CouponBox> {
                   top: 33,
                   child: GestureDetector(
                     onTap: _nextPage,
-                    child: const Icon(Icons.arrow_forward_ios, color: MyColors.button1, size: 20),
+                    child: const Icon(Icons.arrow_forward_ios, color: MyColors.color2, size: 20),
                   ),
                 ),
             ],
@@ -166,8 +166,8 @@ class _CouponBoxState extends State<CouponBox> {
                   height: 64,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => Container(
-                    color: MyColors.imageBgColor,
-                    child: const Icon(Icons.image_not_supported, color: MyColors.secondary, size: 32),
+                    color: MyColors.color4,
+                    child: const Icon(Icons.image_not_supported, color: MyColors.color2, size: 32),
                   ),
                 ),
               ),
@@ -202,7 +202,7 @@ class _CouponBoxState extends State<CouponBox> {
               child: Container(
                 width: 48,
                 height: 26,
-                decoration: BoxDecoration(color: MyColors.secondary, borderRadius: BorderRadius.circular(25)),
+                decoration: BoxDecoration(color: MyColors.color2, borderRadius: BorderRadius.circular(25)),
                 alignment: Alignment.center,
                 child: Text(
                   'D-12',

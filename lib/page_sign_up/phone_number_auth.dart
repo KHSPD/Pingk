@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:pingk/common/constants.dart';
-import 'package:pingk/common/my_colors.dart';
+import 'package:pingk/common/my_styles.dart';
 import 'package:pingk/common/my_functions.dart';
 import 'package:pingk/common/my_widget.dart';
 import 'package:pingk/common/local_storage.dart';
@@ -74,7 +74,7 @@ class _PhoneNumberAuthState extends State<PhoneNumberAuth> {
     FocusScope.of(context).unfocus();
     Loading().show(context);
     try {
-      final String apiUrl = '$appServerURL/api/auth/access';
+      final String apiUrl = '$apiServerURL/api/auth/access';
       final Map<String, dynamic> body = {'phoneNumber': _inputPhoneNumber, 'authCode': _inputAuthCode, 'registerType': _selectedCarrier};
       final response = await http.post(Uri.parse(apiUrl), headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}, body: jsonEncode(body));
 
@@ -116,7 +116,7 @@ class _PhoneNumberAuthState extends State<PhoneNumberAuth> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: MyColors.background1,
+      backgroundColor: Color(0xFFFFFFFF),
       resizeToAvoidBottomInset: true,
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
@@ -160,9 +160,8 @@ class _PhoneNumberAuthState extends State<PhoneNumberAuth> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                           decoration: BoxDecoration(
-                            color: MyColors.background2,
                             borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: MyColors.border1),
+                            border: Border.all(color: Color(0xFF4A4A4A)),
                           ),
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
@@ -197,9 +196,8 @@ class _PhoneNumberAuthState extends State<PhoneNumberAuth> {
                                 height: 60,
                                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                                 decoration: BoxDecoration(
-                                  color: MyColors.background2,
                                   borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(color: MyColors.border1),
+                                  border: Border.all(color: Color(0xFF4A4A4A)),
                                 ),
                                 child: TextField(
                                   maxLength: 11,
@@ -234,7 +232,7 @@ class _PhoneNumberAuthState extends State<PhoneNumberAuth> {
                                       }
                                     : null,
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: _enabledCodeRequestButton ? MyColors.primary : MyColors.background2,
+                                  backgroundColor: _enabledCodeRequestButton ? Color(0xFFFF437A) : Color(0xFF4A4A4A),
                                   foregroundColor: _enabledCodeRequestButton ? Colors.white : MyColors.text2,
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                   padding: EdgeInsets.zero,
@@ -259,9 +257,8 @@ class _PhoneNumberAuthState extends State<PhoneNumberAuth> {
                             height: 60,
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                             decoration: BoxDecoration(
-                              color: MyColors.background2,
                               borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: MyColors.border1),
+                              border: Border.all(color: Color(0xFF4A4A4A)),
                             ),
                             child: TextField(
                               maxLength: _authCodeLength,

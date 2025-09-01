@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pingk/common/my_colors.dart';
+import 'package:pingk/common/my_styles.dart';
 
 // --------------------------------------------------
 // 넘버패드 - 숫자 버튼
@@ -19,11 +19,7 @@ class NumpadDigitButton extends StatelessWidget {
       child: Container(
         width: 80,
         height: 80,
-        decoration: BoxDecoration(
-          color: MyColors.background1,
-          borderRadius: BorderRadius.circular(40),
-          boxShadow: [BoxShadow(color: MyColors.shadow2, blurRadius: 8, offset: const Offset(0, 2))],
-        ),
+        decoration: BoxDecoration(color: MyColors.background1, borderRadius: BorderRadius.circular(40), boxShadow: [MyShadows.type4]),
         child: Center(
           child: Text(number, style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600)),
         ),
@@ -49,11 +45,7 @@ class NumpadDeleteButton extends StatelessWidget {
       child: Container(
         width: 80,
         height: 80,
-        decoration: BoxDecoration(
-          color: MyColors.background1,
-          borderRadius: BorderRadius.circular(40),
-          boxShadow: [BoxShadow(color: MyColors.shadow2, blurRadius: 8, offset: const Offset(0, 2))],
-        ),
+        decoration: BoxDecoration(color: MyColors.background1, borderRadius: BorderRadius.circular(40), boxShadow: [MyShadows.type4]),
         child: const Center(child: Icon(Icons.backspace_outlined, size: 32, color: Colors.grey)),
       ),
     );
@@ -109,7 +101,7 @@ class Loading {
       builder: (context) => Container(
         color: Colors.black.withValues(alpha: 0.4),
         child: const Center(
-          child: SizedBox(width: 60.0, height: 60.0, child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(MyColors.primary))),
+          child: SizedBox(width: 60.0, height: 60.0, child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(MyColors.color1))),
         ),
       ),
     );
@@ -237,11 +229,7 @@ class _PopupOverlayState extends State<_PopupOverlay> with SingleTickerProviderS
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 40),
       padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: MyColors.shadow2, blurRadius: 20, offset: const Offset(0, 10))],
-      ),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), boxShadow: [MyShadows.type1]),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -290,14 +278,14 @@ class _PopupOverlayState extends State<_PopupOverlay> with SingleTickerProviderS
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: MyColors.primary,
+                      backgroundColor: MyColors.color1,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
                     child: Text(
                       widget.btTxt2!,
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 14, color: MyColors.text4, fontWeight: FontWeight.w600, decoration: TextDecoration.none),
+                      style: TextStyle(fontSize: 14, color: MyColors.text6, fontWeight: FontWeight.w600, decoration: TextDecoration.none),
                     ),
                   ),
                 ),

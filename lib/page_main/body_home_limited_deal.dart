@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:pingk/common/my_colors.dart';
+import 'package:go_router/go_router.dart';
+import 'package:pingk/common/my_styles.dart';
 import 'package:pingk/common/my_functions.dart';
 import 'package:pingk/common/item_info.dart';
 import 'package:pingk/common/_temp_items.dart';
@@ -55,7 +56,7 @@ class _BodyHomeLimitedDealState extends State<BodyHomeLimitedDeal> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: MyColors.text1),
                 ),
                 const Spacer(),
-                SvgPicture.asset('assets/icons/icon_arrow_right.svg', width: 16, height: 11.34, colorFilter: ColorFilter.mode(MyColors.icon1, BlendMode.srcIn)),
+                SvgPicture.asset('assets/icons/icon_arrow_right.svg', width: 16, height: 11.34, colorFilter: ColorFilter.mode(MyColors.color1, BlendMode.srcIn)),
               ],
             ),
           ),
@@ -87,7 +88,7 @@ class _BodyHomeLimitedDealState extends State<BodyHomeLimitedDeal> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: MyColors.text1),
                 ),
                 const Spacer(),
-                SvgPicture.asset('assets/icons/icon_arrow_right.svg', width: 16, height: 11.34, colorFilter: ColorFilter.mode(MyColors.icon1, BlendMode.srcIn)),
+                SvgPicture.asset('assets/icons/icon_arrow_right.svg', width: 16, height: 11.34, colorFilter: ColorFilter.mode(MyColors.color1, BlendMode.srcIn)),
               ],
             ),
           ),
@@ -95,7 +96,7 @@ class _BodyHomeLimitedDealState extends State<BodyHomeLimitedDeal> {
 
         // ----- 다가올 핫딜 리스트 -----
         Column(children: comingSoonHotDealDatas.map((item) => _comingSoonLimitedDealCard(item, isNotified: false, onToggleNotify: () {})).toList()),
-        SizedBox(height: 20),
+        SizedBox(height: 100),
       ],
     );
   }
@@ -115,17 +116,13 @@ class _BodyHomeLimitedDealState extends State<BodyHomeLimitedDeal> {
   Widget _todaysLimitedDealCard(GeneralItem item, VoidCallback onWishToggle) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/deal-detail', arguments: item.id);
+        context.pushNamed('deal-detail', pathParameters: {'itemId': item.id});
       },
       child: Container(
         width: 250,
         height: 336,
         margin: const EdgeInsets.fromLTRB(20, 5, 0, 5),
-        decoration: BoxDecoration(
-          color: MyColors.background1,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [BoxShadow(color: MyColors.shadow2, spreadRadius: 0, blurRadius: 4, offset: const Offset(2, 2))],
-        ),
+        decoration: BoxDecoration(color: MyColors.background1, borderRadius: BorderRadius.circular(12), boxShadow: [MyShadows.type1]),
         child: Stack(
           children: [
             // ----- 상품 이미지 -----
@@ -137,7 +134,7 @@ class _BodyHomeLimitedDealState extends State<BodyHomeLimitedDeal> {
               child: ClipRRect(
                 borderRadius: const BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12)),
                 child: Container(
-                  decoration: BoxDecoration(color: MyColors.background3),
+                  decoration: BoxDecoration(color: MyColors.background1),
                   child: AspectRatio(
                     aspectRatio: 1,
                     child: Image.network(
@@ -145,7 +142,7 @@ class _BodyHomeLimitedDealState extends State<BodyHomeLimitedDeal> {
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
-                          color: MyColors.background3,
+                          color: MyColors.background1,
                           child: const Icon(Icons.image_not_supported, color: MyColors.text2, size: 40),
                         );
                       },
@@ -182,7 +179,7 @@ class _BodyHomeLimitedDealState extends State<BodyHomeLimitedDeal> {
               child: Container(
                 width: 52,
                 height: 23,
-                decoration: BoxDecoration(color: MyColors.background4, borderRadius: BorderRadius.circular(20)),
+                decoration: BoxDecoration(color: MyColors.background1, borderRadius: BorderRadius.circular(20)),
                 alignment: Alignment.center,
                 child: RichText(
                   text: TextSpan(
@@ -233,14 +230,14 @@ class _BodyHomeLimitedDealState extends State<BodyHomeLimitedDeal> {
   Widget _comingSoonLimitedDealCard(GeneralItem item, {required bool isNotified, required VoidCallback onToggleNotify}) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/deal-detail', arguments: item.id);
+        context.pushNamed('deal-detail', pathParameters: {'itemId': item.id});
       },
       child: Container(
         width: double.infinity,
         height: 85,
         margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         decoration: const BoxDecoration(
-          border: Border(bottom: BorderSide(color: MyColors.border1, width: 0.5)),
+          border: Border(bottom: BorderSide(color: Color(0xFFBEBEBE), width: 0.5)),
         ),
         child: Stack(
           children: [
@@ -255,8 +252,8 @@ class _BodyHomeLimitedDealState extends State<BodyHomeLimitedDeal> {
                   height: 64,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => Container(
-                    color: MyColors.imageBgColor,
-                    child: const Icon(Icons.image_not_supported, color: MyColors.secondary, size: 32),
+                    color: MyColors.color4,
+                    child: const Icon(Icons.image_not_supported, color: MyColors.color2, size: 32),
                   ),
                 ),
               ),
@@ -291,11 +288,11 @@ class _BodyHomeLimitedDealState extends State<BodyHomeLimitedDeal> {
               child: Container(
                 width: 48,
                 height: 26,
-                decoration: BoxDecoration(color: MyColors.secondary, borderRadius: BorderRadius.circular(25)),
+                decoration: BoxDecoration(color: Color(0xFFFF437A), borderRadius: BorderRadius.circular(25)),
                 alignment: Alignment.center,
                 child: Text(
                   'D-3',
-                  style: TextStyle(fontSize: 15, color: MyColors.text4, fontWeight: FontWeight.w700),
+                  style: TextStyle(fontSize: 15, color: Color(0xFFFFFFFF), fontWeight: FontWeight.w700),
                   textAlign: TextAlign.center,
                 ),
               ),

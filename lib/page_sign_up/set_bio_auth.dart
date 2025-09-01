@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pingk/common/biometric_auth.dart';
 import 'package:pingk/common/local_storage.dart';
-import 'package:pingk/common/my_colors.dart';
+import 'package:pingk/common/my_styles.dart';
 import 'package:pingk/common/my_widget.dart';
 
 // ====================================================================================================
@@ -127,7 +127,7 @@ class _SetBioAuthState extends State<SetBioAuth> {
                     child: ElevatedButton(
                       onPressed: () => _approveBioAuth(),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: MyColors.primary,
+                        backgroundColor: MyColors.color1,
                         foregroundColor: Colors.white,
                         elevation: 0,
                         padding: const EdgeInsets.symmetric(vertical: 16),

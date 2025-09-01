@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:pingk/common/my_colors.dart';
+import 'package:go_router/go_router.dart';
+import 'package:pingk/common/my_styles.dart';
 import 'package:pingk/common/my_functions.dart';
 import 'package:pingk/common/item_info.dart';
 import 'package:pingk/common/_temp_items.dart';
@@ -52,7 +53,7 @@ class _BodyHomeAlwaysDealState extends State<BodyHomeAlwaysDeal> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: MyColors.text1),
               ),
               const Spacer(),
-              SvgPicture.asset('assets/icons/icon_arrow_right.svg', width: 16, height: 11.34, colorFilter: ColorFilter.mode(MyColors.icon1, BlendMode.srcIn)),
+              SvgPicture.asset('assets/icons/icon_arrow_right.svg', width: 16, height: 11.34, colorFilter: ColorFilter.mode(MyColors.color1, BlendMode.srcIn)),
             ],
           ),
         ),
@@ -61,6 +62,8 @@ class _BodyHomeAlwaysDealState extends State<BodyHomeAlwaysDeal> {
         SizedBox(
           child: Column(children: [for (int i = 0; i < (bestCouponDatas.length < 4 ? bestCouponDatas.length : 4); i++) _bestDealCard(bestCouponDatas[i], () => _toggleWish(i))]),
         ),
+
+        SizedBox(height: 100),
       ],
     );
   }
@@ -80,7 +83,7 @@ class _BodyHomeAlwaysDealState extends State<BodyHomeAlwaysDeal> {
   Widget _bestDealCard(GeneralItem item, VoidCallback onWishToggle) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/deal-detail', arguments: item.id);
+        context.pushNamed('deal-detail', pathParameters: {'itemId': item.id});
       },
       child: Container(
         width: double.infinity,
@@ -97,7 +100,7 @@ class _BodyHomeAlwaysDealState extends State<BodyHomeAlwaysDeal> {
                 child: Container(
                   width: 126,
                   height: 126,
-                  decoration: BoxDecoration(color: MyColors.background3, borderRadius: BorderRadius.circular(5)),
+                  decoration: BoxDecoration(color: MyColors.background1, borderRadius: BorderRadius.circular(5)),
                   child: AspectRatio(
                     aspectRatio: 1,
                     child: Image.network(
@@ -121,7 +124,7 @@ class _BodyHomeAlwaysDealState extends State<BodyHomeAlwaysDeal> {
               left: 96,
               child: GestureDetector(
                 onTap: onWishToggle,
-                child: Icon(item.isWished ? Icons.favorite : Icons.favorite_border, color: item.isWished ? MyColors.primary : MyColors.secondary, size: 22),
+                child: Icon(item.isWished ? Icons.favorite : Icons.favorite_border, color: item.isWished ? MyColors.color1 : MyColors.color2, size: 22),
               ),
             ),
 
@@ -155,7 +158,7 @@ class _BodyHomeAlwaysDealState extends State<BodyHomeAlwaysDeal> {
               child: Container(
                 width: 52,
                 height: 23,
-                decoration: BoxDecoration(color: MyColors.background4, borderRadius: BorderRadius.circular(20)),
+                decoration: BoxDecoration(color: Color(0xFFFF437A), borderRadius: BorderRadius.circular(20)),
                 alignment: Alignment.center,
                 child: RichText(
                   text: TextSpan(

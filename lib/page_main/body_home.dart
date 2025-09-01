@@ -3,7 +3,7 @@ import 'package:pingk/page_main/body_home_always_deal.dart';
 import 'package:pingk/page_main/body_home_auction.dart';
 import 'package:pingk/page_main/body_home_limited_deal.dart';
 import 'package:pingk/page_main/body_home_winners.dart';
-import '../common/my_colors.dart';
+import '../common/my_styles.dart';
 
 // ====================================================================================================
 // BodyHome
@@ -50,16 +50,19 @@ class _BodyHomeState extends State<BodyHome> {
             SliverPersistentHeader(
               pinned: true,
               delegate: _SliverAppBarDelegate(
-                const TabBar(
-                  indicatorColor: MyColors.primary,
-                  labelColor: MyColors.text3,
-                  unselectedLabelColor: MyColors.text1,
-                  tabs: [
+                TabBar(
+                  labelColor: const Color(0xFFFF437A),
+                  unselectedLabelColor: const Color(0xFFBEBEBE),
+                  indicator: const BoxDecoration(
+                    border: Border(bottom: BorderSide(color: Color(0xFFFF437A), width: 2.0)),
+                  ),
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  tabs: const [
                     Tab(
-                      child: Text('한정특가', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+                      child: Text('한정특가', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                     ),
                     Tab(
-                      child: Text('상시특가', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+                      child: Text('상시특가', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                     ),
                   ],
                 ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pingk/common/_temp_items.dart';
 import 'package:pingk/common/item_info.dart';
-import 'package:pingk/common/my_colors.dart';
+import 'package:pingk/common/my_styles.dart';
 import 'package:pingk/common/my_functions.dart';
 import 'package:pingk/common/my_widget.dart';
 
@@ -46,7 +46,7 @@ class _PageAuctionDetailState extends State<PageAuctionDetail> {
   Widget build(BuildContext context) {
     if (_itemData == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text(''), backgroundColor: MyColors.background3, foregroundColor: Colors.black),
+        appBar: AppBar(title: const Text(''), backgroundColor: MyColors.background1, foregroundColor: Colors.black),
         body: const Center(child: Text('상품을 찾을 수 없습니다.')),
       );
     }
@@ -56,13 +56,13 @@ class _PageAuctionDetailState extends State<PageAuctionDetail> {
       margin: const EdgeInsets.fromLTRB(6, 0, 6, 24),
       child: const Text(
         ':',
-        style: TextStyle(fontSize: 40, color: MyColors.text4, fontWeight: FontWeight.w800),
+        style: TextStyle(fontSize: 30, color: MyColors.text1, fontWeight: FontWeight.w400),
       ),
     );
 
     return Scaffold(
-      backgroundColor: MyColors.background2,
-      appBar: AppBar(title: const Text(''), backgroundColor: MyColors.background3, foregroundColor: Colors.black, elevation: 0),
+      backgroundColor: MyColors.background1,
+      appBar: AppBar(title: const Text(''), backgroundColor: MyColors.background1, foregroundColor: Colors.black, elevation: 0),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.fromLTRB(30, 20, 30, 40),
         decoration: const BoxDecoration(
@@ -92,7 +92,7 @@ class _PageAuctionDetailState extends State<PageAuctionDetail> {
                 child: Container(
                   width: 197,
                   height: 197,
-                  decoration: BoxDecoration(color: MyColors.background3),
+                  decoration: BoxDecoration(color: MyColors.background1),
                   child: AspectRatio(
                     aspectRatio: 1,
                     child: Image.network(
@@ -100,7 +100,7 @@ class _PageAuctionDetailState extends State<PageAuctionDetail> {
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
-                          color: MyColors.background3,
+                          color: MyColors.background1,
                           child: const Icon(Icons.image_not_supported, color: MyColors.text2, size: 40),
                         );
                       },
@@ -289,7 +289,7 @@ class _PageAuctionDetailState extends State<PageAuctionDetail> {
               Container(
                 width: double.infinity,
                 height: 80,
-                decoration: BoxDecoration(color: MyColors.button5, borderRadius: BorderRadius.circular(70)),
+                decoration: BoxDecoration(color: MyColors.color1, borderRadius: BorderRadius.circular(70)),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,

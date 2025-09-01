@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pingk/common/biometric_auth.dart';
-import 'package:pingk/common/my_colors.dart';
+import 'package:pingk/common/my_styles.dart';
 import 'package:pingk/common/my_functions.dart';
 import 'package:pingk/common/my_widget.dart';
 import 'package:pingk/common/local_storage.dart';
@@ -174,7 +174,7 @@ class _SignInState extends State<SignIn> {
               margin: const EdgeInsets.symmetric(horizontal: 8),
               width: 20,
               height: 20,
-              decoration: BoxDecoration(shape: BoxShape.circle, color: isFilled ? MyColors.primary : MyColors.tertiary),
+              decoration: BoxDecoration(shape: BoxShape.circle, color: isFilled ? MyColors.color1 : MyColors.color2),
             );
           }),
         ),

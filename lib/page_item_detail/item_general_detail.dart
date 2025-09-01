@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pingk/common/_temp_items.dart';
 import 'package:pingk/common/item_info.dart';
-import 'package:pingk/common/my_colors.dart';
+import 'package:pingk/common/my_styles.dart';
 import 'package:pingk/common/my_functions.dart';
 import 'package:pingk/common/my_widget.dart';
 
@@ -47,14 +47,14 @@ class _PageGeneralDetailState extends State<PageGeneralDetail> {
   Widget build(BuildContext context) {
     if (_itemData == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text(''), backgroundColor: MyColors.background3, foregroundColor: Colors.black),
+        appBar: AppBar(title: const Text(''), backgroundColor: MyColors.background1, foregroundColor: Colors.black),
         body: const Center(child: Text('상품을 찾을 수 없습니다.')),
       );
     }
 
     return Scaffold(
-      backgroundColor: MyColors.background2,
-      appBar: AppBar(title: const Text(''), backgroundColor: MyColors.background3, foregroundColor: Colors.black, elevation: 0),
+      backgroundColor: MyColors.background1,
+      appBar: AppBar(title: const Text(''), backgroundColor: MyColors.background1, foregroundColor: Colors.black, elevation: 0),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.fromLTRB(30, 20, 30, 40),
         decoration: const BoxDecoration(
@@ -74,7 +74,7 @@ class _PageGeneralDetailState extends State<PageGeneralDetail> {
                 child: Container(
                   width: 220,
                   height: 220,
-                  decoration: BoxDecoration(color: MyColors.background3),
+                  decoration: BoxDecoration(color: MyColors.background1),
                   child: AspectRatio(
                     aspectRatio: 1,
                     child: Image.network(
@@ -82,7 +82,7 @@ class _PageGeneralDetailState extends State<PageGeneralDetail> {
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
-                          color: MyColors.background3,
+                          color: MyColors.background1,
                           child: const Icon(Icons.image_not_supported, color: MyColors.text2, size: 40),
                         );
                       },
@@ -128,7 +128,7 @@ class _PageGeneralDetailState extends State<PageGeneralDetail> {
                       child: Container(
                         width: 52,
                         height: 23,
-                        decoration: BoxDecoration(color: MyColors.background4, borderRadius: BorderRadius.circular(20)),
+                        decoration: BoxDecoration(color: MyColors.background1, borderRadius: BorderRadius.circular(20)),
                         alignment: Alignment.center,
                         child: RichText(
                           text: TextSpan(

@@ -1,6 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:pingk/common/my_colors.dart';
+import 'package:http/http.dart' as http;
+import 'package:pingk/common/constants.dart';
+import 'package:pingk/common/local_storage.dart';
+import 'package:pingk/common/my_styles.dart';
+import 'package:pingk/common/token_manager.dart';
 
 // ====================================================================================================
 // 홈 - 낙찰자 목록
@@ -13,6 +19,9 @@ class BodyHomeWinnersList extends StatefulWidget {
 }
 
 class _BodyHomeWinnersListState extends State<BodyHomeWinnersList> {
+  List<Map<String, dynamic>> _winnerDataList = [];
+  bool isLoading = true;
+
   // --------------------------------------------------
   // Lifecycle Methods
   // --------------------------------------------------
@@ -20,6 +29,9 @@ class _BodyHomeWinnersListState extends State<BodyHomeWinnersList> {
   void initState() {
     debugPrint('BodyHomeWinnersList : initState');
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadWinners();
+    });
   }
 
   @override
@@ -29,128 +41,120 @@ class _BodyHomeWinnersListState extends State<BodyHomeWinnersList> {
   }
 
   // --------------------------------------------------
+  // API - 최근 낙찰자 조회
+  // --------------------------------------------------
+  Future<void> _loadWinners() async {
+    try {
+      final String apiUrl = '$apiServerURL/api/auction-winners/recent';
+      final String? accessToken = await JwtManager().getAccessToken();
+
+      if (accessToken == null) {
+        debugPrint('액세스 토큰 없음.');
+        // TODO: 로그인 페이지로 이동
+        return;
+      }
+
+      final response = await http.get(Uri.parse(apiUrl), headers: {'Content-Type': 'application/json', 'X-Access-Token': accessToken});
+      debugPrint('========== API Response: $apiUrl =====\nStatus: ${response.statusCode}\nBody: ${response.body}');
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> body = jsonDecode(response.body);
+        if (body['code'] == '200') {
+          final resultList = body['result'] as List<dynamic>;
+          setState(() {
+            _winnerDataList = resultList.map((item) => Map<String, dynamic>.from(item)).toList();
+            isLoading = false;
+          });
+        }
+      }
+    } catch (e) {
+      debugPrint('Exception: ${e.toString()}');
+    }
+  }
+
+  // --------------------------------------------------
   // build
   // --------------------------------------------------
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.fromLTRB(30, 50, 30, 0),
+      margin: const EdgeInsets.fromLTRB(30, 40, 30, 0),
       child: Column(
         children: [
           Container(
-            height: 50,
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-            decoration: BoxDecoration(color: MyColors.background3, borderRadius: BorderRadius.circular(10)),
+            padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
+                SvgPicture.asset('assets/icons/icon_medal_bold.svg', width: 14, height: 19),
+                const SizedBox(width: 6),
                 Text(
-                  '낙찰을 축하합니다!',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: MyColors.text1),
-                ),
-                Text(
-                  '실시간 당첨자',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w200, color: MyColors.text2),
+                  '핑크옥션 낙찰을 축하합니다!',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Color(0xFFFF437A), letterSpacing: -0.3),
                 ),
               ],
             ),
           ),
 
           Container(
-            height: 50,
-            margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-            child: Row(
-              children: [
-                SvgPicture.asset('assets/icons/icon_medal.svg', width: 14, height: 19, colorFilter: ColorFilter.mode(MyColors.icon1, BlendMode.srcIn)),
-                const SizedBox(width: 10),
-                Expanded(
-                  flex: 4,
-                  child: Text(
-                    '달콤한 수박',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300, color: MyColors.text1),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  flex: 6,
-                  child: Text(
-                    '메가커피 | 아이스아메리카노',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w200, color: MyColors.text2),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.right,
-                  ),
-                ),
-              ],
+            width: double.infinity,
+            margin: const EdgeInsets.only(top: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            decoration: BoxDecoration(
+              color: Color(0xFFFFFFFF),
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: Color(0xFFF6F1F1), width: 1),
+              boxShadow: [MyShadows.type2],
             ),
-          ),
-
-          Container(
-            height: 50,
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-            child: Row(
-              children: [
-                SvgPicture.asset('assets/icons/icon_medal.svg', width: 14, height: 19, colorFilter: ColorFilter.mode(MyColors.icon1, BlendMode.srcIn)),
-                const SizedBox(width: 10),
-                Expanded(
-                  flex: 4,
-                  child: Text(
-                    '불타는 고구마',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300, color: MyColors.text1),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  flex: 6,
-                  child: Text(
-                    '공차 | 얼그레이 밀크티',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w200, color: MyColors.text2),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.right,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          Container(
-            height: 50,
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-            child: Row(
-              children: [
-                SvgPicture.asset('assets/icons/icon_medal.svg', width: 14, height: 19, colorFilter: ColorFilter.mode(MyColors.icon1, BlendMode.srcIn)),
-                const SizedBox(width: 10),
-                Expanded(
-                  flex: 4,
-                  child: Text(
-                    '느린 바다거북',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300, color: MyColors.text1),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  flex: 6,
-                  child: Text(
-                    '파파존스 | 불고기 피자',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w200, color: MyColors.text2),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.right,
-                  ),
-                ),
-              ],
-            ),
+            child: isLoading
+                ? SizedBox(
+                    height: 120,
+                    child: Center(child: CircularProgressIndicator(color: Color(0xFFFF437A))),
+                  )
+                : Column(children: _winnerDataList.asMap().entries.map((entry) => _buildWinnerItem(entry.value, entry.key)).toList()),
           ),
         ],
       ),
+    );
+  }
+
+  // --------------------------------------------------
+  // 당첨자 아이템 위젯
+  // --------------------------------------------------
+  Widget _buildWinnerItem(dynamic winner, int index) {
+    bool isLastItem = index == _winnerDataList.length - 1;
+
+    return Column(
+      children: [
+        Container(
+          height: 50,
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 4,
+                child: Text(
+                  winner['nickname'],
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Color(0xFF4A4A4A), letterSpacing: -0.3),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                flex: 6,
+                child: Text(
+                  '${winner['brand']} | ${winner['productName']}',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Color(0xFF969696), letterSpacing: -0.3),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.right,
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (!isLastItem) Container(height: 1, margin: const EdgeInsets.symmetric(horizontal: 15), color: Color(0xFFEEEEEE)),
+      ],
     );
   }
 }

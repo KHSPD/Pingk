@@ -35,7 +35,7 @@ class PingkApp extends StatelessWidget {
       title: 'Pingk',
       scaffoldMessengerKey: snackbarKey,
       theme: ThemeData(
-        fontFamily: 'Pretendard', // 앱 기본 폰트
+        fontFamily: 'Texts', // 앱 기본 폰트
       ),
       routerConfig: appRouter,
     );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const String appServerURL = "http://gkpin.iptime.org:18080";
+const String apiServerURL = "http://gkpin.iptime.org:18080";
 const String imageServerURL = "http://gkpin.iptime.org:18081";
 const int apiTimeout = 20;
 

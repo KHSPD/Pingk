@@ -3,12 +3,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:pingk/common/constants.dart';
-import 'package:pingk/common/my_colors.dart';
+import 'package:pingk/common/my_styles.dart';
 import 'package:pingk/common/my_functions.dart';
 import 'package:pingk/common/my_widget.dart';
 import 'package:pingk/common/biometric_auth.dart';
 import 'package:pingk/common/local_storage.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pingk/common/token_manager.dart';
 
 // ====================================================================================================
 // Landing
@@ -46,42 +47,27 @@ class _LandingState extends State<Landing> {
   // --------------------------------------------------
   void _checkProcess() async {
     await Future.delayed(const Duration(milliseconds: 1000));
-
-    // ----- Refresh Token 확인 -----
-    final refreshToken = await LocalStorage().loadRefreshToken();
-    if (refreshToken.isNotEmpty) {
-      debugPrint('Refresh Token - O');
-      final bool? isValidRefreshToken = await _isValidRefreshToken(refreshToken);
-      if (isValidRefreshToken == false) {
-        debugPrint('Refresh Token - 만료됨');
-        await LocalStorage().clearAll();
-        setState(() {
-          _showSignUpButton = true;
-        });
-        if (mounted) {
-          Popup().show(
-            context: context,
-            title: '로그인 만료',
-            msg: '기간이 만료되어 다시 인증이 필요합니다.',
-            btTxt2: '확인',
-            btCB2: () {
-              context.go('/phone_number_auth');
-            },
-          );
-        }
-        return;
-      } else if (isValidRefreshToken == null) {
-        MyFN.showSnackBar(message: '정보 확인 중 오류가 발생했습니다.');
-        return;
-      }
-    } else {
-      debugPrint('Refresh Token - X');
+    // ----- Token 확인 -----
+    final String? accessToken = await JwtManager().getAccessToken();
+    // ----- Access Token 확인 -----
+    if (accessToken == null) {
+      debugPrint('Access Token - X');
       setState(() {
         _showSignUpButton = true;
       });
+      if (mounted) {
+        Popup().show(
+          context: context,
+          title: '로그인 만료',
+          msg: '기간이 만료되어 다시 인증이 필요합니다.',
+          btTxt2: '확인',
+          btCB2: () {
+            context.go('/phone_number_auth');
+          },
+        );
+      }
       return;
     }
-
     // ----- 비밀번호 확인 -----
     final password = await LocalStorage().loadPassword();
     if (password.isEmpty) {
@@ -91,7 +77,6 @@ class _LandingState extends State<Landing> {
       }
       return;
     }
-
     // ----- 바이오인증 가능 여부 확인 -----
     final canCheckBiometrics = await BioAuth().canCheckBiometrics();
     final isEnabled = await LocalStorage().loadUseBioAuth();
@@ -112,40 +97,6 @@ class _LandingState extends State<Landing> {
     setState(() {
       _showSignUpButton = true;
     });
-  }
-
-  // --------------------------------------------------
-  // Refresh Token 만료 여부 확인
-  // --------------------------------------------------
-  Future<bool?> _isValidRefreshToken(String refreshToken) async {
-    Loading().show(context);
-    try {
-      final String apiUrl = '$appServerURL/api/auth/validate-token';
-      final response = await http.post(Uri.parse(apiUrl), headers: {'Content-Type': 'application/json', 'Accept': 'application/json', 'X-Refresh-Token': refreshToken});
-
-      debugPrint('========== API Response: $apiUrl =====');
-      debugPrint('status: ${response.statusCode}');
-      debugPrint('body: ${response.body}');
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseBody = jsonDecode(response.body);
-        if (responseBody['code'] == '200') {
-          final String accessToken = responseBody['result']['accessToken'];
-          await LocalStorage().saveAccessToken(accessToken);
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return null;
-      }
-    } catch (e) {
-      debugPrint('Exception: ${e.toString()}');
-      MyFN.showSnackBar(message: messageError);
-      return null;
-    } finally {
-      Loading().hide();
-    }
   }
 
   // --------------------------------------------------

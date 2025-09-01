@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pingk/common/_temp_items.dart';
 import 'package:pingk/common/item_info.dart';
-import 'package:pingk/common/my_colors.dart';
+import 'package:pingk/common/my_styles.dart';
 import 'package:pingk/common/my_functions.dart';
 
 // ====================================================================================================
@@ -97,7 +97,7 @@ class _BodyLimitedDealState extends State<BodyLimitedDeal> {
         decoration: BoxDecoration(
           color: MyColors.background1,
           borderRadius: BorderRadius.circular(15),
-          border: Border.all(color: MyColors.border1, width: 0.5),
+          border: Border.all(color: MyColors.color2, width: 0.5),
         ),
         child: Stack(
           children: [
@@ -108,11 +108,11 @@ class _BodyLimitedDealState extends State<BodyLimitedDeal> {
               child: Container(
                 width: 90,
                 height: 27,
-                decoration: BoxDecoration(color: MyColors.button5, borderRadius: BorderRadius.circular(15)),
+                decoration: BoxDecoration(color: Color(0xFF4A4A4A), borderRadius: BorderRadius.circular(15)),
                 child: Center(
                   child: Text(
                     '00:30:21',
-                    style: const TextStyle(fontSize: 16, color: MyColors.text1, fontWeight: FontWeight.w600),
+                    style: const TextStyle(fontSize: 16, color: Color(0xFFFFFFFF), fontWeight: FontWeight.w600),
                     textAlign: TextAlign.center,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -149,7 +149,7 @@ class _BodyLimitedDealState extends State<BodyLimitedDeal> {
               child: Container(
                 width: 52,
                 height: 23,
-                decoration: BoxDecoration(color: MyColors.background4, borderRadius: BorderRadius.circular(20)),
+                decoration: BoxDecoration(color: MyColors.background1, borderRadius: BorderRadius.circular(20)),
                 alignment: Alignment.center,
                 child: RichText(
                   text: TextSpan(
@@ -205,7 +205,7 @@ class _BodyLimitedDealState extends State<BodyLimitedDeal> {
               height: 95,
               child: ClipOval(
                 child: Container(
-                  decoration: BoxDecoration(color: MyColors.background3),
+                  decoration: BoxDecoration(color: MyColors.background1),
                   child: AspectRatio(
                     aspectRatio: 1,
                     child: Image.network(
@@ -213,7 +213,7 @@ class _BodyLimitedDealState extends State<BodyLimitedDeal> {
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
-                          color: MyColors.background3,
+                          color: MyColors.background1,
                           child: const Icon(Icons.image_not_supported, color: MyColors.text2, size: 40),
                         );
                       },
@@ -241,7 +241,7 @@ class _BodyLimitedDealState extends State<BodyLimitedDeal> {
         height: 85,
         margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         decoration: const BoxDecoration(
-          border: Border(bottom: BorderSide(color: MyColors.border1, width: 0.5)),
+          border: Border(bottom: BorderSide(color: MyColors.color2, width: 0.5)),
         ),
         child: Stack(
           children: [
@@ -256,8 +256,8 @@ class _BodyLimitedDealState extends State<BodyLimitedDeal> {
                   height: 64,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => Container(
-                    color: MyColors.imageBgColor,
-                    child: const Icon(Icons.image_not_supported, color: MyColors.secondary, size: 32),
+                    color: MyColors.color4,
+                    child: const Icon(Icons.image_not_supported, color: MyColors.color2, size: 32),
                   ),
                 ),
               ),
@@ -292,11 +292,11 @@ class _BodyLimitedDealState extends State<BodyLimitedDeal> {
               child: Container(
                 width: 48,
                 height: 26,
-                decoration: BoxDecoration(color: MyColors.secondary, borderRadius: BorderRadius.circular(25)),
+                decoration: BoxDecoration(color: Color(0xFFFF437A), borderRadius: BorderRadius.circular(25)),
                 alignment: Alignment.center,
                 child: Text(
                   'D-3',
-                  style: TextStyle(fontSize: 15, color: MyColors.text4, fontWeight: FontWeight.w700),
+                  style: TextStyle(fontSize: 15, color: Color(0xFFFFFFFF), fontWeight: FontWeight.w700),
                   textAlign: TextAlign.center,
                 ),
               ),
