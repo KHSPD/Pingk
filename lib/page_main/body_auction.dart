@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pingk/common/_temp_items.dart';
-import 'package:pingk/common/constants.dart';
 import 'package:pingk/common/item_info.dart';
 import 'package:pingk/common/my_styles.dart';
 import 'package:pingk/common/my_functions.dart';
