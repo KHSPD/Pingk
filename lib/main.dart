@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pingk/common/constants.dart';
+import 'package:pingk/common/my_datetime.dart';
 import 'package:pingk/page_item_detail/item_general_detail.dart';
 import 'package:pingk/page_sign_up/phone_number_auth.dart';
 import 'package:pingk/page_sign_up/set_bio_auth.dart';
@@ -20,6 +21,10 @@ import 'common/_temp_items.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   TempItems();
+
+  // ----- 서버 시간 동기화 -----
+  await MyDateTime().startSync();
+
   runApp(const PingkApp());
 }
 

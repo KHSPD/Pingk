@@ -1,5 +1,40 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pingk/common/my_styles.dart';
+
+// --------------------------------------------------
+// 네트워크 이미지
+// --------------------------------------------------
+class MyNetworkImage extends StatelessWidget {
+  final String url;
+  final double? width;
+  final double? height;
+  final Duration? fadeDuration;
+
+  const MyNetworkImage(this.url, {this.width, this.height, this.fadeDuration = const Duration(milliseconds: 500), super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return CachedNetworkImage(
+      imageUrl: url,
+      fit: BoxFit.cover,
+      width: width,
+      height: height,
+      fadeInDuration: fadeDuration!,
+      fadeOutDuration: fadeDuration!,
+      placeholder: (context, url) => const SizedBox(
+        height: 120,
+        child: Center(child: CircularProgressIndicator(color: Color(0xFFBEBEBE))),
+      ),
+      errorWidget: (context, url, error) => Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(color: Color(0xFFF6F1F1), borderRadius: BorderRadius.circular(10)),
+        child: const Center(child: Icon(Icons.error_outline, color: Color(0xFFBEBEBE), size: 32)),
+      ),
+    );
+  }
+}
 
 // --------------------------------------------------
 // 넘버패드 - 숫자 버튼

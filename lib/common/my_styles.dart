@@ -27,11 +27,14 @@ class MyColors {
   static const Color background3 = Color(0xFFFBF9F9);
 }
 
+// ====================================================================================================
+// Shadow
+// ====================================================================================================
 class MyShadows {
   MyShadows._();
 
-  static const type1 = BoxShadow(color: Color(0x1B747474), blurRadius: 10, spreadRadius: 10, offset: Offset(0, 0));
-  static const type2 = BoxShadow(color: Color(0x03FF437A), blurRadius: 10, spreadRadius: 10, offset: Offset(0, 0));
+  static const type1 = BoxShadow(color: Color(0x1B747474), blurRadius: 8, spreadRadius: 5, offset: Offset(0, 0));
+  static const type2 = BoxShadow(color: Color(0x03FF437A), blurRadius: 10, spreadRadius: 5, offset: Offset(0, 0));
   static const type3 = BoxShadow(color: Color(0x1FFF437A), blurRadius: 15, spreadRadius: 8, offset: Offset(0, 0));
   static const type4 = BoxShadow(color: Color(0x1A747474), blurRadius: 8, spreadRadius: 2, offset: Offset(0, 5));
 }

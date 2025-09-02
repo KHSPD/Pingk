@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:pingk/common/constants.dart';
-import 'package:pingk/common/local_storage.dart';
+import 'package:pingk/common/item_info.dart';
 import 'package:pingk/common/my_styles.dart';
 import 'package:pingk/common/token_manager.dart';
 
@@ -19,8 +19,8 @@ class BodyHomeWinnersList extends StatefulWidget {
 }
 
 class _BodyHomeWinnersListState extends State<BodyHomeWinnersList> {
-  List<Map<String, dynamic>> _winnerDataList = [];
-  bool isLoading = true;
+  final List<WinnerInfo> _winnerDataList = [];
+  bool _isLoading = true;
 
   // --------------------------------------------------
   // Lifecycle Methods
@@ -49,7 +49,7 @@ class _BodyHomeWinnersListState extends State<BodyHomeWinnersList> {
       final String? accessToken = await JwtManager().getAccessToken();
 
       if (accessToken == null) {
-        debugPrint('액세스 토큰 없음.');
+        debugPrint('토큰 없거나 만료됨');
         // TODO: 로그인 페이지로 이동
         return;
       }
@@ -60,9 +60,13 @@ class _BodyHomeWinnersListState extends State<BodyHomeWinnersList> {
         final Map<String, dynamic> body = jsonDecode(response.body);
         if (body['code'] == '200') {
           final resultList = body['result'] as List<dynamic>;
+          _winnerDataList.clear();
+          for (var item in resultList) {
+            WinnerInfo winnerInfo = WinnerInfo(nickname: item['nickname'], barnd: item['brand'], productName: item['productName']);
+            _winnerDataList.add(winnerInfo);
+          }
           setState(() {
-            _winnerDataList = resultList.map((item) => Map<String, dynamic>.from(item)).toList();
-            isLoading = false;
+            _isLoading = false;
           });
         }
       }
@@ -105,7 +109,7 @@ class _BodyHomeWinnersListState extends State<BodyHomeWinnersList> {
               border: Border.all(color: Color(0xFFF6F1F1), width: 1),
               boxShadow: [MyShadows.type2],
             ),
-            child: isLoading
+            child: _isLoading
                 ? SizedBox(
                     height: 120,
                     child: Center(child: CircularProgressIndicator(color: Color(0xFFFF437A))),
@@ -120,7 +124,7 @@ class _BodyHomeWinnersListState extends State<BodyHomeWinnersList> {
   // --------------------------------------------------
   // 당첨자 아이템 위젯
   // --------------------------------------------------
-  Widget _buildWinnerItem(dynamic winner, int index) {
+  Widget _buildWinnerItem(WinnerInfo winner, int index) {
     bool isLastItem = index == _winnerDataList.length - 1;
 
     return Column(
@@ -133,7 +137,7 @@ class _BodyHomeWinnersListState extends State<BodyHomeWinnersList> {
               Expanded(
                 flex: 4,
                 child: Text(
-                  winner['nickname'],
+                  winner.nickname,
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Color(0xFF4A4A4A), letterSpacing: -0.3),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -143,7 +147,7 @@ class _BodyHomeWinnersListState extends State<BodyHomeWinnersList> {
               Expanded(
                 flex: 6,
                 child: Text(
-                  '${winner['brand']} | ${winner['productName']}',
+                  '${winner.barnd} | ${winner.productName}',
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Color(0xFF969696), letterSpacing: -0.3),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

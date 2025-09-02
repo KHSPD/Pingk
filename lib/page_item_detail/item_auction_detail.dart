@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pingk/common/_temp_items.dart';
+import 'package:pingk/common/constants.dart';
 import 'package:pingk/common/item_info.dart';
 import 'package:pingk/common/my_styles.dart';
 import 'package:pingk/common/my_functions.dart';
@@ -39,7 +40,7 @@ class _PageAuctionDetailState extends State<PageAuctionDetail> {
   // 상품 상세정보 로드
   // --------------------------------------------------
   void _loadItemData() {
-    _itemData = TempItems.auctionItems.firstWhere((item) => item.id == widget.itemId, orElse: () => throw Exception('상품을 찾을 수 없습니다.'));
+    _itemData = TempItems.auctionItems.firstWhere((item) => item.idx == widget.itemId, orElse: () => throw Exception('상품을 찾을 수 없습니다.'));
   }
 
   @override
@@ -88,26 +89,7 @@ class _PageAuctionDetailState extends State<PageAuctionDetail> {
               SizedBox(height: 30),
 
               // ----- 상품 이미지 -----
-              ClipOval(
-                child: Container(
-                  width: 197,
-                  height: 197,
-                  decoration: BoxDecoration(color: MyColors.background1),
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: Image.network(
-                      _itemData!.thumbnail,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: MyColors.background1,
-                          child: const Icon(Icons.image_not_supported, color: MyColors.text2, size: 40),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ),
+              ClipOval(child: MyNetworkImage(_itemData!.thumbnail, width: 197, height: 197)),
 
               const SizedBox(height: 30),
 
@@ -134,7 +116,7 @@ class _PageAuctionDetailState extends State<PageAuctionDetail> {
                       top: 20,
                       left: 0,
                       child: Text(
-                        _itemData!.name,
+                        _itemData!.productName,
                         style: const TextStyle(fontSize: 28, color: MyColors.text1, fontWeight: FontWeight.w600),
                         textAlign: TextAlign.left,
                       ),

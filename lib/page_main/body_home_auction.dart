@@ -1,9 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:http/http.dart' as http;
+import 'package:pingk/common/constants.dart';
+import 'package:pingk/common/my_datetime.dart';
 import 'package:pingk/common/my_functions.dart';
 import 'package:pingk/common/item_info.dart';
 import 'package:pingk/common/_temp_items.dart';
+import 'package:pingk/common/my_widget.dart';
+import 'package:pingk/common/token_manager.dart';
 import '../common/my_styles.dart';
 
 // ====================================================================================================
@@ -17,8 +24,9 @@ class BodyHomeAuctionItems extends StatefulWidget {
 }
 
 class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
-  final List<AuctionItem> itemList = TempItems.auctionItems;
-  final PageController _pageController = PageController(viewportFraction: 0.74);
+  final PageController _pageController = PageController(viewportFraction: 0.73);
+  final List<AuctionItem> _itemList = TempItems.auctionItems;
+  bool _isLoading = true;
   int _selectedItemIdx = 0;
 
   // --------------------------------------------------
@@ -28,9 +36,8 @@ class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
   void initState() {
     debugPrint('BodyHomeAuctionItems : initState');
     super.initState();
-
-    // 페이지뷰 최초 애니메이션 적용하기 위해 추가
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadAuctionItems();
       if (mounted) {
         setState(() {});
       }
@@ -42,6 +49,47 @@ class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
     debugPrint('BodyHomeAuctionItems : dispose');
     _pageController.dispose();
     super.dispose();
+  }
+
+  // --------------------------------------------------
+  // API - 경매 상품 목록 조회
+  // --------------------------------------------------
+  Future<void> _loadAuctionItems() async {
+    try {
+      final String apiUrl = '$apiServerURL/api/auctions';
+      final String? accessToken = await JwtManager().getAccessToken();
+
+      if (accessToken == null) {
+        debugPrint('토큰 없거나 만료됨');
+        // TODO: 로그인 페이지로 이동
+        return;
+      }
+
+      final response = await http.get(Uri.parse(apiUrl), headers: {'Content-Type': 'application/json', 'X-Access-Token': accessToken});
+      debugPrint('========== API Response: $apiUrl =====\nStatus: ${response.statusCode}\nBody: ${response.body}');
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> body = jsonDecode(response.body);
+        if (body['code'] == '200') {
+          final resultList = body['result'] as List<dynamic>;
+          _itemList.clear();
+          for (var item in resultList) {
+            AuctionItem auctionItem = AuctionItem(
+              idx: item['auctionIdx'],
+              brand: item['brand'],
+              productName: item['productName'],
+              lastPrice: item['lastPrice'],
+              endAt: DateTime.parse(item['endAt'].replaceAll(' ', 'T')),
+            );
+            _itemList.add(auctionItem);
+          }
+          setState(() {
+            _isLoading = false;
+          });
+        }
+      }
+    } catch (e) {
+      debugPrint('Exception: ${e.toString()}');
+    }
   }
 
   // --------------------------------------------------
@@ -77,33 +125,45 @@ class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
           SizedBox(
             width: double.infinity,
             height: 418,
-            child: PageView.builder(
-              controller: _pageController,
-              onPageChanged: (index) {
-                setState(() {
-                  _selectedItemIdx = index;
-                });
-              },
-              itemCount: itemList.length,
-              itemBuilder: (context, index) {
-                return AnimatedBuilder(
-                  animation: _pageController,
-                  builder: (context, child) {
-                    double scale = 1.0;
-                    double opacity = 1.0;
-                    if (_pageController.position.haveDimensions) {
-                      final double v = (_pageController.page! - index).abs();
-                      scale = (1 - (v * 0.2)).clamp(0.8, 1.0);
-                      opacity = (1 - (v * 0.5)).clamp(0.5, 1.0);
-                    }
-                    return Transform.scale(
-                      scale: scale,
-                      child: Opacity(opacity: opacity, child: _itemAuctionCard(itemList[index])),
-                    );
-                  },
-                );
-              },
-            ),
+            child: _isLoading
+                ? SizedBox(
+                    height: 120,
+                    child: Center(child: CircularProgressIndicator(color: Color(0xFFFF437A))),
+                  )
+                : PageView.builder(
+                    controller: _pageController,
+                    onPageChanged: (index) {
+                      setState(() {
+                        _selectedItemIdx = index;
+                      });
+                    },
+                    itemCount: _itemList.length,
+                    itemBuilder: (context, index) {
+                      return AnimatedBuilder(
+                        animation: _pageController,
+                        builder: (context, child) {
+                          double scale = 1.0;
+                          double bgColorIntensity = 0.0;
+
+                          if (_pageController.position.haveDimensions && _pageController.page != null) {
+                            // PageController가 준비된 경우 (렌더링 중)
+                            final double v = (_pageController.page! - index).abs();
+                            scale = (1 - (v * 0.2)).clamp(0.8, 1.0);
+                            bgColorIntensity = (v * 0.5).clamp(0.0, 0.5);
+                          } else {
+                            // PageController가 준비되지 않은 경우(최초 렌더링 시)
+                            scale = index == 0 ? 1.0 : 0.8;
+                            bgColorIntensity = index == 0 ? 0.0 : 0.5;
+                          }
+
+                          return Transform.scale(
+                            scale: scale,
+                            child: _itemAuctionCard(_itemList[index], bgCololIntensity: bgColorIntensity),
+                          );
+                        },
+                      );
+                    },
+                  ),
           ),
 
           // ----- 더 보기 버튼 -----
@@ -141,14 +201,12 @@ class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
   // --------------------------------------------------
   // 경매 상품 카드
   // --------------------------------------------------
-  Widget _itemAuctionCard(AuctionItem item) {
+  Widget _itemAuctionCard(AuctionItem item, {double bgCololIntensity = 0.0}) {
     return GestureDetector(
       onTap: () {
         context.go('/main/auction');
       },
       child: Container(
-        width: 300,
-        height: 388,
         margin: const EdgeInsets.fromLTRB(0, 15, 0, 15),
         decoration: BoxDecoration(
           color: Color(0xFFFFFFFF),
@@ -159,18 +217,7 @@ class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
         child: Stack(
           children: [
             // ----- 상품 이미지 -----
-            Positioned(
-              top: 30,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: SizedBox(
-                  width: 180,
-                  height: 180,
-                  child: AspectRatio(aspectRatio: 1, child: Image.network(item.thumbnail, fit: BoxFit.cover)),
-                ),
-              ),
-            ),
+            Positioned(top: 20, left: 0, right: 0, child: Center(child: MyNetworkImage(item.thumbnail, width: 200, height: 200))),
 
             // ----- 가로줄 -----
             Positioned(top: 231, left: 0, right: 0, child: Container(height: 1, color: Color(0xFFF6F1F1))),
@@ -192,7 +239,7 @@ class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
               left: 24,
               right: 24,
               child: Text(
-                item.name,
+                item.productName,
                 style: const TextStyle(fontSize: 20, color: Color(0xFF393939), fontWeight: FontWeight.w600),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
@@ -201,7 +248,7 @@ class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
 
             // ----- 카운트 다운 -----
             Positioned(
-              top: 332,
+              top: 334,
               left: 24,
               child: Container(
                 width: 106,
@@ -214,25 +261,30 @@ class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
                     //
                     SizedBox(width: 2),
                     //
-                    TweenAnimationBuilder<Duration>(
-                      duration: item.endTime.difference(DateTime.now()),
-                      tween: Tween<Duration>(begin: item.endTime.difference(DateTime.now()), end: Duration.zero),
-                      onEnd: () {
-                        setState(() {});
-                      },
-                      builder: (BuildContext context, Duration value, Widget? child) {
-                        final hours = value.inHours.toString().padLeft(2, '0');
-                        final minutes = (value.inMinutes % 60).toString().padLeft(2, '0');
-                        final seconds = (value.inSeconds % 60).toString().padLeft(2, '0');
-                        return Text(
-                          '$hours:$minutes:$seconds',
-                          style: const TextStyle(fontFamily: 'SpoqaHanSansNeo', color: Color(0xFFFF437A), fontWeight: FontWeight.w500, fontSize: 14, letterSpacing: -0.2),
-                          textAlign: TextAlign.center,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        );
-                      },
-                    ),
+                    item.endAt.isAfter(MyDateTime().getDateTime())
+                        ? TweenAnimationBuilder<Duration>(
+                            duration: item.endAt.difference(MyDateTime().getDateTime()),
+                            tween: Tween<Duration>(begin: item.endAt.difference(MyDateTime().getDateTime()), end: Duration.zero),
+                            builder: (BuildContext context, Duration value, Widget? child) {
+                              final hours = value.inHours.toString().padLeft(2, '0');
+                              final minutes = (value.inMinutes % 60).toString().padLeft(2, '0');
+                              final seconds = (value.inSeconds % 60).toString().padLeft(2, '0');
+                              return Text(
+                                '$hours:$minutes:$seconds',
+                                style: const TextStyle(fontFamily: 'SpoqaHanSansNeo', color: Color(0xFFFF437A), fontWeight: FontWeight.w500, fontSize: 14, letterSpacing: -0.2),
+                                textAlign: TextAlign.center,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              );
+                            },
+                          )
+                        : Text(
+                            '00:00:00',
+                            style: const TextStyle(fontFamily: 'SpoqaHanSansNeo', color: Color(0xFFFF437A), fontWeight: FontWeight.w500, fontSize: 14, letterSpacing: -0.2),
+                            textAlign: TextAlign.center,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                   ],
                 ),
               ),
@@ -270,6 +322,17 @@ class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
                     ),
                   ],
                 ),
+              ),
+            ),
+
+            // ----- 오버레이 색상 -----
+            Positioned(
+              top: 0,
+              right: 0,
+              left: 0,
+              bottom: 0,
+              child: Container(
+                decoration: BoxDecoration(color: Color.lerp(Color(0x00FFFFFF), Color(0xFFFF437A), bgCololIntensity), borderRadius: BorderRadius.circular(18)),
               ),
             ),
           ],

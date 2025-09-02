@@ -37,60 +37,12 @@ class TempItems {
     // --------------------------------------------------
     // 경매 상품
     // --------------------------------------------------
-    AuctionItem(
-      id: '1',
-      brand: '스타벅스',
-      name: '아이스아메리카노 Tall',
-      lastPrice: 1350,
-      endTime: DateTime.now().add(const Duration(days: 1)),
-      thumbnail: '$imageServerURL/test.jpg',
-      isWished: false,
-    ),
-    AuctionItem(
-      id: '2',
-      brand: 'BHC',
-      name: '황금올리브 치킨 1마리',
-      lastPrice: 32800,
-      endTime: DateTime.now().add(const Duration(days: 1)),
-      thumbnail: 'https://cdn.imweb.me/upload/S20220826948cbdc34dca3/1e0c8bbbe23a7.jpg',
-      isWished: false,
-    ),
-    AuctionItem(
-      id: '3',
-      brand: '스타벅스',
-      name: '조각 케익 1조각',
-      lastPrice: 2010,
-      endTime: DateTime.now().add(const Duration(days: 1)),
-      thumbnail: 'https://image.istarbucks.co.kr/upload/store/skuimg/2024/10/[9300000005606]_20241022091857939.jpg',
-      isWished: false,
-    ),
-    AuctionItem(
-      id: '4',
-      brand: '공차',
-      name: '브라운슈가 밀크티 펄 쉐이크',
-      lastPrice: 650,
-      endTime: DateTime.now().add(const Duration(days: 1)),
-      thumbnail: 'https://www.gong-cha.co.kr/upload/product/eab6cad14d5d91998574d9f07536d69e.png',
-      isWished: false,
-    ),
-    AuctionItem(
-      id: '5',
-      brand: '신전떡볶이',
-      name: '로제떡볶이',
-      lastPrice: 1110,
-      endTime: DateTime.now().add(const Duration(days: 1)),
-      thumbnail: 'https://sinjeon.co.kr/img/sub/menu01/menu41.png',
-      isWished: false,
-    ),
-    AuctionItem(
-      id: '6',
-      brand: '신전떡볶이',
-      name: '고구마치즈볼',
-      lastPrice: 780,
-      endTime: DateTime.now().add(const Duration(days: 1)),
-      thumbnail: 'https://sinjeon.co.kr/img/sub_re/menu/menu12.png',
-      isWished: false,
-    ),
+    AuctionItem(idx: 'A202509020001', brand: '스타벅스', productName: '아이스아메리카노 Tall', lastPrice: 1350, endAt: DateTime.now().add(const Duration(days: 1))),
+    AuctionItem(idx: 'A202509020002', brand: 'BHC', productName: '황금올리브 치킨 1마리', lastPrice: 32800, endAt: DateTime.now().add(const Duration(days: 1))),
+    AuctionItem(idx: 'A202509020003', brand: '스타벅스', productName: '조각 케익 1조각', lastPrice: 2010, endAt: DateTime.now().add(const Duration(days: 1))),
+    AuctionItem(idx: 'A202509020004', brand: '공차', productName: '브라운슈가 밀크티 펄 쉐이크', lastPrice: 650, endAt: DateTime.now().add(const Duration(days: 1))),
+    AuctionItem(idx: 'A202509020005', brand: '신전떡볶이', productName: '로제떡볶이', lastPrice: 1110, endAt: DateTime.now().add(const Duration(days: 1))),
+    AuctionItem(idx: 'A202509020006', brand: '신전떡볶이', productName: '고구마치즈볼', lastPrice: 780, endAt: DateTime.now().add(const Duration(days: 1))),
   ];
 
   // --------------------------------------------------

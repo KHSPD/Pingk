@@ -3,6 +3,7 @@ import 'package:pingk/common/constants.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 import 'my_styles.dart';
+import 'package:http/http.dart' as http;
 
 // ====================================================================================================
 // 앱에서 공통으로 사용하는 함수 Util

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pingk/common/_temp_items.dart';
+import 'package:pingk/common/constants.dart';
 import 'package:pingk/common/item_info.dart';
 import 'package:pingk/common/my_styles.dart';
 import 'package:pingk/common/my_functions.dart';
+import 'package:pingk/common/my_widget.dart';
 
 // ====================================================================================================
 // BodyAuction
@@ -155,7 +157,7 @@ class _BodyAuctionState extends State<BodyAuction> {
   Widget _itemAuctionCard(AuctionItem item) {
     return GestureDetector(
       onTap: () {
-        context.pushNamed('auction-detail', pathParameters: {'itemId': item.id});
+        context.pushNamed('auction-detail', pathParameters: {'itemId': item.idx});
       },
       child: Container(
         width: double.infinity,
@@ -174,8 +176,8 @@ class _BodyAuctionState extends State<BodyAuction> {
                 decoration: BoxDecoration(color: Color(0xFFFF437A), borderRadius: BorderRadius.circular(15)),
                 child: Center(
                   child: TweenAnimationBuilder<Duration>(
-                    duration: item.endTime.difference(DateTime.now()),
-                    tween: Tween<Duration>(begin: item.endTime.difference(DateTime.now()), end: Duration.zero),
+                    duration: item.endAt.difference(DateTime.now()),
+                    tween: Tween<Duration>(begin: item.endAt.difference(DateTime.now()), end: Duration.zero),
                     onEnd: () {
                       setState(() {});
                     },
@@ -201,7 +203,7 @@ class _BodyAuctionState extends State<BodyAuction> {
               top: 64,
               left: 24,
               child: Text(
-                item.name,
+                item.productName,
                 style: const TextStyle(fontSize: 21, color: MyColors.text1, fontWeight: FontWeight.w500),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
@@ -257,24 +259,7 @@ class _BodyAuctionState extends State<BodyAuction> {
               right: 24,
               width: 113,
               height: 113,
-              child: ClipOval(
-                child: Container(
-                  decoration: BoxDecoration(color: MyColors.background1),
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: Image.network(
-                      item.thumbnail,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: MyColors.background1,
-                          child: const Icon(Icons.image_not_supported, color: MyColors.text2, size: 40),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ),
+              child: ClipOval(child: AspectRatio(aspectRatio: 1, child: MyNetworkImage(item.thumbnail))),
             ),
           ],
         ),

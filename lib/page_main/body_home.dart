@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pingk/page_main/body_home_always_deal.dart';
+import 'package:pingk/page_main/body_home_always.dart';
 import 'package:pingk/page_main/body_home_auction.dart';
-import 'package:pingk/page_main/body_home_limited_deal.dart';
+import 'package:pingk/page_main/body_home_limited.dart';
 import 'package:pingk/page_main/body_home_winners.dart';
 import '../common/my_styles.dart';
 
@@ -71,7 +71,7 @@ class _BodyHomeState extends State<BodyHome> {
           ];
         },
         // ----- 탭바 뷰 (한정특가 / 상시특가) -----
-        body: TabBarView(children: [BodyHomeLimitedDeal(), BodyHomeAlwaysDeal()]),
+        body: TabBarView(children: [BodyHomeLimited(), BodyHomeAlways()]),
       ),
     );
   }
