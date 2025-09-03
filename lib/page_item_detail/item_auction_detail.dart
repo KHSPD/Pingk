@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pingk/common/_temp_items.dart';
+import 'package:pingk/common/api_request.dart';
 import 'package:pingk/common/item_info.dart';
 import 'package:pingk/common/my_styles.dart';
 import 'package:pingk/common/my_functions.dart';
@@ -9,9 +10,9 @@ import 'package:pingk/common/my_widget.dart';
 // PageAuctionDetail
 // ====================================================================================================
 class PageAuctionDetail extends StatefulWidget {
-  final String itemId;
+  final String itemIdx;
 
-  const PageAuctionDetail({super.key, required this.itemId});
+  const PageAuctionDetail({super.key, required this.itemIdx});
 
   @override
   State<PageAuctionDetail> createState() => _PageAuctionDetailState();
@@ -27,19 +28,18 @@ class _PageAuctionDetailState extends State<PageAuctionDetail> {
   void initState() {
     debugPrint('PageAuctionDetail : initState');
     super.initState();
-    _loadItemData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ApiRequest().fetchAuctionItemList().then((value) {
+        setState(() {
+          _itemData = value.firstWhere((item) => item.idx == widget.itemIdx);
+        });
+      });
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
-  }
-
-  // --------------------------------------------------
-  // 상품 상세정보 로드
-  // --------------------------------------------------
-  void _loadItemData() {
-    _itemData = TempItems.auctionItems.firstWhere((item) => item.idx == widget.itemId, orElse: () => throw Exception('상품을 찾을 수 없습니다.'));
   }
 
   @override

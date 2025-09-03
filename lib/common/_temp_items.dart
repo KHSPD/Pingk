@@ -33,18 +33,6 @@ class TempItems {
     comingSoonHotDealDatas.addAll(tempList.take(5));
   }
 
-  static final List<AuctionItem> auctionItems = [
-    // --------------------------------------------------
-    // 경매 상품
-    // --------------------------------------------------
-    AuctionItem(idx: 'A202509020001', brand: '스타벅스', productName: '아이스아메리카노 Tall', lastPrice: 1350, endAt: DateTime.now().add(const Duration(days: 1))),
-    AuctionItem(idx: 'A202509020002', brand: 'BHC', productName: '황금올리브 치킨 1마리', lastPrice: 32800, endAt: DateTime.now().add(const Duration(days: 1))),
-    AuctionItem(idx: 'A202509020003', brand: '스타벅스', productName: '조각 케익 1조각', lastPrice: 2010, endAt: DateTime.now().add(const Duration(days: 1))),
-    AuctionItem(idx: 'A202509020004', brand: '공차', productName: '브라운슈가 밀크티 펄 쉐이크', lastPrice: 650, endAt: DateTime.now().add(const Duration(days: 1))),
-    AuctionItem(idx: 'A202509020005', brand: '신전떡볶이', productName: '로제떡볶이', lastPrice: 1110, endAt: DateTime.now().add(const Duration(days: 1))),
-    AuctionItem(idx: 'A202509020006', brand: '신전떡볶이', productName: '고구마치즈볼', lastPrice: 780, endAt: DateTime.now().add(const Duration(days: 1))),
-  ];
-
   // --------------------------------------------------
   // 일반 상품
   // --------------------------------------------------

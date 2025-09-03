@@ -33,8 +33,9 @@ class MyColors {
 class MyShadows {
   MyShadows._();
 
-  static const type1 = BoxShadow(color: Color(0x1B747474), blurRadius: 8, spreadRadius: 5, offset: Offset(0, 0));
-  static const type2 = BoxShadow(color: Color(0x03FF437A), blurRadius: 10, spreadRadius: 5, offset: Offset(0, 0));
-  static const type3 = BoxShadow(color: Color(0x1FFF437A), blurRadius: 15, spreadRadius: 8, offset: Offset(0, 0));
-  static const type4 = BoxShadow(color: Color(0x1A747474), blurRadius: 8, spreadRadius: 2, offset: Offset(0, 5));
+  static const gray1 = BoxShadow(color: Color(0x1B747474), blurRadius: 8, spreadRadius: 5, offset: Offset(0, 0));
+  static const gray2 = BoxShadow(color: Color(0x1A747474), blurRadius: 8, spreadRadius: 2, offset: Offset(0, 5));
+  static const pink1 = BoxShadow(color: Color(0x03FF437A), blurRadius: 10, spreadRadius: 5, offset: Offset(0, 0));
+  static const pink2 = BoxShadow(color: Color(0x1FFF437A), blurRadius: 15, spreadRadius: 8, offset: Offset(0, 0));
+  static const pink3 = BoxShadow(color: Color.fromARGB(14, 255, 67, 123), blurRadius: 10, spreadRadius: 10, offset: Offset(0, 0));
 }

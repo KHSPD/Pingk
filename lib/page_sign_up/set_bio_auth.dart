@@ -66,7 +66,7 @@ class _SetBioAuthState extends State<SetBioAuth> {
       Popup().show(
         context: context,
         title: '로그인 안내',
-        msg: '생체인증을 건너뛰시면, 비밀번호로 로그인하게 됩니다.\n설정에서 생체인증 설정을 변경할 수 있습니다.',
+        msg: '설정에서 생체인증 사용여부를 변경할 수 있습니다.',
         btTxt2: '확인',
         btCB2: () {
           context.go('/main/home');

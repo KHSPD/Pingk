@@ -47,7 +47,7 @@ class MainShell extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(8, 12, 8, 0),
               decoration: BoxDecoration(
                 color: Color(0xFFFFFFFF),
-                boxShadow: [MyShadows.type3],
+                boxShadow: [MyShadows.pink2],
                 borderRadius: const BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
               ),
               child: SafeArea(
@@ -82,7 +82,6 @@ class MainShell extends StatelessWidget {
                       height: 70,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        boxShadow: [MyShadows.type2],
                         border: Border.all(color: Color(0xFFFFFFFF), width: 6),
                         gradient: const LinearGradient(
                           begin: Alignment.centerLeft,

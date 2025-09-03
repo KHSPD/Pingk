@@ -1,16 +1,11 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
-import 'package:pingk/common/constants.dart';
+import 'package:pingk/common/api_request.dart';
 import 'package:pingk/common/my_datetime.dart';
 import 'package:pingk/common/my_functions.dart';
 import 'package:pingk/common/item_info.dart';
-import 'package:pingk/common/_temp_items.dart';
 import 'package:pingk/common/my_widget.dart';
-import 'package:pingk/common/token_manager.dart';
 import '../common/my_styles.dart';
 
 // ====================================================================================================
@@ -25,9 +20,9 @@ class BodyHomeAuctionItems extends StatefulWidget {
 
 class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
   final PageController _pageController = PageController(viewportFraction: 0.73);
-  final List<AuctionItem> _itemList = TempItems.auctionItems;
-  bool _isLoading = true;
+  final ValueNotifier<List<AuctionItem>> _itemDatas = ApiRequest().auctionItemListNotifier;
   int _selectedItemIdx = 0;
+  bool _isLoading = true;
 
   // --------------------------------------------------
   // Lifecycle Methods
@@ -36,59 +31,31 @@ class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
   void initState() {
     debugPrint('BodyHomeAuctionItems : initState');
     super.initState();
+
+    _itemDatas.addListener(_onItemListChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadAuctionItems();
-      if (mounted) {
-        setState(() {});
-      }
+      ApiRequest().fetchAuctionItemList().then((value) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
     });
   }
 
   @override
   void dispose() {
     debugPrint('BodyHomeAuctionItems : dispose');
+    _itemDatas.removeListener(_onItemListChanged);
     _pageController.dispose();
     super.dispose();
   }
 
   // --------------------------------------------------
-  // API - 경매 상품 목록 조회
+  // 아이템 목록 변경 이벤트
   // --------------------------------------------------
-  Future<void> _loadAuctionItems() async {
-    try {
-      final String apiUrl = '$apiServerURL/api/auctions';
-      final String? accessToken = await JwtManager().getAccessToken();
-
-      if (accessToken == null) {
-        debugPrint('토큰 없거나 만료됨');
-        // TODO: 로그인 페이지로 이동
-        return;
-      }
-
-      final response = await http.get(Uri.parse(apiUrl), headers: {'Content-Type': 'application/json', 'X-Access-Token': accessToken});
-      debugPrint('========== API Response: $apiUrl =====\nStatus: ${response.statusCode}\nBody: ${response.body}');
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> body = jsonDecode(response.body);
-        if (body['code'] == '200') {
-          final resultList = body['result'] as List<dynamic>;
-          _itemList.clear();
-          for (var item in resultList) {
-            AuctionItem auctionItem = AuctionItem(
-              idx: item['auctionIdx'],
-              brand: item['brand'],
-              productName: item['productName'],
-              lastPrice: item['lastPrice'],
-              endAt: DateTime.parse(item['endAt'].replaceAll(' ', 'T')),
-            );
-            _itemList.add(auctionItem);
-          }
-          setState(() {
-            _isLoading = false;
-          });
-        }
-      }
-    } catch (e) {
-      debugPrint('Exception: ${e.toString()}');
+  void _onItemListChanged() {
+    if (mounted) {
+      setState(() {});
     }
   }
 
@@ -97,6 +64,8 @@ class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
   // --------------------------------------------------
   @override
   Widget build(BuildContext context) {
+    final itemList = _itemDatas.value;
+
     return Container(
       decoration: BoxDecoration(color: Color(0xFFFBF9F9)),
       child: Column(
@@ -104,7 +73,7 @@ class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
           // ----- 상단 문구 -----
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.fromLTRB(50, 20, 50, 10),
+            padding: const EdgeInsets.fromLTRB(50, 20, 50, 0),
             child: Text.rich(
               TextSpan(
                 children: [
@@ -115,6 +84,27 @@ class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
                   TextSpan(
                     text: '으로\n저렴한 쇼핑하세요',
                     style: TextStyle(color: Color(0xFF393939), fontSize: 28, fontWeight: FontWeight.w600, height: 1.2, letterSpacing: -0.84),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // ----- 페이지 넘버 -----
+          Container(
+            width: double.infinity,
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.fromLTRB(70, 0, 70, 0),
+            child: RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: '${_selectedItemIdx + 1}',
+                    style: TextStyle(color: Color(0xFF393939), fontSize: 14, fontWeight: FontWeight.w600, letterSpacing: -0.3),
+                  ),
+                  TextSpan(
+                    text: ' / ${itemList.length}',
+                    style: TextStyle(color: Color(0xFF969696), fontSize: 14, fontWeight: FontWeight.w600, letterSpacing: -0.3),
                   ),
                 ],
               ),
@@ -132,12 +122,12 @@ class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
                   )
                 : PageView.builder(
                     controller: _pageController,
+                    itemCount: itemList.length,
                     onPageChanged: (index) {
                       setState(() {
                         _selectedItemIdx = index;
                       });
                     },
-                    itemCount: _itemList.length,
                     itemBuilder: (context, index) {
                       return AnimatedBuilder(
                         animation: _pageController,
@@ -158,7 +148,7 @@ class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
 
                           return Transform.scale(
                             scale: scale,
-                            child: _itemAuctionCard(_itemList[index], bgCololIntensity: bgColorIntensity),
+                            child: _itemAuctionCard(itemList[index], bgCololIntensity: bgColorIntensity),
                           );
                         },
                       );
@@ -183,7 +173,7 @@ class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
                   colors: [Color(0xFFFF8CA6), Color(0xFFFF437A), Color(0xFFFF437A), Color(0xFFFF8CA6)],
                   stops: [0.0, 0.3, 0.7, 1.0],
                 ),
-                boxShadow: [MyShadows.type1],
+                boxShadow: [MyShadows.gray1],
               ),
               child: Center(
                 child: Text(
@@ -204,7 +194,7 @@ class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
   Widget _itemAuctionCard(AuctionItem item, {double bgCololIntensity = 0.0}) {
     return GestureDetector(
       onTap: () {
-        context.go('/main/auction');
+        context.pushNamed('auction-detail', pathParameters: {'itemId': item.idx});
       },
       child: Container(
         margin: const EdgeInsets.fromLTRB(0, 15, 0, 15),
@@ -212,7 +202,7 @@ class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
           color: Color(0xFFFFFFFF),
           borderRadius: BorderRadius.circular(18),
           border: Border.all(color: Color(0xFFF6F1F1), width: 1),
-          boxShadow: [MyShadows.type1],
+          boxShadow: [MyShadows.gray1],
         ),
         child: Stack(
           children: [

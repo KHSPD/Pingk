@@ -1,12 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:http/http.dart' as http;
-import 'package:pingk/common/constants.dart';
+import 'package:pingk/common/api_request.dart';
 import 'package:pingk/common/item_info.dart';
+import 'package:pingk/common/my_functions.dart';
 import 'package:pingk/common/my_styles.dart';
-import 'package:pingk/common/token_manager.dart';
 
 // ====================================================================================================
 // 홈 - 낙찰자 목록
@@ -19,7 +16,7 @@ class BodyHomeWinnersList extends StatefulWidget {
 }
 
 class _BodyHomeWinnersListState extends State<BodyHomeWinnersList> {
-  final List<WinnerInfo> _winnerDataList = [];
+  final ValueNotifier<List<WinnerInfo>> _itemDatas = ApiRequest().auctionWinnerListNotifier;
   bool _isLoading = true;
 
   // --------------------------------------------------
@@ -29,49 +26,27 @@ class _BodyHomeWinnersListState extends State<BodyHomeWinnersList> {
   void initState() {
     debugPrint('BodyHomeWinnersList : initState');
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadWinners();
+    _itemDatas.addListener(_onItemListChanged);
+    ApiRequest().fetchAuctionWinnerList().then((value) {
+      setState(() {
+        _isLoading = false;
+      });
     });
   }
 
   @override
   void dispose() {
     debugPrint('BodyHomeWinnersList : dispose');
+    _itemDatas.removeListener(_onItemListChanged);
     super.dispose();
   }
 
   // --------------------------------------------------
-  // API - 최근 낙찰자 조회
+  // 아이템 목록 변경 이벤트
   // --------------------------------------------------
-  Future<void> _loadWinners() async {
-    try {
-      final String apiUrl = '$apiServerURL/api/auction-winners/recent';
-      final String? accessToken = await JwtManager().getAccessToken();
-
-      if (accessToken == null) {
-        debugPrint('토큰 없거나 만료됨');
-        // TODO: 로그인 페이지로 이동
-        return;
-      }
-
-      final response = await http.get(Uri.parse(apiUrl), headers: {'Content-Type': 'application/json', 'X-Access-Token': accessToken});
-      debugPrint('========== API Response: $apiUrl =====\nStatus: ${response.statusCode}\nBody: ${response.body}');
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> body = jsonDecode(response.body);
-        if (body['code'] == '200') {
-          final resultList = body['result'] as List<dynamic>;
-          _winnerDataList.clear();
-          for (var item in resultList) {
-            WinnerInfo winnerInfo = WinnerInfo(nickname: item['nickname'], barnd: item['brand'], productName: item['productName']);
-            _winnerDataList.add(winnerInfo);
-          }
-          setState(() {
-            _isLoading = false;
-          });
-        }
-      }
-    } catch (e) {
-      debugPrint('Exception: ${e.toString()}');
+  void _onItemListChanged() {
+    if (mounted) {
+      setState(() {});
     }
   }
 
@@ -83,19 +58,13 @@ class _BodyHomeWinnersListState extends State<BodyHomeWinnersList> {
     return Container(
       margin: const EdgeInsets.fromLTRB(30, 40, 30, 0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SvgPicture.asset('assets/icons/icon_medal_bold.svg', width: 14, height: 19),
-                const SizedBox(width: 6),
-                Text(
-                  '핑크옥션 낙찰을 축하합니다!',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Color(0xFFFF437A), letterSpacing: -0.3),
-                ),
-              ],
+            child: Text(
+              '핑크옥션 낙찰을 축하합니다!',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Color(0xFFFF437A), letterSpacing: -0.3),
             ),
           ),
 
@@ -107,14 +76,14 @@ class _BodyHomeWinnersListState extends State<BodyHomeWinnersList> {
               color: Color(0xFFFFFFFF),
               borderRadius: BorderRadius.circular(18),
               border: Border.all(color: Color(0xFFF6F1F1), width: 1),
-              boxShadow: [MyShadows.type2],
+              boxShadow: [MyShadows.pink1],
             ),
             child: _isLoading
                 ? SizedBox(
                     height: 120,
                     child: Center(child: CircularProgressIndicator(color: Color(0xFFFF437A))),
                   )
-                : Column(children: _winnerDataList.asMap().entries.map((entry) => _buildWinnerItem(entry.value, entry.key)).toList()),
+                : Column(children: _itemDatas.value.asMap().entries.map((entry) => _buildWinnerItem(entry.value, entry.key)).toList()),
           ),
         ],
       ),
@@ -125,34 +94,47 @@ class _BodyHomeWinnersListState extends State<BodyHomeWinnersList> {
   // 당첨자 아이템 위젯
   // --------------------------------------------------
   Widget _buildWinnerItem(WinnerInfo winner, int index) {
-    bool isLastItem = index == _winnerDataList.length - 1;
+    bool isLastItem = index == _itemDatas.value.length - 1;
 
     return Column(
       children: [
         Container(
-          height: 50,
+          width: double.infinity,
+          margin: const EdgeInsets.fromLTRB(0, 14, 0, 14),
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-          child: Row(
+          child: Column(
             children: [
-              Expanded(
-                flex: 4,
-                child: Text(
-                  winner.nickname,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Color(0xFF4A4A4A), letterSpacing: -0.3),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
+              Row(
+                children: [
+                  SvgPicture.asset('assets/icons/icon_medal_bold.svg', width: 14, height: 19),
+                  const SizedBox(width: 6),
+                  Text(
+                    winner.nickname,
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Color(0xFF4A4A4A), letterSpacing: -0.3),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
               ),
-              const SizedBox(width: 10),
-              Expanded(
-                flex: 6,
-                child: Text(
-                  '${winner.barnd} | ${winner.productName}',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Color(0xFF969696), letterSpacing: -0.3),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.right,
-                ),
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  Text(
+                    '${winner.barnd} | ${winner.productName}',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Color(0xFF969696), letterSpacing: -0.3),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.right,
+                  ),
+                  const Spacer(),
+                  Text(
+                    '${MyFN.formatNumberWithComma(winner.price)} 낙찰',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Color(0xFFFF437A), letterSpacing: -0.2),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.right,
+                  ),
+                ],
               ),
             ],
           ),

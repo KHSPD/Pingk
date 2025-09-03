@@ -22,9 +22,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   TempItems();
 
-  // ----- 서버 시간 동기화 -----
-  await MyDateTime().startSync();
-
   runApp(const PingkApp());
 }
 
@@ -87,7 +84,7 @@ final GoRouter appRouter = GoRouter(
       name: 'auction-detail',
       builder: (context, state) {
         final itemId = state.pathParameters['itemId'] ?? '';
-        return PageAuctionDetail(itemId: itemId);
+        return PageAuctionDetail(itemIdx: itemId);
       },
     ),
     GoRoute(

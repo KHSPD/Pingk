@@ -8,7 +8,6 @@ class JwtManager {
   JwtManager._privateConstructor();
   static final JwtManager _instance = JwtManager._privateConstructor();
   factory JwtManager() => _instance;
-  final LocalStorage _localStorage = LocalStorage();
 
   // --------------------------------------------------
   // JWT 토큰에서 만료 시간을 추출
@@ -59,7 +58,7 @@ class JwtManager {
     try {
       final String apiUrl = '$apiServerURL/api/auth/refresh';
       final response = await http.post(Uri.parse(apiUrl), headers: {'Content-Type': 'application/json', 'X-Refresh-Token': refreshToken});
-      debugPrint('========== API Response: $apiUrl =====\nStatus: ${response.statusCode}\nBody: ${response.body}');
+      debugPrint('========== API Response ==========\nURL: $apiUrl\nStatus: ${response.statusCode}\nBody: ${response.body}');
       if (response.statusCode == 200) {
         final body = jsonDecode(response.body);
         if (body['code'] == '200') {
@@ -108,7 +107,7 @@ class JwtManager {
   Future<String?> getAccessToken() async {
     try {
       // 저장된 액세스 토큰 로드
-      final accessToken = await _localStorage.loadAccessToken();
+      final accessToken = await LocalStorage().loadAccessToken();
       if (accessToken.isEmpty) {
         debugPrint('저장된 액세스 토큰 없음.');
         return null;
@@ -121,7 +120,7 @@ class JwtManager {
 
       // 리프레시 토큰으로 갱신 시도
       debugPrint('액세스 토큰 만료. 갱신 시도.');
-      final refreshToken = await _localStorage.loadRefreshToken();
+      final refreshToken = await LocalStorage().loadRefreshToken();
       if (refreshToken.isEmpty) {
         debugPrint('리프레시 토큰 없음.');
         return null;

@@ -54,7 +54,7 @@ class NumpadDigitButton extends StatelessWidget {
       child: Container(
         width: 80,
         height: 80,
-        decoration: BoxDecoration(color: MyColors.background1, borderRadius: BorderRadius.circular(40), boxShadow: [MyShadows.type4]),
+        decoration: BoxDecoration(color: MyColors.background1, borderRadius: BorderRadius.circular(40), boxShadow: [MyShadows.gray2]),
         child: Center(
           child: Text(number, style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600)),
         ),
@@ -80,7 +80,7 @@ class NumpadDeleteButton extends StatelessWidget {
       child: Container(
         width: 80,
         height: 80,
-        decoration: BoxDecoration(color: MyColors.background1, borderRadius: BorderRadius.circular(40), boxShadow: [MyShadows.type4]),
+        decoration: BoxDecoration(color: MyColors.background1, borderRadius: BorderRadius.circular(40), boxShadow: [MyShadows.gray2]),
         child: const Center(child: Icon(Icons.backspace_outlined, size: 32, color: Colors.grey)),
       ),
     );
@@ -264,7 +264,7 @@ class _PopupOverlayState extends State<_PopupOverlay> with SingleTickerProviderS
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 40),
       padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), boxShadow: [MyShadows.type1]),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), boxShadow: [MyShadows.gray1]),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

@@ -32,7 +32,7 @@ class MyDateTime {
     try {
       final apiUrl = '$apiServerURL/api/auth/server-time';
       final response = await http.get(Uri.parse(apiUrl));
-      debugPrint('========== API Response: $apiUrl =====\nStatus: ${response.statusCode}\nBody: ${response.body}');
+      debugPrint('========== API Response ==========\nURL: $apiUrl\nStatus: ${response.statusCode}\nBody: ${response.body}');
       if (response.statusCode == 200) {
         final Map<String, dynamic> body = jsonDecode(response.body);
         if (body['code'] == '200') {

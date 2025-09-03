@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:pingk/common/constants.dart';
+import 'package:pingk/common/my_datetime.dart';
 import 'package:pingk/common/my_styles.dart';
 import 'package:pingk/common/my_functions.dart';
 import 'package:pingk/common/my_widget.dart';
@@ -46,7 +47,16 @@ class _LandingState extends State<Landing> {
   // 다음 절차 확인
   // --------------------------------------------------
   void _checkProcess() async {
+    // ----- 서버 시간 동기화 -----
+    await MyDateTime().startSync();
+    // ----- 1초 딜레이 -----
     await Future.delayed(const Duration(milliseconds: 1000));
+
+    // ----- Token 출력 -----
+    debugPrint('========== Token ==========');
+    debugPrint('Access Token: ${await LocalStorage().loadAccessToken()}');
+    debugPrint('Refresh Token: ${await LocalStorage().loadRefreshToken()}');
+
     // ----- Token 확인 -----
     final String? accessToken = await JwtManager().getAccessToken();
     // ----- Access Token 확인 -----
@@ -58,8 +68,8 @@ class _LandingState extends State<Landing> {
       if (mounted) {
         Popup().show(
           context: context,
-          title: '로그인 만료',
-          msg: '기간이 만료되어 다시 인증이 필요합니다.',
+          title: '본인인증 안내',
+          msg: '본인확인을 위한 인증이 필요합니다.',
           btTxt2: '확인',
           btCB2: () {
             context.go('/phone_number_auth');

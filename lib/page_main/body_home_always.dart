@@ -77,10 +77,10 @@ class _BodyHomeAlwaysState extends State<BodyHomeAlways> {
           // ----- 베스트 상품 리스트 -----
           GridView.builder(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            padding: EdgeInsets.symmetric(horizontal: 22),
+            physics: const NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 22),
             itemCount: bestCouponDatas.length,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 30, crossAxisSpacing: 10, childAspectRatio: 168 / 275),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 30, crossAxisSpacing: 10, childAspectRatio: 168 / 275),
             itemBuilder: (context, i) {
               return _bestDealCard(bestCouponDatas[i], () => _toggleWish(i));
             },

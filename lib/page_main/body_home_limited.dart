@@ -138,7 +138,7 @@ class _BodyHomeLimitedState extends State<BodyHomeLimited> {
         margin: const EdgeInsets.fromLTRB(20, 10, 0, 10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          boxShadow: [MyShadows.type1],
+          boxShadow: [MyShadows.gray1],
           gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, stops: [0.6286, 0.6286], colors: [Color(0xFFF6F1F1), Colors.white]),
         ),
         child: Stack(
