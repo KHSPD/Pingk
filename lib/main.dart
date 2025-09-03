@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pingk/common/constants.dart';
-import 'package:pingk/common/my_datetime.dart';
 import 'package:pingk/page_item_detail/item_general_detail.dart';
 import 'package:pingk/page_sign_up/phone_number_auth.dart';
 import 'package:pingk/page_sign_up/set_bio_auth.dart';
@@ -79,6 +78,7 @@ final GoRouter appRouter = GoRouter(
       ],
     ),
 
+    // ----- 옥션 상품 상세 -----
     GoRoute(
       path: '/auction-detail/:itemId',
       name: 'auction-detail',
@@ -87,8 +87,10 @@ final GoRouter appRouter = GoRouter(
         return PageAuctionDetail(itemIdx: itemId);
       },
     ),
+
+    // ----- 일반 상품 상세 -----
     GoRoute(
-      path: '/deal-detail/:itemId',
+      path: '/general-detail/:itemId',
       name: 'deal-detail',
       builder: (context, state) {
         final itemId = state.pathParameters['itemId'] ?? '';

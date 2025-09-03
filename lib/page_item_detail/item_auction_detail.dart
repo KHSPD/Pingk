@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pingk/common/_temp_items.dart';
 import 'package:pingk/common/api_request.dart';
 import 'package:pingk/common/item_info.dart';
 import 'package:pingk/common/my_styles.dart';

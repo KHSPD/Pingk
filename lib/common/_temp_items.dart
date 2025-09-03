@@ -1,4 +1,3 @@
-import 'package:pingk/common/constants.dart';
 import 'package:pingk/common/item_info.dart';
 import 'dart:math';
 

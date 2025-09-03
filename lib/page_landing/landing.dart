@@ -1,11 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:pingk/common/constants.dart';
 import 'package:pingk/common/my_datetime.dart';
 import 'package:pingk/common/my_styles.dart';
-import 'package:pingk/common/my_functions.dart';
 import 'package:pingk/common/my_widget.dart';
 import 'package:pingk/common/biometric_auth.dart';
 import 'package:pingk/common/local_storage.dart';
@@ -49,6 +44,7 @@ class _LandingState extends State<Landing> {
   void _checkProcess() async {
     // ----- 서버 시간 동기화 -----
     await MyDateTime().startSync();
+
     // ----- 1초 딜레이 -----
     await Future.delayed(const Duration(milliseconds: 1000));
 
@@ -59,6 +55,7 @@ class _LandingState extends State<Landing> {
 
     // ----- Token 확인 -----
     final String? accessToken = await JwtManager().getAccessToken();
+
     // ----- Access Token 확인 -----
     if (accessToken == null) {
       debugPrint('Access Token - X');

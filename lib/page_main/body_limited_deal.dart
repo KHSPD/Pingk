@@ -88,7 +88,7 @@ class _BodyLimitedDealState extends State<BodyLimitedDeal> {
   Widget _todayItemCard(GeneralItem item) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/deal-detail', arguments: item.id);
+        Navigator.pushNamed(context, '/general-detail', arguments: item.id);
       },
       child: Container(
         width: double.infinity,
@@ -234,7 +234,7 @@ class _BodyLimitedDealState extends State<BodyLimitedDeal> {
   Widget _comingSoonItemCard(GeneralItem item, {required bool isNotified, required VoidCallback onToggleNotify}) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/deal-detail', arguments: item.id);
+        Navigator.pushNamed(context, '/general-detail', arguments: item.id);
       },
       child: Container(
         width: double.infinity,
