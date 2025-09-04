@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pingk/common/constants.dart';
-import 'package:pingk/page_item_detail/item_general_detail.dart';
-import 'package:pingk/page_sign_up/phone_number_auth.dart';
-import 'package:pingk/page_sign_up/set_bio_auth.dart';
-import 'package:pingk/page_sign_up/set_password.dart';
-import 'package:pingk/page_sign_in/sign_in.dart';
-import 'page_landing/landing.dart';
-import 'page_main/main_shell.dart';
-import 'page_main/body_home.dart';
-import 'page_main/body_auction.dart';
-import 'page_main/body_limited_deal.dart';
-import 'page_item_detail/item_auction_detail.dart';
-import 'common/_temp_items.dart';
+import 'package:pingk/_common/constants.dart';
+import 'package:pingk/main_page/body_always.dart';
+import 'package:pingk/detail_page/detail_always.dart';
+import 'package:pingk/detail_page/detail_limited.dart';
+import 'package:pingk/sign_up_page/phone_number_auth.dart';
+import 'package:pingk/sign_up_page/set_bio_auth.dart';
+import 'package:pingk/sign_up_page/set_password.dart';
+import 'package:pingk/sign_in_page/sign_in.dart';
+import 'landing_page/landing.dart';
+import 'main_page/main_shell.dart';
+import 'main_page/body_home.dart';
+import 'main_page/body_auction.dart';
+import 'main_page/body_limited.dart';
+import 'detail_page/detail_auction.dart';
+import '_common/_temp_items.dart';
 
 // ====================================================================================================
 // main
@@ -72,29 +74,39 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state, child) => MainShell(child: child),
       routes: [
         GoRoute(path: '/main/home', name: 'main-home', builder: (context, state) => const BodyHome()),
-        GoRoute(path: '/main/favorite', name: 'main-favorite', builder: (context, state) => const Center()),
         GoRoute(path: '/main/auction', name: 'main-auction', builder: (context, state) => const BodyAuction()),
-        GoRoute(path: '/main/limited-deal', name: 'main-limited-deal', builder: (context, state) => const BodyLimitedDeal()),
+        GoRoute(path: '/main/limited', name: 'main-limited', builder: (context, state) => const BodyLimited()),
+        GoRoute(path: '/main/always', name: 'main-always', builder: (context, state) => const Always()),
       ],
     ),
 
     // ----- 옥션 상품 상세 -----
     GoRoute(
-      path: '/auction-detail/:itemId',
-      name: 'auction-detail',
+      path: '/detail-auction/:itemId',
+      name: 'detail-auction',
       builder: (context, state) {
         final itemId = state.pathParameters['itemId'] ?? '';
-        return PageAuctionDetail(itemIdx: itemId);
+        return DetailAuction(itemIdx: itemId);
+      },
+    ),
+
+    // ----- 한정특가 상품 상세 -----
+    GoRoute(
+      path: '/detail-limited/:itemId',
+      name: 'detail-limited',
+      builder: (context, state) {
+        final itemId = state.pathParameters['itemId'] ?? '';
+        return DetailLimited(itemId: itemId);
       },
     ),
 
     // ----- 일반 상품 상세 -----
     GoRoute(
-      path: '/general-detail/:itemId',
-      name: 'deal-detail',
+      path: '/detail-always/:itemId',
+      name: 'detail-always',
       builder: (context, state) {
         final itemId = state.pathParameters['itemId'] ?? '';
-        return PageGeneralDetail(itemId: itemId);
+        return DetailAlways(itemId: itemId);
       },
     ),
   ],
