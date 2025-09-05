@@ -25,14 +25,12 @@ class _DetailLimitedState extends State<DetailLimited> {
   // --------------------------------------------------
   @override
   void initState() {
-    debugPrint('DetailLimited : initState');
     super.initState();
     _loadItemData();
   }
 
   @override
   void dispose() {
-    debugPrint('DetailLimited : dispose');
     super.dispose();
   }
 
@@ -40,7 +38,7 @@ class _DetailLimitedState extends State<DetailLimited> {
   // 상품 상세정보 로드
   // --------------------------------------------------
   void _loadItemData() {
-    _itemData = ApiRequest().limitedItemListNotifier.value.firstWhere((item) => item.idx == widget.itemId);
+    _itemData = ApiRequest().limitedItemListNotifier.value.firstWhere((item) => item.id == widget.itemId);
   }
 
   @override
@@ -126,7 +124,7 @@ class _DetailLimitedState extends State<DetailLimited> {
                       top: 20,
                       left: 0,
                       child: Text(
-                        _itemData!.productName,
+                        _itemData!.title,
                         style: const TextStyle(fontSize: 24, color: MyColors.text1, fontWeight: FontWeight.w600),
                         textAlign: TextAlign.left,
                       ),

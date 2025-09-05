@@ -39,7 +39,7 @@ class ApiRequest {
             final List<AuctionItem> cacheList = [];
             for (var item in resultList) {
               final auctionItem = AuctionItem(
-                idx: item['idx'],
+                id: item['id'],
                 brand: item['brand'],
                 productName: item['productName'],
                 originPrice: item['originPrice'],
@@ -124,10 +124,9 @@ class ApiRequest {
             final List<LimitedItem> cacheList = [];
             for (var item in result) {
               final limitedItem = LimitedItem(
-                idx: item['idx'],
-                productIdx: item['productIdx'],
+                id: item['id'],
                 brand: item['brand'],
-                productName: item['productName'],
+                title: item['productName'],
                 originPrice: item['originPrice'],
                 price: item['hotDealPrice'],
                 startAt: DateTime.parse(item['startAt'].replaceAll(' ', 'T')),
@@ -137,6 +136,53 @@ class ApiRequest {
             }
             _limitedItemListLastUpdated = DateTime.now();
             _limitedItemListNotifier.value = cacheList;
+          }
+        } else {
+          debugPrint('경매 아이템 목록 조회 실패');
+        }
+      }
+    } catch (e) {
+      debugPrint('Exception: ${e.toString()}');
+    }
+  }
+
+  // --------------------------------------------------
+  // 베스트 상품 조회
+  // --------------------------------------------------
+  final ValueNotifier<List<AlwayslItem>> _bestItemListNotifier = ValueNotifier([]);
+  ValueNotifier<List<AlwayslItem>> get bestItemListNotifier => _bestItemListNotifier;
+  DateTime _bestItemListLastUpdated = DateTime.now();
+  Future<void> fetchBestItemList({bool forceRefresh = false}) async {
+    try {
+      if (forceRefresh || _bestItemListNotifier.value.isEmpty || DateTime.now().difference(_bestItemListLastUpdated) > Duration(minutes: _updateInterval)) {
+        final String apiUrl = '$apiServerURL/api/products/popularity';
+        final String? accessToken = await JwtManager().getAccessToken();
+
+        if (accessToken == null) {
+          debugPrint('토큰 없거나 만료됨');
+          return;
+        }
+
+        final response = await http.get(Uri.parse(apiUrl), headers: {'Content-Type': 'application/json', 'X-Access-Token': accessToken});
+        debugPrint('========== API Response ==========\nURL: $apiUrl\nStatus: ${response.statusCode}\nBody: ${response.body}');
+        if (response.statusCode == 200) {
+          final Map<String, dynamic> body = jsonDecode(response.body);
+          if (body['code'] == '200') {
+            final result = body['result'] as List<dynamic>;
+            final List<AlwayslItem> cacheList = [];
+            for (var item in result) {
+              final bestItem = AlwayslItem(
+                id: item['id'],
+                brand: item['brand'],
+                title: item['productName'],
+                originPrice: item['originPrice'],
+                price: item['price'],
+                category: item['categoryType'],
+              );
+              cacheList.add(bestItem);
+            }
+            _bestItemListLastUpdated = DateTime.now();
+            _bestItemListNotifier.value = cacheList;
           }
         } else {
           debugPrint('경매 아이템 목록 조회 실패');

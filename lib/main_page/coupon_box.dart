@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pingk/_common/_temp_items.dart';
 import 'package:pingk/_common/item_info.dart';
 import 'package:pingk/_common/my_styles.dart';
 
@@ -23,13 +22,11 @@ class _CouponBoxState extends State<CouponBox> {
   // --------------------------------------------------
   @override
   void initState() {
-    debugPrint('CouponBox : initState');
     super.initState();
   }
 
   @override
   void dispose() {
-    debugPrint('CouponBox : dispose');
     _pageController.dispose();
     super.dispose();
   }
@@ -107,8 +104,7 @@ class _CouponBoxState extends State<CouponBox> {
                     });
                   },
                   itemBuilder: (context, index) {
-                    final LimitedItem item = TempItems.generalItems[index];
-                    return _couponCard(item);
+                    return null;
                   },
                 ),
               ),
@@ -189,7 +185,7 @@ class _CouponBoxState extends State<CouponBox> {
               left: 80,
               right: 80,
               child: Text(
-                item.productName,
+                item.title,
                 style: const TextStyle(fontSize: 16, color: MyColors.text1, fontWeight: FontWeight.w400),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,

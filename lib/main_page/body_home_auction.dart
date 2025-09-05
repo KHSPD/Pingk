@@ -29,12 +29,10 @@ class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
   // --------------------------------------------------
   @override
   void initState() {
-    debugPrint('BodyHomeAuctionItems : initState');
     super.initState();
-
     _itemDatas.addListener(_onItemListChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ApiRequest().fetchAuctionItemList().then((value) {
+      ApiRequest().fetchAuctionItemList().then((_) {
         setState(() {
           _isLoading = false;
         });
@@ -44,7 +42,6 @@ class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
 
   @override
   void dispose() {
-    debugPrint('BodyHomeAuctionItems : dispose');
     _itemDatas.removeListener(_onItemListChanged);
     _pageController.dispose();
     super.dispose();
@@ -194,7 +191,7 @@ class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
   Widget _itemAuctionCard(AuctionItem item, {double bgCololIntensity = 0.0}) {
     return GestureDetector(
       onTap: () {
-        context.pushNamed('detail-auction', pathParameters: {'itemId': item.idx});
+        context.pushNamed('detail-auction', pathParameters: {'itemId': item.id});
       },
       child: Container(
         margin: const EdgeInsets.fromLTRB(0, 15, 0, 15),

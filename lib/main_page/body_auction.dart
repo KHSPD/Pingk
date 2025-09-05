@@ -25,7 +25,6 @@ class _BodyAuctionState extends State<BodyAuction> {
   // --------------------------------------------------
   @override
   void initState() {
-    debugPrint('BodyAuction : initState');
     super.initState();
     _itemDatas.addListener(_onItemListChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -35,7 +34,6 @@ class _BodyAuctionState extends State<BodyAuction> {
 
   @override
   void dispose() {
-    debugPrint('BodyAuction : dispose');
     _itemDatas.removeListener(_onItemListChanged);
     super.dispose();
   }
@@ -126,7 +124,7 @@ class _BodyAuctionState extends State<BodyAuction> {
   Widget _itemAuctionCard(AuctionItem item) {
     return GestureDetector(
       onTap: () {
-        context.pushNamed('detail-auction', pathParameters: {'itemId': item.idx});
+        context.pushNamed('detail-auction', pathParameters: {'itemId': item.id});
       },
       child: Container(
         width: double.infinity,

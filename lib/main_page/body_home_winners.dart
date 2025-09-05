@@ -24,7 +24,6 @@ class _BodyHomeWinnersListState extends State<BodyHomeWinnersList> {
   // --------------------------------------------------
   @override
   void initState() {
-    debugPrint('BodyHomeWinnersList : initState');
     super.initState();
     _itemDatas.addListener(_onItemListChanged);
     ApiRequest().fetchAuctionWinnerList().then((_) {
@@ -36,7 +35,6 @@ class _BodyHomeWinnersListState extends State<BodyHomeWinnersList> {
 
   @override
   void dispose() {
-    debugPrint('BodyHomeWinnersList : dispose');
     _itemDatas.removeListener(_onItemListChanged);
     super.dispose();
   }

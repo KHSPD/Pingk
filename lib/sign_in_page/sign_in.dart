@@ -27,7 +27,6 @@ class _SignInState extends State<SignIn> {
   // --------------------------------------------------
   @override
   void initState() {
-    debugPrint('SignIn : initState');
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkProcess();
@@ -36,7 +35,6 @@ class _SignInState extends State<SignIn> {
 
   @override
   void dispose() {
-    debugPrint('SignIn : dispose');
     super.dispose();
   }
 

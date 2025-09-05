@@ -21,13 +21,13 @@ class BodyLimited extends StatefulWidget {
 class _BodyLimitedState extends State<BodyLimited> {
   final List<LimitedItem> _onSaleItemDatas = [];
   final List<LimitedItem> _readyItemDatas = [];
+  final DateTime _now = DateTime.now();
 
   // --------------------------------------------------
   // Lifecycle Methods
   // --------------------------------------------------
   @override
   void initState() {
-    debugPrint('BodyLimited : initState');
     super.initState();
     ApiRequest().limitedItemListNotifier.addListener(_onItemListChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -39,7 +39,6 @@ class _BodyLimitedState extends State<BodyLimited> {
 
   @override
   void dispose() {
-    debugPrint('BodyLimited : dispose');
     ApiRequest().limitedItemListNotifier.removeListener(_onItemListChanged);
     super.dispose();
   }
@@ -152,7 +151,7 @@ class _BodyLimitedState extends State<BodyLimited> {
   Widget _onSaleItemCard(LimitedItem item) {
     return GestureDetector(
       onTap: () {
-        context.pushNamed('detail-limited', pathParameters: {'itemId': item.idx});
+        context.pushNamed('detail-limited', pathParameters: {'itemId': item.id});
       },
       child: Container(
         width: double.infinity,
@@ -177,7 +176,7 @@ class _BodyLimitedState extends State<BodyLimited> {
               left: 30,
               right: 110,
               child: Text(
-                item.productName,
+                item.title,
                 style: const TextStyle(fontSize: 19, color: Color(0xFF393939), fontWeight: FontWeight.w600, letterSpacing: -0.3),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
@@ -312,7 +311,7 @@ class _BodyLimitedState extends State<BodyLimited> {
   Widget _readyLimitedDealCard(LimitedItem item, {required bool isNotified}) {
     return GestureDetector(
       onTap: () {
-        context.pushNamed('detail-limited', pathParameters: {'itemId': item.idx});
+        context.pushNamed('detail-limited', pathParameters: {'itemId': item.id});
       },
       child: Container(
         width: double.infinity,
@@ -353,7 +352,7 @@ class _BodyLimitedState extends State<BodyLimited> {
               left: 103.5,
               right: 70,
               child: Text(
-                item.productName,
+                item.title,
                 style: const TextStyle(fontSize: 16, color: Color(0xFF393939), fontWeight: FontWeight.w700, letterSpacing: -0.3),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -369,7 +368,7 @@ class _BodyLimitedState extends State<BodyLimited> {
                 decoration: BoxDecoration(color: Color(0xFFFDEEF2), borderRadius: BorderRadius.circular(13)),
                 alignment: Alignment.center,
                 child: Text(
-                  'D-3',
+                  'D-${item.endAt.difference(_now).inDays}',
                   style: TextStyle(fontSize: 15, color: Color(0xFFFF437A), fontWeight: FontWeight.w700),
                   textAlign: TextAlign.center,
                 ),

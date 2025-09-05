@@ -1,6 +1,12 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:pingk/_common/api_request.dart';
+import 'package:go_router/go_router.dart';
+import 'package:http/http.dart' as http;
+import 'package:pingk/_common/constants.dart';
 import 'package:pingk/_common/item_info.dart';
+import 'package:pingk/_common/my_functions.dart';
+import 'package:pingk/_common/my_widget.dart';
+import 'package:pingk/_common/token_manager.dart';
 
 // ====================================================================================================
 // AlwaysDealPage
@@ -13,93 +19,392 @@ class Always extends StatefulWidget {
 }
 
 class _AlwaysState extends State<Always> {
-  List<String> categoryList = ['ALL', 'BEAUTY', 'FASHION', 'LIFESTYLE', 'FOOD', 'HOME', 'ELECTRONICS', 'SPORTS', 'BOOKS', 'MUSIC', 'MOVIES', 'GAMES', 'TOYS', 'OTHERS'];
-  int selectedCategoryIndex = 0;
+  final List<AlwayslItem> _itemList = [];
+  final List<String> _categoryList = ['FOOD', 'BEAUTY', 'FASHION', 'LIFESTYLE', 'HOME', 'ELECTRONICS', 'SPORTS', 'BOOKS', 'MUSIC', 'MOVIES', 'GAMES', 'TOYS', 'OTHERS'];
+  int _selectedCategoryIdx = 0;
+  // ----- API Request 관련 -----
+  final int _requestCount = 20;
+  bool _isNewRequest = true;
+  int _currentPage = 1;
+  // ----- 무한 스크롤 관련 -----
+  bool _dataIsLoading = false;
+  bool _hasMoreData = true;
+  // ----- 정렬 관련 -----
+  final List<String> _sortOptions = ['인기순', '가격낮은순', '가격높은순', '할인률높은순'];
+  String _selectedSortOption = '인기순';
 
+  // --------------------------------------------------
+  // Lifecycle Methods
+  // --------------------------------------------------
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _fetchAlwaysItemList();
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  // --------------------------------------------------
+  // 추가 데이터 로드
+  // --------------------------------------------------
+  Future<void> _loadMoreItems() async {
+    if (!_dataIsLoading && _hasMoreData) {
+      _currentPage++;
+      setState(() {
+        _dataIsLoading = true;
+      });
+      final delayFuture = Future.delayed(const Duration(milliseconds: 500));
+      final fetchFuture = _fetchAlwaysItemList();
+      await Future.wait([delayFuture, fetchFuture]);
+      setState(() {
+        _dataIsLoading = false;
+      });
+    }
+  }
+
+  // --------------------------------------------------
+  // 상품 정렬
+  // --------------------------------------------------
+  void _sortItems() {
+    setState(() {
+      switch (_selectedSortOption) {
+        case '최신순':
+          // 기본 순서 (API에서 받은 순서)
+          break;
+        case '가격낮은순':
+          _itemList.sort((a, b) => a.price.compareTo(b.price));
+          break;
+        case '가격높은순':
+          _itemList.sort((a, b) => b.price.compareTo(a.price));
+          break;
+        case '할인률높은순':
+          _itemList.sort((a, b) {
+            int discountA = MyFN.discountRate(a.originPrice, a.price);
+            int discountB = MyFN.discountRate(b.originPrice, b.price);
+            return discountB.compareTo(discountA);
+          });
+          break;
+      }
+    });
+  }
+
+  // --------------------------------------------------
+  // 상시특가 상품 조회
+  // --------------------------------------------------
+  Future<void> _fetchAlwaysItemList() async {
+    try {
+      final String apiUrl = '$apiServerURL/api/products';
+      final String? accessToken = await JwtManager().getAccessToken();
+
+      if (accessToken == null) {
+        debugPrint('토큰 없거나 만료됨');
+        return;
+      }
+
+      // ----- Request Parameters -----
+      if (_isNewRequest) {
+        _itemList.clear();
+
+        _currentPage = 1;
+        _isNewRequest = false;
+        _hasMoreData = true;
+      }
+      Map<String, dynamic> params = {};
+      params['page'] = _currentPage;
+      params['size'] = _requestCount;
+      params['categoryType'] = _categoryList[_selectedCategoryIdx];
+
+      // 쿼리 스트림 생성
+      final uri = Uri.parse(apiUrl).replace(queryParameters: params.map((key, value) => MapEntry(key, value.toString())));
+      final response = await http.get(uri, headers: {'Content-Type': 'application/json', 'X-Access-Token': accessToken});
+      debugPrint('========== API Response ==========\nURL: $apiUrl\nParams: $uri\nStatus: ${response.statusCode}\nBody: ${response.body}');
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> body = jsonDecode(response.body);
+        if (body['code'] == '200') {
+          final result = body['result'];
+          _currentPage = result['page'];
+          final content = result['content'] as List<dynamic>;
+          final List<AlwayslItem> newItems = [];
+          for (var item in content) {
+            final alwaysItem = AlwayslItem(
+              id: item['id'],
+              brand: item['brand'],
+              title: item['productName'],
+              originPrice: item['originPrice'],
+              price: item['price'],
+              category: item['categoryType'],
+            );
+            newItems.add(alwaysItem);
+          }
+
+          // 로드할 데이터가 더 있는지 확인
+          final totalPage = result['totalPages'];
+          if (newItems.isEmpty || _currentPage >= totalPage) {
+            _hasMoreData = false;
+          }
+          setState(() {
+            _itemList.addAll(newItems);
+          });
+        }
+      } else {
+        debugPrint('경매 아이템 목록 조회 실패');
+      }
+    } catch (e) {
+      debugPrint('Exception: ${e.toString()}');
+    }
+  }
+
+  // --------------------------------------------------
+  // build
+  // --------------------------------------------------
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Color(0xFFFFFFFF),
-      child: NestedScrollView(
-        // ----- NestedScrollView -headerSliverBuilder -----
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return [
-            // ----- 상단 문구 -----
-            SliverToBoxAdapter(
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.fromLTRB(29, 30, 29, 0),
-                child: RichText(
-                  text: const TextSpan(
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600, letterSpacing: -0.3),
-                    children: [
-                      TextSpan(
-                        text: '상시특가로 매일매일',
-                        style: TextStyle(color: Color(0xFFFF437A)),
+      child: Stack(
+        children: [
+          NotificationListener<ScrollNotification>(
+            onNotification: (ScrollNotification scrollInfo) {
+              if (scrollInfo is ScrollUpdateNotification || scrollInfo is ScrollEndNotification) {
+                if (scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent + 20) {
+                  _loadMoreItems();
+                }
+              }
+              return false;
+            },
+            child: NestedScrollView(
+              // ----- NestedScrollView -headerSliverBuilder -----
+              headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+                return [
+                  // ----- 상단 문구 -----
+                  SliverToBoxAdapter(
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.fromLTRB(29, 30, 29, 0),
+                      child: RichText(
+                        text: const TextSpan(
+                          style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600, letterSpacing: -0.3),
+                          children: [
+                            TextSpan(
+                              text: '상시특가로 매일매일',
+                              style: TextStyle(color: Color(0xFFFF437A)),
+                            ),
+                            TextSpan(
+                              text: '\n똑똑한 쇼핑하세요!',
+                              style: TextStyle(color: Color(0xFF393939), height: 1.2),
+                            ),
+                          ],
+                        ),
                       ),
-                      TextSpan(
-                        text: '\n똑똑한 쇼핑하세요!',
-                        style: TextStyle(color: Color(0xFF393939), height: 1.2),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+
+                  const SliverToBoxAdapter(child: SizedBox(height: 10)),
+
+                  // ----- 카테고리 선택 -----
+                  SliverPersistentHeader(
+                    pinned: true,
+                    delegate: _CategoryHeaderDelegate(_categoryList, _selectedCategoryIdx, (index) {
+                      if (index != _selectedCategoryIdx) {
+                        _isNewRequest = true;
+                        _selectedCategoryIdx = index;
+                        _fetchAlwaysItemList();
+                      }
+                    }),
+                  ),
+
+                  const SliverToBoxAdapter(child: SizedBox(height: 40)),
+
+                  // 총 상품 수 및 정렬 옵션
+                  SliverToBoxAdapter(
+                    child: Container(
+                      padding: const EdgeInsets.fromLTRB(29, 0, 29, 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '총 ${_itemList.length}개의 쿠폰',
+                            style: const TextStyle(fontSize: 14, color: Color(0xFFBEBEBE), fontWeight: FontWeight.w600, letterSpacing: -0.3),
+                          ),
+                          // 정렬 드롭다운
+                          Container(
+                            height: 32,
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF8F8F8),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
+                            ),
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton<String>(
+                                value: _selectedSortOption,
+                                icon: const Icon(Icons.keyboard_arrow_down, size: 20, color: Color(0xFF666666)),
+                                style: const TextStyle(fontSize: 14, color: Color(0xFF393939), fontWeight: FontWeight.w500, letterSpacing: -0.3),
+                                items: _sortOptions.map((String option) {
+                                  return DropdownMenuItem<String>(value: option, child: Text(option));
+                                }).toList(),
+                                onChanged: (String? newValue) {
+                                  if (newValue != null && newValue != _selectedSortOption) {
+                                    setState(() {
+                                      _selectedSortOption = newValue;
+                                    });
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ];
+              },
+
+              // ----- NestedScrollView - body -----
+              body: GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(22, 0, 22, 150),
+                itemCount: _itemList.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 30, crossAxisSpacing: 10, childAspectRatio: 168 / 275),
+                itemBuilder: (context, index) {
+                  return _alwaysCard(_itemList[index], () {});
+                },
               ),
             ),
+          ),
 
-            const SliverToBoxAdapter(child: SizedBox(height: 10)),
-
-            // ----- 카테고리 선택 -----
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: _CategoryHeaderDelegate(categoryList, selectedCategoryIndex, (index) {
-                setState(() {
-                  selectedCategoryIndex = index;
-                });
-              }),
+          // 로딩 오버레이
+          if (_dataIsLoading)
+            Container(
+              color: const Color(0x30000000),
+              child: Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF437A)))),
             ),
-          ];
-        },
-
-        // ----- NestedScrollView - body -----
-        body: ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: ApiRequest().auctionItemListNotifier.value.length,
-          itemBuilder: (context, index) {
-            return _readyLimitedDealCard(ApiRequest().auctionItemListNotifier.value[index]);
-          },
-        ),
+        ],
       ),
     );
   }
 
   // --------------------------------------------------
-  // 다가오는 한정특가 상품 카드
+  // 베스트 상품 카드
   // --------------------------------------------------
-  Widget _readyLimitedDealCard(AuctionItem item) {
+  Widget _alwaysCard(AlwayslItem item, VoidCallback onWishToggle) {
     return GestureDetector(
-      onTap: () {},
-      child: Container(
-        width: double.infinity,
-        height: 98,
-        margin: const EdgeInsets.symmetric(horizontal: 21, vertical: 5),
-        decoration: BoxDecoration(
-          border: Border.all(color: const Color(0xFFF6F1F1), width: 1),
-          borderRadius: BorderRadius.circular(15),
-        ),
+      onTap: () {
+        context.pushNamed('always-detail', pathParameters: {'itemId': item.id});
+      },
+      child: SizedBox(
+        width: 168,
+        height: 275,
+
         child: Stack(
           children: [
-            // ----- 제품명 -----
+            // ----- 상품 이미지 -----
             Positioned(
-              top: 47,
-              left: 103.5,
-              right: 70,
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                decoration: BoxDecoration(color: Color(0xFFF6F1F1), borderRadius: BorderRadius.circular(15)),
+                child: ClipRRect(borderRadius: BorderRadius.circular(15), child: MyNetworkImage(item.thumbnail, width: 168, height: 168)),
+              ),
+            ),
+
+            // ----- 찜 버튼 -----
+            Positioned(
+              top: 134,
+              right: 12,
+              child: GestureDetector(
+                onTap: onWishToggle,
+                child: Icon(item.isWished ? Icons.favorite : Icons.favorite_border, color: item.isWished ? Color(0xFFFF437A) : Color(0xFFD0D0D0), size: 22),
+              ),
+            ),
+
+            // ----- 브랜드 -----
+            Positioned(
+              top: 182,
+              left: 10,
               child: Text(
-                item.productName,
-                style: const TextStyle(fontSize: 16, color: Color(0xFF393939), fontWeight: FontWeight.w700, letterSpacing: -0.3),
+                item.brand,
+                style: const TextStyle(fontSize: 13, color: Color(0xFFBEBEBE), fontWeight: FontWeight.w500, letterSpacing: -0.3),
+              ),
+            ),
+
+            // ----- 상품명 -----
+            Positioned(
+              top: 198,
+              left: 10,
+              right: 10,
+              child: Text(
+                item.title,
+                style: const TextStyle(fontSize: 16, color: Color(0xFF393939), fontWeight: FontWeight.w600, letterSpacing: -0.3),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
+              ),
+            ),
+
+            // ----- 할인률 -----
+            Positioned(
+              left: 10,
+              bottom: 4,
+              child: Container(
+                width: 52,
+                height: 23,
+                decoration: BoxDecoration(color: Color(0xFFFDEEF2), borderRadius: BorderRadius.circular(20)),
+                alignment: Alignment.center,
+                child: Text(
+                  '${MyFN.discountRate(item.originPrice, item.price)}%',
+                  style: const TextStyle(fontFamily: 'Numbers', fontSize: 14, color: Color(0xFFFF437A), fontWeight: FontWeight.w700),
+                ),
+              ),
+            ),
+
+            // ----- 정상가 가격 -----
+            Positioned(
+              bottom: 28,
+              right: 10,
+              child: Text(
+                '${MyFN.formatNumberWithComma(item.originPrice)}원',
+                style: const TextStyle(
+                  fontFamily: 'Numbers',
+                  fontSize: 14,
+                  color: Color(0xFFBEBEBE),
+                  fontWeight: FontWeight.w400,
+                  decoration: TextDecoration.lineThrough,
+                  decorationColor: Color(0xFFBEBEBE),
+                  letterSpacing: -0.4,
+                ),
+              ),
+            ),
+
+            // ----- 판매가  -----
+            Positioned(
+              right: 10,
+              bottom: 0,
+              child: Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: MyFN.formatNumberWithComma(item.price),
+                      style: TextStyle(fontFamily: 'Numbers', color: Color(0xFFFF437A), fontSize: 20, fontWeight: FontWeight.w700, letterSpacing: -0.1),
+                    ),
+                    WidgetSpan(
+                      alignment: PlaceholderAlignment.top,
+                      child: Transform.translate(
+                        offset: const Offset(1, -5),
+                        child: Text(
+                          '원',
+                          style: const TextStyle(color: Color(0xFFFF437A), fontSize: 16, fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

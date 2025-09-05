@@ -20,13 +20,11 @@ class _SetBioAuthState extends State<SetBioAuth> {
   // --------------------------------------------------
   @override
   void initState() {
-    debugPrint('SetBioAuth : initState');
     super.initState();
   }
 
   @override
   void dispose() {
-    debugPrint('SetBioAuth : dispose');
     super.dispose();
   }
 

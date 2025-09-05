@@ -25,7 +25,6 @@ class _LandingState extends State<Landing> {
   // --------------------------------------------------
   @override
   void initState() {
-    debugPrint('Landing : initState');
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkProcess();
@@ -34,7 +33,6 @@ class _LandingState extends State<Landing> {
 
   @override
   void dispose() {
-    debugPrint('Landing : dispose');
     super.dispose();
   }
 

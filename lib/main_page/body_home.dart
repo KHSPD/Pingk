@@ -21,13 +21,11 @@ class _BodyHomeState extends State<BodyHome> {
   // --------------------------------------------------
   @override
   void initState() {
-    debugPrint('BodyHome : initState');
     super.initState();
   }
 
   @override
   void dispose() {
-    debugPrint('BodyHome : dispose');
     super.dispose();
   }
 

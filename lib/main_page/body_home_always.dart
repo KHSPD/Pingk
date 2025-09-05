@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pingk/_common/api_request.dart';
 import 'package:pingk/_common/my_functions.dart';
 import 'package:pingk/_common/item_info.dart';
-import 'package:pingk/_common/_temp_items.dart';
 import 'package:pingk/_common/my_widget.dart';
 
 // ====================================================================================================
@@ -17,22 +17,33 @@ class BodyHomeAlways extends StatefulWidget {
 }
 
 class _BodyHomeAlwaysState extends State<BodyHomeAlways> {
-  final List<LimitedItem> bestCouponDatas = TempItems.bestDatas.sublist(0, 7);
-  final List<LimitedItem> discountDatas = TempItems.discountDatas.sublist(0, 7);
+  final _itemDatas = ApiRequest().bestItemListNotifier;
 
   // --------------------------------------------------
   // Lifecycle Methods
   // --------------------------------------------------
   @override
   void initState() {
-    debugPrint('BodyHomeAlways : initState');
     super.initState();
+    _itemDatas.addListener(_onItemListChanged);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ApiRequest().fetchBestItemList();
+    });
   }
 
   @override
   void dispose() {
-    debugPrint('BodyHomeAlways : dispose');
+    _itemDatas.removeListener(_onItemListChanged);
     super.dispose();
+  }
+
+  // --------------------------------------------------
+  // 아이템 목록 변경 이벤트
+  // --------------------------------------------------
+  void _onItemListChanged() {
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   // --------------------------------------------------
@@ -81,10 +92,10 @@ class _BodyHomeAlwaysState extends State<BodyHomeAlways> {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             padding: const EdgeInsets.symmetric(horizontal: 22),
-            itemCount: bestCouponDatas.length,
+            itemCount: _itemDatas.value.length,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 30, crossAxisSpacing: 10, childAspectRatio: 168 / 275),
             itemBuilder: (context, i) {
-              return _bestDealCard(bestCouponDatas[i], () => _toggleWish(i));
+              return _bestDealCard(_itemDatas.value[i], () {});
             },
           ),
 
@@ -95,21 +106,12 @@ class _BodyHomeAlwaysState extends State<BodyHomeAlways> {
   }
 
   // --------------------------------------------------
-  // 찜 버튼 토글
-  // --------------------------------------------------
-  void _toggleWish(int index) {
-    setState(() {
-      bestCouponDatas[index].isWished = !bestCouponDatas[index].isWished;
-    });
-  }
-
-  // --------------------------------------------------
   // 베스트 상품 카드
   // --------------------------------------------------
-  Widget _bestDealCard(LimitedItem item, VoidCallback onWishToggle) {
+  Widget _bestDealCard(AlwayslItem item, VoidCallback onWishToggle) {
     return GestureDetector(
       onTap: () {
-        context.pushNamed('deal-detail', pathParameters: {'itemId': item.idx});
+        context.pushNamed('deal-detail', pathParameters: {'itemId': item.id});
       },
       child: SizedBox(
         width: 168,
@@ -154,7 +156,7 @@ class _BodyHomeAlwaysState extends State<BodyHomeAlways> {
               left: 10,
               right: 10,
               child: Text(
-                item.productName,
+                item.title,
                 style: const TextStyle(fontSize: 16, color: Color(0xFF393939), fontWeight: FontWeight.w600, letterSpacing: -0.3),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,

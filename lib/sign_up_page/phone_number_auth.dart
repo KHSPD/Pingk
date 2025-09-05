@@ -32,13 +32,11 @@ class _PhoneNumberAuthState extends State<PhoneNumberAuth> {
   // --------------------------------------------------
   @override
   void initState() {
-    debugPrint('PhoneNumberAuth : initState');
     super.initState();
   }
 
   @override
   void dispose() {
-    debugPrint('PhoneNumberAuth : dispose');
     super.dispose();
   }
 

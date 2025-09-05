@@ -25,14 +25,12 @@ class _DetailAuctionState extends State<DetailAuction> {
   // --------------------------------------------------
   @override
   void initState() {
-    debugPrint('DetailAuction : initState');
     super.initState();
-    _itemData = ApiRequest().auctionItemListNotifier.value.firstWhere((item) => item.idx == widget.itemIdx);
+    _itemData = ApiRequest().auctionItemListNotifier.value.firstWhere((item) => item.id == widget.itemIdx);
   }
 
   @override
   void dispose() {
-    debugPrint('DetailAuction : dispose');
     super.dispose();
   }
 

@@ -14,15 +14,12 @@ import 'main_page/body_home.dart';
 import 'main_page/body_auction.dart';
 import 'main_page/body_limited.dart';
 import 'detail_page/detail_auction.dart';
-import '_common/_temp_items.dart';
 
 // ====================================================================================================
 // main
 // ====================================================================================================
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  TempItems();
-
   runApp(const PingkApp());
 }
 

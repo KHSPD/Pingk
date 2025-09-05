@@ -25,13 +25,11 @@ class _SetPasswordState extends State<SetPassword> {
   // --------------------------------------------------
   @override
   void initState() {
-    debugPrint('SetPassword : initState');
     super.initState();
   }
 
   @override
   void dispose() {
-    debugPrint('SetPassword : dispose');
     super.dispose();
   }
 

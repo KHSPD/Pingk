@@ -21,13 +21,13 @@ class BodyHomeLimited extends StatefulWidget {
 class _BodyHomeLimitedState extends State<BodyHomeLimited> {
   final List<LimitedItem> _onSaleItemDatas = [];
   final List<LimitedItem> _readyItemDatas = [];
+  final DateTime _now = DateTime.now();
 
   // --------------------------------------------------
   // Lifecycle Methods
   // --------------------------------------------------
   @override
   void initState() {
-    debugPrint('BodyHomeLimited : initState');
     super.initState();
     ApiRequest().limitedItemListNotifier.addListener(_onItemListChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -39,7 +39,6 @@ class _BodyHomeLimitedState extends State<BodyHomeLimited> {
 
   @override
   void dispose() {
-    debugPrint('BodyHomeLimited : dispose');
     ApiRequest().limitedItemListNotifier.removeListener(_onItemListChanged);
     super.dispose();
   }
@@ -158,7 +157,7 @@ class _BodyHomeLimitedState extends State<BodyHomeLimited> {
   Widget _todaysLimitedDealCard(LimitedItem item) {
     return GestureDetector(
       onTap: () {
-        context.pushNamed('detail-limited', pathParameters: {'itemId': item.idx});
+        context.pushNamed('detail-limited', pathParameters: {'itemId': item.id});
       },
       child: Container(
         width: 250,
@@ -193,7 +192,7 @@ class _BodyHomeLimitedState extends State<BodyHomeLimited> {
               top: 255,
               left: 23,
               child: Text(
-                item.productName,
+                item.title,
                 style: const TextStyle(fontSize: 18, color: Color(0xFF393939), fontWeight: FontWeight.w600, letterSpacing: -0.3),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -271,7 +270,7 @@ class _BodyHomeLimitedState extends State<BodyHomeLimited> {
   Widget _readyLimitedDealCard(LimitedItem item) {
     return GestureDetector(
       onTap: () {
-        context.pushNamed('detail-limited', pathParameters: {'itemId': item.idx});
+        context.pushNamed('detail-limited', pathParameters: {'itemId': item.id});
       },
       child: Container(
         width: double.infinity,
@@ -311,7 +310,7 @@ class _BodyHomeLimitedState extends State<BodyHomeLimited> {
               left: 103.5,
               right: 70,
               child: Text(
-                item.productName,
+                item.title,
                 style: const TextStyle(fontSize: 16, color: Color(0xFF393939), fontWeight: FontWeight.w700, letterSpacing: -0.3),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -327,7 +326,7 @@ class _BodyHomeLimitedState extends State<BodyHomeLimited> {
                 decoration: BoxDecoration(color: Color(0xFFFDEEF2), borderRadius: BorderRadius.circular(13)),
                 alignment: Alignment.center,
                 child: Text(
-                  'D-3',
+                  'D-${item.endAt.difference(_now).inDays}',
                   style: TextStyle(fontSize: 15, color: Color(0xFFFF437A), fontWeight: FontWeight.w700),
                   textAlign: TextAlign.center,
                 ),
