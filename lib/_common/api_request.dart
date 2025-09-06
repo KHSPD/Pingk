@@ -128,7 +128,7 @@ class ApiRequest {
                 brand: item['brand'],
                 title: item['productName'],
                 originPrice: item['originPrice'],
-                price: item['hotDealPrice'],
+                price: item['price'],
                 startAt: DateTime.parse(item['startAt'].replaceAll(' ', 'T')),
                 endAt: DateTime.parse(item['endAt'].replaceAll(' ', 'T')),
               );
@@ -177,7 +177,7 @@ class ApiRequest {
                 title: item['productName'],
                 originPrice: item['originPrice'],
                 price: item['price'],
-                category: item['categoryType'],
+                category: item['category'],
               );
               cacheList.add(bestItem);
             }

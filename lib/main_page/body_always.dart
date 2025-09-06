@@ -26,7 +26,8 @@ class _AlwaysState extends State<Always> {
   final int _requestCount = 20;
   bool _isNewRequest = true;
   int _currentPage = 1;
-  // ----- 무한 스크롤 관련 -----
+  // ----- 스크롤 관련 -----
+  final ScrollController _scrollController = ScrollController();
   bool _dataIsLoading = false;
   bool _hasMoreData = true;
   // ----- 정렬 관련 -----
@@ -46,6 +47,7 @@ class _AlwaysState extends State<Always> {
 
   @override
   void dispose() {
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -83,15 +85,22 @@ class _AlwaysState extends State<Always> {
       // ----- Request Parameters -----
       if (_isNewRequest) {
         _itemList.clear();
-
         _currentPage = 1;
         _isNewRequest = false;
         _hasMoreData = true;
+        // 스크롤을 맨 위로 초기화
+        if (_scrollController.hasClients) {
+          _scrollController.animateTo(
+            0.0,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          );
+        }
       }
       Map<String, dynamic> params = {};
       params['page'] = _currentPage;
       params['size'] = _requestCount;
-      params['categoryType'] = _categoryList[_selectedCategoryIdx];
+      params['category'] = _categoryList[_selectedCategoryIdx];
 
       // 쿼리 스트림 생성
       final uri = Uri.parse(apiUrl).replace(queryParameters: params.map((key, value) => MapEntry(key, value.toString())));
@@ -111,7 +120,7 @@ class _AlwaysState extends State<Always> {
               title: item['productName'],
               originPrice: item['originPrice'],
               price: item['price'],
-              category: item['categoryType'],
+              category: item['category'],
             );
             newItems.add(alwaysItem);
           }
@@ -152,7 +161,7 @@ class _AlwaysState extends State<Always> {
               return false;
             },
             child: NestedScrollView(
-              // ----- NestedScrollView -headerSliverBuilder -----
+              controller: _scrollController,             
               headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
                 return [
                   // ----- 상단 문구 -----
@@ -194,7 +203,7 @@ class _AlwaysState extends State<Always> {
 
                   const SliverToBoxAdapter(child: SizedBox(height: 40)),
 
-                  // 총 상품 수 및 정렬 옵션
+                  // ----- 총 상품 수 및 정렬 옵션 -----
                   SliverToBoxAdapter(
                     child: Container(
                       padding: const EdgeInsets.fromLTRB(29, 0, 29, 10),
@@ -204,34 +213,8 @@ class _AlwaysState extends State<Always> {
                           Text(
                             '총 ${_itemList.length}개의 쿠폰',
                             style: const TextStyle(fontSize: 14, color: Color(0xFFBEBEBE), fontWeight: FontWeight.w600, letterSpacing: -0.3),
-                          ),
-                          // 정렬 드롭다운
-                          Container(
-                            height: 32,
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFF8F8F8),
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
-                            ),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton<String>(
-                                value: _selectedSortOption,
-                                icon: const Icon(Icons.keyboard_arrow_down, size: 20, color: Color(0xFF666666)),
-                                style: const TextStyle(fontSize: 14, color: Color(0xFF393939), fontWeight: FontWeight.w500, letterSpacing: -0.3),
-                                items: _sortOptions.map((String option) {
-                                  return DropdownMenuItem<String>(value: option, child: Text(option));
-                                }).toList(),
-                                onChanged: (String? newValue) {
-                                  if (newValue != null && newValue != _selectedSortOption) {
-                                    setState(() {
-                                      _selectedSortOption = newValue;
-                                    });
-                                  }
-                                },
-                              ),
-                            ),
-                          ),
+                          ),                          
+                          _buildSortDropdown(),
                         ],
                       ),
                     ),
@@ -260,6 +243,42 @@ class _AlwaysState extends State<Always> {
               child: Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF437A)))),
             ),
         ],
+      ),
+    );
+  }
+
+  // --------------------------------------------------
+  // 정렬 드롭다운 메뉴
+  // --------------------------------------------------
+  Widget _buildSortDropdown() {    
+    return Container(
+      height: 30,
+      padding: const EdgeInsets.symmetric(horizontal: 12),                           
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          value: _selectedSortOption,
+          alignment: Alignment.centerRight,
+          dropdownColor: Colors.white,
+          icon: Icon(Icons.keyboard_arrow_down, size: 20, color: Color(0xFFFF437A)),               
+          selectedItemBuilder: (context) => _sortOptions.map((option) => 
+            Row(mainAxisSize: MainAxisSize.min, children: [
+              Text(option, style: TextStyle(fontSize: 14, color: Color(0xFFFF437A), fontWeight: FontWeight.w600, letterSpacing: -0.3)),
+              const SizedBox(width: 4),
+            ])
+          ).toList(),
+          items: _sortOptions.map((option) => 
+            DropdownMenuItem<String>(
+              value: option, 
+              alignment: Alignment.centerLeft,
+              child: Text(option, style: TextStyle(fontSize: 14, color: Color(0xFF393939), fontWeight: FontWeight.w500, letterSpacing: -0.3)),
+            )
+          ).toList(),
+          onChanged: (newValue) {
+            if (newValue != null && newValue != _selectedSortOption) {
+              setState(() => _selectedSortOption = newValue);
+            }
+          },
+        ),
       ),
     );
   }
