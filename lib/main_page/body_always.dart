@@ -68,32 +68,6 @@ class _AlwaysState extends State<Always> {
   }
 
   // --------------------------------------------------
-  // 상품 정렬
-  // --------------------------------------------------
-  void _sortItems() {
-    setState(() {
-      switch (_selectedSortOption) {
-        case '최신순':
-          // 기본 순서 (API에서 받은 순서)
-          break;
-        case '가격낮은순':
-          _itemList.sort((a, b) => a.price.compareTo(b.price));
-          break;
-        case '가격높은순':
-          _itemList.sort((a, b) => b.price.compareTo(a.price));
-          break;
-        case '할인률높은순':
-          _itemList.sort((a, b) {
-            int discountA = MyFN.discountRate(a.originPrice, a.price);
-            int discountB = MyFN.discountRate(b.originPrice, b.price);
-            return discountB.compareTo(discountA);
-          });
-          break;
-      }
-    });
-  }
-
-  // --------------------------------------------------
   // 상시특가 상품 조회
   // --------------------------------------------------
   Future<void> _fetchAlwaysItemList() async {
