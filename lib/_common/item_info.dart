@@ -6,12 +6,12 @@ import 'package:pingk/_common/constants.dart';
 class AuctionItem {
   final String id;
   final String brand;
-  final String productName;
+  final String title;
   final int originPrice;
   final int lastPrice;
   final DateTime endAt;
 
-  AuctionItem({required this.id, required this.brand, required this.productName, required this.originPrice, required this.lastPrice, required this.endAt});
+  AuctionItem({required this.id, required this.brand, required this.title, required this.originPrice, required this.lastPrice, required this.endAt});
 
   String get thumbnail => '$imageServerURL/${id}_thumb.png';
 }

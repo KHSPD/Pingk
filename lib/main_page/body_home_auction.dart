@@ -226,7 +226,7 @@ class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
               left: 24,
               right: 24,
               child: Text(
-                item.productName,
+                item.title,
                 style: const TextStyle(fontSize: 20, color: Color(0xFF393939), fontWeight: FontWeight.w600),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,

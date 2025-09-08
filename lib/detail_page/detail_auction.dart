@@ -117,7 +117,7 @@ class _DetailAuctionState extends State<DetailAuction> {
                       top: 20,
                       left: 0,
                       child: Text(
-                        _itemData!.productName,
+                        _itemData!.title,
                         style: const TextStyle(fontSize: 28, color: MyColors.text1, fontWeight: FontWeight.w600),
                         textAlign: TextAlign.left,
                       ),

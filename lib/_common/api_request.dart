@@ -41,7 +41,7 @@ class ApiRequest {
               final auctionItem = AuctionItem(
                 id: item['id'],
                 brand: item['brand'],
-                productName: item['productName'],
+                title: item['title'],
                 originPrice: item['originPrice'],
                 lastPrice: item['lastPrice'],
                 endAt: DateTime.parse(item['endAt'].replaceAll(' ', 'T')),
@@ -126,7 +126,7 @@ class ApiRequest {
               final limitedItem = LimitedItem(
                 id: item['id'],
                 brand: item['brand'],
-                title: item['productName'],
+                title: item['title'],
                 originPrice: item['originPrice'],
                 price: item['price'],
                 startAt: DateTime.parse(item['startAt'].replaceAll(' ', 'T')),
@@ -155,7 +155,7 @@ class ApiRequest {
   Future<void> fetchBestItemList({bool forceRefresh = false}) async {
     try {
       if (forceRefresh || _bestItemListNotifier.value.isEmpty || DateTime.now().difference(_bestItemListLastUpdated) > Duration(minutes: _updateInterval)) {
-        final String apiUrl = '$apiServerURL/api/products/popularity';
+        final String apiUrl = '$apiServerURL/api/products/best';
         final String? accessToken = await JwtManager().getAccessToken();
 
         if (accessToken == null) {
@@ -174,7 +174,7 @@ class ApiRequest {
               final bestItem = AlwayslItem(
                 id: item['id'],
                 brand: item['brand'],
-                title: item['productName'],
+                title: item['title'],
                 originPrice: item['originPrice'],
                 price: item['price'],
                 category: item['category'],
@@ -185,7 +185,7 @@ class ApiRequest {
             _bestItemListNotifier.value = cacheList;
           }
         } else {
-          debugPrint('경매 아이템 목록 조회 실패');
+          debugPrint('베스트 상품 목록 조회 실패');
         }
       }
     } catch (e) {

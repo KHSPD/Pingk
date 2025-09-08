@@ -149,7 +149,7 @@ class _BodyAuctionState extends State<BodyAuction> {
               left: 30,
               right: 110,
               child: Text(
-                item.productName,
+                item.title,
                 style: const TextStyle(fontSize: 19, color: Color(0xFF393939), fontWeight: FontWeight.w600, letterSpacing: -0.3),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,

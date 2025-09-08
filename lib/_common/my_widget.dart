@@ -1,10 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:pingk/_common/my_styles.dart';
 
 // --------------------------------------------------
 // 네트워크 이미지
 // --------------------------------------------------
+class MyCacheManager extends CacheManager {
+  MyCacheManager() : super(Config('cacheManagerKey', stalePeriod: const Duration(days: 1), maxNrOfCacheObjects: 100));
+}
+
 class MyNetworkImage extends StatelessWidget {
   final String url;
   final double? width;
@@ -17,6 +22,7 @@ class MyNetworkImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return CachedNetworkImage(
       imageUrl: url,
+      cacheManager: MyCacheManager(),
       fit: BoxFit.cover,
       width: width,
       height: height,

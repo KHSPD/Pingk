@@ -90,11 +90,7 @@ class _AlwaysState extends State<Always> {
         _hasMoreData = true;
         // 스크롤을 맨 위로 초기화
         if (_scrollController.hasClients) {
-          _scrollController.animateTo(
-            0.0,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeOut,
-          );
+          _scrollController.animateTo(0.0, duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
         }
       }
       Map<String, dynamic> params = {};
@@ -161,7 +157,7 @@ class _AlwaysState extends State<Always> {
               return false;
             },
             child: NestedScrollView(
-              controller: _scrollController,             
+              controller: _scrollController,
               headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
                 return [
                   // ----- 상단 문구 -----
@@ -213,7 +209,7 @@ class _AlwaysState extends State<Always> {
                           Text(
                             '총 ${_itemList.length}개의 쿠폰',
                             style: const TextStyle(fontSize: 14, color: Color(0xFFBEBEBE), fontWeight: FontWeight.w600, letterSpacing: -0.3),
-                          ),                          
+                          ),
                           _buildSortDropdown(),
                         ],
                       ),
@@ -250,29 +246,42 @@ class _AlwaysState extends State<Always> {
   // --------------------------------------------------
   // 정렬 드롭다운 메뉴
   // --------------------------------------------------
-  Widget _buildSortDropdown() {    
+  Widget _buildSortDropdown() {
     return Container(
       height: 30,
-      padding: const EdgeInsets.symmetric(horizontal: 12),                           
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: _selectedSortOption,
           alignment: Alignment.centerRight,
           dropdownColor: Colors.white,
-          icon: Icon(Icons.keyboard_arrow_down, size: 20, color: Color(0xFFFF437A)),               
-          selectedItemBuilder: (context) => _sortOptions.map((option) => 
-            Row(mainAxisSize: MainAxisSize.min, children: [
-              Text(option, style: TextStyle(fontSize: 14, color: Color(0xFFFF437A), fontWeight: FontWeight.w600, letterSpacing: -0.3)),
-              const SizedBox(width: 4),
-            ])
-          ).toList(),
-          items: _sortOptions.map((option) => 
-            DropdownMenuItem<String>(
-              value: option, 
-              alignment: Alignment.centerLeft,
-              child: Text(option, style: TextStyle(fontSize: 14, color: Color(0xFF393939), fontWeight: FontWeight.w500, letterSpacing: -0.3)),
-            )
-          ).toList(),
+          icon: Icon(Icons.keyboard_arrow_down, size: 20, color: Color(0xFFFF437A)),
+          selectedItemBuilder: (context) => _sortOptions
+              .map(
+                (option) => Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      option,
+                      style: TextStyle(fontSize: 14, color: Color(0xFFFF437A), fontWeight: FontWeight.w600, letterSpacing: -0.3),
+                    ),
+                    const SizedBox(width: 4),
+                  ],
+                ),
+              )
+              .toList(),
+          items: _sortOptions
+              .map(
+                (option) => DropdownMenuItem<String>(
+                  value: option,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    option,
+                    style: TextStyle(fontSize: 14, color: Color(0xFF393939), fontWeight: FontWeight.w500, letterSpacing: -0.3),
+                  ),
+                ),
+              )
+              .toList(),
           onChanged: (newValue) {
             if (newValue != null && newValue != _selectedSortOption) {
               setState(() => _selectedSortOption = newValue);
