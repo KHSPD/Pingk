@@ -71,3 +71,19 @@ class AlwayslItem {
 
   String get thumbnail => '$imageServerURL/${id}_thumb.png';
 }
+
+// ====================================================================================================
+// 찜 상품 정보
+// ====================================================================================================
+class FavoriteItem {
+  String id;
+  final String brand;
+  final String title;
+  final int originPrice;
+  final int price;
+  String status;
+
+  FavoriteItem({required this.id, required this.brand, required this.title, required this.originPrice, required this.price, this.status = ''});
+
+  String get thumbnail => '$imageServerURL/${id}_thumb.png';
+}

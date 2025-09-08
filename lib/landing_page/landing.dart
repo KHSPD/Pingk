@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pingk/_common/item_info.dart';
+import 'package:pingk/_common/local_db.dart';
 import 'package:pingk/_common/my_datetime.dart';
 import 'package:pingk/_common/my_styles.dart';
 import 'package:pingk/_common/my_widget.dart';
@@ -27,6 +29,9 @@ class _LandingState extends State<Landing> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      LocalDatabase().insertFavorite(FavoriteItem(id: 'P202509030001', brand: '메가커피', title: 'HOT 아메리카노', price: 1190, originPrice: 1500, status: 'ACTIVE'));
+      LocalDatabase().insertFavorite(FavoriteItem(id: 'P202509030010', brand: '앤티앤스', title: '레몬에이드', price: 3000, originPrice: 3500, status: 'ACTIVE'));
+
       _checkProcess();
     });
   }

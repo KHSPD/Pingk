@@ -134,7 +134,7 @@ class _AlwaysState extends State<Always> {
         debugPrint('경매 아이템 목록 조회 실패');
       }
     } catch (e) {
-      debugPrint('Exception: ${e.toString()}');
+      debugPrint(e.toString());
     }
   }
 

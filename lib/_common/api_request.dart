@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:pingk/_common/constants.dart';
 import 'package:pingk/_common/item_info.dart';
+import 'package:pingk/_common/local_db.dart';
 import 'package:pingk/_common/token_manager.dart';
 
 class ApiRequest {
-  static final ApiRequest _instance = ApiRequest._internal();
+  static final ApiRequest _instance = ApiRequest._privateConstructor();
   factory ApiRequest() => _instance;
-  ApiRequest._internal();
+  ApiRequest._privateConstructor();
 
   final int _updateInterval = 10;
 
@@ -56,7 +57,7 @@ class ApiRequest {
         }
       }
     } catch (e) {
-      debugPrint('Exception: ${e.toString()}');
+      debugPrint(e.toString());
     }
   }
 
@@ -93,7 +94,7 @@ class ApiRequest {
           }
         }
       } catch (e) {
-        debugPrint('Exception: ${e.toString()}');
+        debugPrint(e.toString());
       }
     }
   }
@@ -142,7 +143,7 @@ class ApiRequest {
         }
       }
     } catch (e) {
-      debugPrint('Exception: ${e.toString()}');
+      debugPrint(e.toString());
     }
   }
 
@@ -189,7 +190,7 @@ class ApiRequest {
         }
       }
     } catch (e) {
-      debugPrint('Exception: ${e.toString()}');
+      debugPrint(e.toString());
     }
   }
 }

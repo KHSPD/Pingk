@@ -53,6 +53,7 @@ class _DetailAlwaysState extends State<DetailAlways> {
     return Scaffold(
       backgroundColor: Color(0xFFFFFFFF),
 
+      // ----- 상단바 -----
       appBar: AppBar(
         title: const Text(
           '상시할인',
@@ -71,6 +72,7 @@ class _DetailAlwaysState extends State<DetailAlways> {
         child: BottomLongButton('구매하기', () => {}),
       ),
 
+      // ----- Body -----
       body: SingleChildScrollView(
         child: SizedBox(
           width: double.infinity,

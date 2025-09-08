@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pingk/_common/constants.dart';
+import 'package:pingk/favorite_page/favorite.dart';
 import 'package:pingk/main_page/body_always.dart';
 import 'package:pingk/detail_page/detail_always.dart';
 import 'package:pingk/detail_page/detail_limited.dart';
@@ -76,6 +77,9 @@ final GoRouter appRouter = GoRouter(
         GoRoute(path: '/main/always', name: 'main-always', builder: (context, state) => const Always()),
       ],
     ),
+
+    // ----- 찜 상품 -----
+    GoRoute(path: '/favorite', name: 'favorite', builder: (context, state) => const Favorite()),
 
     // ----- 옥션 상품 상세 -----
     GoRoute(

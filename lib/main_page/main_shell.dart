@@ -27,6 +27,12 @@ class MainShell extends StatelessWidget {
         title: Padding(padding: const EdgeInsets.only(left: 10), child: Image.asset('assets/logo_main_top.png', width: 78, height: 21)),
         actions: [
           IconButton(onPressed: () {}, icon: SvgPicture.asset('assets/icons/icon_search.svg', width: 20, height: 20)),
+          IconButton(
+            onPressed: () {
+              context.push('/favorite');
+            },
+            icon: SvgPicture.asset('assets/icons/icon_heart.svg', width: 20, height: 20),
+          ),
           IconButton(onPressed: () {}, icon: SvgPicture.asset('assets/icons/icon_my_info.svg', width: 18, height: 20)),
           const SizedBox(width: 20),
         ],

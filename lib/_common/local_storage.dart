@@ -14,6 +14,7 @@ class LocalStorage {
   final String _keyAccessToken = 'access_token';
   final String _keyRefreshToken = 'refresh_token';
   final String _keyUseBioAuth = 'use_bio_auth';
+  final String _keyFavoriteItem = 'favorite_item';
 
   // --------------------------------------------------
   // 비밀번호 - Save / Load
