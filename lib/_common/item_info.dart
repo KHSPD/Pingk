@@ -1,4 +1,5 @@
 import 'package:pingk/_common/constants.dart';
+import 'package:pingk/_common/local_db.dart';
 
 // ====================================================================================================
 // 옥션 상품 정보
@@ -59,22 +60,42 @@ class LimitedItem {
 // 상시특가 상품 정보
 // ====================================================================================================
 class AlwayslItem {
-  String id;
+  final String id;
   final String brand;
   final String title;
   final int originPrice;
   final int price;
   final String category;
-  bool isWished = false;
+  bool isFavorite = false;
+  String status;
 
-  AlwayslItem({required this.id, required this.brand, required this.title, required this.originPrice, required this.price, required this.category, this.isWished = false});
+  AlwayslItem({
+    required this.id,
+    required this.brand,
+    required this.title,
+    required this.originPrice,
+    required this.price,
+    required this.category,
+    this.isFavorite = false,
+    this.status = 'ACTIVE',
+  });
 
   String get thumbnail => '$imageServerURL/${id}_thumb.png';
+
+  void toggleFavorite() {
+    isFavorite = !isFavorite;
+    if (isFavorite) {
+      LocalDatabase().insertFavorite(this);
+    } else {
+      LocalDatabase().deleteFavorite(id);
+    }
+  }
 }
 
 // ====================================================================================================
 // 찜 상품 정보
 // ====================================================================================================
+/*
 class FavoriteItem {
   String id;
   final String brand;
@@ -87,3 +108,4 @@ class FavoriteItem {
 
   String get thumbnail => '$imageServerURL/${id}_thumb.png';
 }
+*/

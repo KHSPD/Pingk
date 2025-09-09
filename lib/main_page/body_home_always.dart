@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pingk/_common/api_request.dart';
+import 'package:pingk/_common/api_service.dart';
 import 'package:pingk/_common/my_functions.dart';
 import 'package:pingk/_common/item_info.dart';
 import 'package:pingk/_common/my_widget.dart';
@@ -17,7 +17,7 @@ class BodyHomeAlways extends StatefulWidget {
 }
 
 class _BodyHomeAlwaysState extends State<BodyHomeAlways> {
-  final _itemDatas = ApiRequest().bestItemListNotifier;
+  final _itemDatas = ApiService().bestItemListNotifier;
 
   // --------------------------------------------------
   // Lifecycle Methods
@@ -27,7 +27,7 @@ class _BodyHomeAlwaysState extends State<BodyHomeAlways> {
     super.initState();
     _itemDatas.addListener(_onItemListChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ApiRequest().fetchBestItemList();
+      ApiService().fetchBestItemList();
     });
   }
 
@@ -44,6 +44,14 @@ class _BodyHomeAlwaysState extends State<BodyHomeAlways> {
     if (mounted) {
       setState(() {});
     }
+  }
+
+  // --------------------------------------------------
+  // 찜 버튼 토글
+  // --------------------------------------------------
+  void _onFavoriteToggle(AlwayslItem item) {
+    item.toggleFavorite();
+    setState(() {});
   }
 
   // --------------------------------------------------
@@ -95,7 +103,9 @@ class _BodyHomeAlwaysState extends State<BodyHomeAlways> {
             itemCount: _itemDatas.value.length,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 30, crossAxisSpacing: 10, childAspectRatio: 168 / 275),
             itemBuilder: (context, i) {
-              return _bestDealCard(_itemDatas.value[i], () {});
+              return _bestDealCard(_itemDatas.value[i], () {
+                _onFavoriteToggle(_itemDatas.value[i]);
+              });
             },
           ),
 
@@ -136,7 +146,7 @@ class _BodyHomeAlwaysState extends State<BodyHomeAlways> {
               right: 12,
               child: GestureDetector(
                 onTap: onWishToggle,
-                child: Icon(item.isWished ? Icons.favorite : Icons.favorite_border, color: item.isWished ? Color(0xFFFF437A) : Color(0xFFD0D0D0), size: 22),
+                child: Icon(item.isFavorite ? Icons.favorite : Icons.favorite_border, color: item.isFavorite ? Color(0xFFFF437A) : Color(0xFFD0D0D0), size: 22),
               ),
             ),
 

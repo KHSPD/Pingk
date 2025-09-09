@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pingk/_common/api_request.dart';
+import 'package:pingk/_common/api_service.dart';
 import 'package:pingk/_common/item_info.dart';
 import 'package:pingk/_common/my_styles.dart';
 import 'package:pingk/_common/my_functions.dart';
@@ -18,7 +18,7 @@ class BodyAuction extends StatefulWidget {
 }
 
 class _BodyAuctionState extends State<BodyAuction> {
-  final _itemDatas = ApiRequest().auctionItemListNotifier;
+  final _itemDatas = ApiService().auctionItemListNotifier;
 
   // --------------------------------------------------
   // Lifecycle Methods
@@ -28,7 +28,7 @@ class _BodyAuctionState extends State<BodyAuction> {
     super.initState();
     _itemDatas.addListener(_onItemListChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ApiRequest().fetchAuctionItemList();
+      ApiService().fetchAuctionItemList();
     });
   }
 
@@ -51,7 +51,7 @@ class _BodyAuctionState extends State<BodyAuction> {
   // Pull to Refresh
   // --------------------------------------------------
   Future<void> _onRefresh() async {
-    ApiRequest().fetchAuctionItemList(forceRefresh: true);
+    ApiService().fetchAuctionItemList(forceRefresh: true);
     await Future.delayed(const Duration(milliseconds: 500));
   }
 

@@ -1,12 +1,9 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
-import 'package:pingk/_common/constants.dart';
+import 'package:pingk/_common/api_service.dart';
 import 'package:pingk/_common/item_info.dart';
 import 'package:pingk/_common/my_functions.dart';
 import 'package:pingk/_common/my_widget.dart';
-import 'package:pingk/_common/token_manager.dart';
 
 // ====================================================================================================
 // AlwaysDealPage
@@ -74,15 +71,6 @@ class _AlwaysState extends State<Always> {
   // --------------------------------------------------
   Future<void> _fetchAlwaysItemList() async {
     try {
-      final String apiUrl = '$apiServerURL/api/products';
-      final String? accessToken = await JwtManager().getAccessToken();
-
-      if (accessToken == null) {
-        debugPrint('토큰 없거나 만료됨');
-        return;
-      }
-
-      // ----- Request Parameters -----
       if (_isNewRequest) {
         _itemList.clear();
         _currentPage = 1;
@@ -93,17 +81,16 @@ class _AlwaysState extends State<Always> {
           _scrollController.animateTo(0.0, duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
         }
       }
+      // ----- Request Parameters -----
       Map<String, dynamic> params = {};
       params['page'] = _currentPage;
       params['size'] = _requestCount;
       params['category'] = _categoryList[_selectedCategoryIdx];
 
-      // 쿼리 스트림 생성
-      final uri = Uri.parse(apiUrl).replace(queryParameters: params.map((key, value) => MapEntry(key, value.toString())));
-      final response = await http.get(uri, headers: {'Content-Type': 'application/json', 'X-Access-Token': accessToken});
-      debugPrint('========== API Response ==========\nURL: $apiUrl\nParams: $uri\nStatus: ${response.statusCode}\nBody: ${response.body}');
+      final response = await ApiService().authDio.get('/api/products', queryParameters: params);
+      debugPrint('========== API Response ==========\nURL: ${response.requestOptions.uri}\nStatus: ${response.statusCode}\nBody: ${response.data}');
       if (response.statusCode == 200) {
-        final Map<String, dynamic> body = jsonDecode(response.body);
+        final Map<String, dynamic> body = response.data;
         if (body['code'] == '200') {
           final result = body['result'];
           _currentPage = result['page'];
@@ -113,7 +100,7 @@ class _AlwaysState extends State<Always> {
             final alwaysItem = AlwayslItem(
               id: item['id'],
               brand: item['brand'],
-              title: item['productName'],
+              title: item['title'],
               originPrice: item['originPrice'],
               price: item['price'],
               category: item['category'],
@@ -131,11 +118,19 @@ class _AlwaysState extends State<Always> {
           });
         }
       } else {
-        debugPrint('경매 아이템 목록 조회 실패');
+        debugPrint('상시특가 아이템 목록 조회 실패');
       }
     } catch (e) {
       debugPrint(e.toString());
     }
+  }
+
+  // --------------------------------------------------
+  // 찜 버튼 토글
+  // --------------------------------------------------
+  void _onFavoriteToggle(AlwayslItem item) {
+    item.toggleFavorite();
+    setState(() {});
   }
 
   // --------------------------------------------------
@@ -226,7 +221,9 @@ class _AlwaysState extends State<Always> {
                 itemCount: _itemList.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 30, crossAxisSpacing: 10, childAspectRatio: 168 / 275),
                 itemBuilder: (context, index) {
-                  return _alwaysCard(_itemList[index], () {});
+                  return _alwaysCard(_itemList[index], () {
+                    _onFavoriteToggle(_itemList[index]);
+                  });
                 },
               ),
             ),
@@ -293,12 +290,12 @@ class _AlwaysState extends State<Always> {
   }
 
   // --------------------------------------------------
-  // 베스트 상품 카드
+  // 상시특가 상품 카드
   // --------------------------------------------------
   Widget _alwaysCard(AlwayslItem item, VoidCallback onWishToggle) {
     return GestureDetector(
       onTap: () {
-        context.pushNamed('always-detail', pathParameters: {'itemId': item.id});
+        context.pushNamed('detail-always', pathParameters: {'itemId': item.id});
       },
       child: SizedBox(
         width: 168,
@@ -323,7 +320,7 @@ class _AlwaysState extends State<Always> {
               right: 12,
               child: GestureDetector(
                 onTap: onWishToggle,
-                child: Icon(item.isWished ? Icons.favorite : Icons.favorite_border, color: item.isWished ? Color(0xFFFF437A) : Color(0xFFD0D0D0), size: 22),
+                child: Icon(item.isFavorite ? Icons.favorite : Icons.favorite_border, color: item.isFavorite ? Color(0xFFFF437A) : Color(0xFFD0D0D0), size: 22),
               ),
             ),
 

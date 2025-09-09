@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pingk/_common/api_request.dart';
+import 'package:pingk/_common/api_service.dart';
 import 'package:pingk/_common/item_info.dart';
 import 'package:pingk/_common/my_styles.dart';
 import 'package:pingk/_common/my_functions.dart';
@@ -38,7 +38,7 @@ class _DetailLimitedState extends State<DetailLimited> {
   // 상품 상세정보 로드
   // --------------------------------------------------
   void _loadItemData() {
-    _itemData = ApiRequest().limitedItemListNotifier.value.firstWhere((item) => item.id == widget.itemId);
+    _itemData = ApiService().limitedItemListNotifier.value.firstWhere((item) => item.id == widget.itemId);
   }
 
   @override

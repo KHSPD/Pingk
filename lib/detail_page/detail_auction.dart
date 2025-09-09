@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pingk/_common/api_request.dart';
+import 'package:pingk/_common/api_service.dart';
 import 'package:pingk/_common/item_info.dart';
 import 'package:pingk/_common/my_styles.dart';
 import 'package:pingk/_common/my_functions.dart';
@@ -26,7 +26,7 @@ class _DetailAuctionState extends State<DetailAuction> {
   @override
   void initState() {
     super.initState();
-    _itemData = ApiRequest().auctionItemListNotifier.value.firstWhere((item) => item.id == widget.itemIdx);
+    _itemData = ApiService().auctionItemListNotifier.value.firstWhere((item) => item.id == widget.itemIdx);
   }
 
   @override

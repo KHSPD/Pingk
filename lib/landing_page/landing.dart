@@ -29,9 +29,6 @@ class _LandingState extends State<Landing> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      LocalDatabase().insertFavorite(FavoriteItem(id: 'P202509030001', brand: '메가커피', title: 'HOT 아메리카노', price: 1190, originPrice: 1500, status: 'ACTIVE'));
-      LocalDatabase().insertFavorite(FavoriteItem(id: 'P202509030010', brand: '앤티앤스', title: '레몬에이드', price: 3000, originPrice: 3500, status: 'ACTIVE'));
-
       _checkProcess();
     });
   }
@@ -131,8 +128,10 @@ class _LandingState extends State<Landing> {
               // ----- 중간 이미지 -----
               GestureDetector(
                 onTap: () {
-                  // TODO: 테스트용 코드 삭제 필요
+                  // TODO: 테스트용 코드 - 삭제 할것!
                   LocalStorage().clearAll();
+                  LocalDatabase().deleteAllFavorites();
+                  //
                   setState(() {
                     _showSignUpButton = true;
                   });

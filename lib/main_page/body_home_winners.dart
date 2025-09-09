@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:pingk/_common/api_request.dart';
+import 'package:pingk/_common/api_service.dart';
 import 'package:pingk/_common/item_info.dart';
 import 'package:pingk/_common/my_functions.dart';
 import 'package:pingk/_common/my_styles.dart';
@@ -16,7 +16,7 @@ class BodyHomeWinnersList extends StatefulWidget {
 }
 
 class _BodyHomeWinnersListState extends State<BodyHomeWinnersList> {
-  final _itemDatas = ApiRequest().auctionWinnerListNotifier;
+  final _itemDatas = ApiService().auctionWinnerListNotifier;
   bool _isLoading = true;
 
   // --------------------------------------------------
@@ -26,7 +26,7 @@ class _BodyHomeWinnersListState extends State<BodyHomeWinnersList> {
   void initState() {
     super.initState();
     _itemDatas.addListener(_onItemListChanged);
-    ApiRequest().fetchAuctionWinnerList().then((_) {
+    ApiService().fetchAuctionWinnerList().then((_) {
       setState(() {
         _isLoading = false;
       });

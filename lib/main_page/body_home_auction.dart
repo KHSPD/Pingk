@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pingk/_common/api_request.dart';
+import 'package:pingk/_common/api_service.dart';
 import 'package:pingk/_common/my_datetime.dart';
 import 'package:pingk/_common/my_functions.dart';
 import 'package:pingk/_common/item_info.dart';
@@ -20,7 +20,7 @@ class BodyHomeAuctionItems extends StatefulWidget {
 
 class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
   final PageController _pageController = PageController(viewportFraction: 0.73);
-  final _itemDatas = ApiRequest().auctionItemListNotifier;
+  final _itemDatas = ApiService().auctionItemListNotifier;
   int _selectedItemIdx = 0;
   bool _isLoading = true;
 
@@ -32,7 +32,7 @@ class _BodyHomeAuctionItemsState extends State<BodyHomeAuctionItems> {
     super.initState();
     _itemDatas.addListener(_onItemListChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ApiRequest().fetchAuctionItemList().then((_) {
+      ApiService().fetchAuctionItemList().then((_) {
         setState(() {
           _isLoading = false;
         });

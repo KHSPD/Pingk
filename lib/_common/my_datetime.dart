@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:pingk/_common/api_service.dart';
 import 'package:pingk/_common/constants.dart';
 
 class MyDateTime {
@@ -30,11 +30,10 @@ class MyDateTime {
   // --------------------------------------------------
   Future<void> _fetchServerTime() async {
     try {
-      final apiUrl = '$apiServerURL/api/auth/server-time';
-      final response = await http.get(Uri.parse(apiUrl));
-      debugPrint('========== API Response ==========\nURL: $apiUrl\nStatus: ${response.statusCode}\nBody: ${response.body}');
+      final response = await ApiService().publicDio.get('/api/auth/server-time');
+      debugPrint('========== API Response ==========\nURL: ${response.requestOptions.uri}\nStatus: ${response.statusCode}\nBody: ${response.data}');
       if (response.statusCode == 200) {
-        final Map<String, dynamic> body = jsonDecode(response.body);
+        final Map<String, dynamic> body = response.data;
         if (body['code'] == '200') {
           final serverTimeString = body['result'];
           if (serverTimeString != null) {

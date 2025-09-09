@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pingk/_common/api_request.dart';
+import 'package:pingk/_common/api_service.dart';
 import 'package:pingk/_common/my_datetime.dart';
 import 'package:pingk/_common/my_styles.dart';
 import 'package:pingk/_common/my_functions.dart';
@@ -29,9 +29,9 @@ class _BodyHomeLimitedState extends State<BodyHomeLimited> {
   @override
   void initState() {
     super.initState();
-    ApiRequest().limitedItemListNotifier.addListener(_onItemListChanged);
+    ApiService().limitedItemListNotifier.addListener(_onItemListChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ApiRequest().fetchLimitedItemList().then((_) {
+      ApiService().fetchLimitedItemList().then((_) {
         _onItemListChanged();
       });
     });
@@ -39,7 +39,7 @@ class _BodyHomeLimitedState extends State<BodyHomeLimited> {
 
   @override
   void dispose() {
-    ApiRequest().limitedItemListNotifier.removeListener(_onItemListChanged);
+    ApiService().limitedItemListNotifier.removeListener(_onItemListChanged);
     super.dispose();
   }
 
@@ -50,7 +50,7 @@ class _BodyHomeLimitedState extends State<BodyHomeLimited> {
     _onSaleItemDatas.clear();
     _readyItemDatas.clear();
     final now = MyDateTime().getDateTime();
-    for (var item in ApiRequest().limitedItemListNotifier.value) {
+    for (var item in ApiService().limitedItemListNotifier.value) {
       if (item.startAt.isBefore(now)) {
         _onSaleItemDatas.add(item);
       } else {

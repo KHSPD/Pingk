@@ -70,10 +70,12 @@ class $FavoriteTableTable extends FavoriteTable
     requiredDuringInsert: false,
     defaultValue: Constant(0),
   );
-  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  static const VerificationMeta _categoryMeta = const VerificationMeta(
+    'category',
+  );
   @override
-  late final GeneratedColumn<String> status = GeneratedColumn<String>(
-    'status',
+  late final GeneratedColumn<String> category = GeneratedColumn<String>(
+    'category',
     aliasedName,
     false,
     additionalChecks: GeneratedColumn.checkTextLength(
@@ -90,7 +92,7 @@ class $FavoriteTableTable extends FavoriteTable
     title,
     price,
     originPrice,
-    status,
+    category,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -140,19 +142,19 @@ class $FavoriteTableTable extends FavoriteTable
         ),
       );
     }
-    if (data.containsKey('status')) {
+    if (data.containsKey('category')) {
       context.handle(
-        _statusMeta,
-        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+        _categoryMeta,
+        category.isAcceptableOrUnknown(data['category']!, _categoryMeta),
       );
     } else if (isInserting) {
-      context.missing(_statusMeta);
+      context.missing(_categoryMeta);
     }
     return context;
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => const {};
+  Set<GeneratedColumn> get $primaryKey => {id};
   @override
   FavoriteTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -177,9 +179,9 @@ class $FavoriteTableTable extends FavoriteTable
         DriftSqlType.int,
         data['${effectivePrefix}origin_price'],
       )!,
-      status: attachedDatabase.typeMapping.read(
+      category: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}status'],
+        data['${effectivePrefix}category'],
       )!,
     );
   }
@@ -197,14 +199,14 @@ class FavoriteTableData extends DataClass
   final String title;
   final int price;
   final int originPrice;
-  final String status;
+  final String category;
   const FavoriteTableData({
     required this.id,
     required this.brand,
     required this.title,
     required this.price,
     required this.originPrice,
-    required this.status,
+    required this.category,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -214,7 +216,7 @@ class FavoriteTableData extends DataClass
     map['title'] = Variable<String>(title);
     map['price'] = Variable<int>(price);
     map['origin_price'] = Variable<int>(originPrice);
-    map['status'] = Variable<String>(status);
+    map['category'] = Variable<String>(category);
     return map;
   }
 
@@ -225,7 +227,7 @@ class FavoriteTableData extends DataClass
       title: Value(title),
       price: Value(price),
       originPrice: Value(originPrice),
-      status: Value(status),
+      category: Value(category),
     );
   }
 
@@ -240,7 +242,7 @@ class FavoriteTableData extends DataClass
       title: serializer.fromJson<String>(json['title']),
       price: serializer.fromJson<int>(json['price']),
       originPrice: serializer.fromJson<int>(json['originPrice']),
-      status: serializer.fromJson<String>(json['status']),
+      category: serializer.fromJson<String>(json['category']),
     );
   }
   @override
@@ -252,7 +254,7 @@ class FavoriteTableData extends DataClass
       'title': serializer.toJson<String>(title),
       'price': serializer.toJson<int>(price),
       'originPrice': serializer.toJson<int>(originPrice),
-      'status': serializer.toJson<String>(status),
+      'category': serializer.toJson<String>(category),
     };
   }
 
@@ -262,14 +264,14 @@ class FavoriteTableData extends DataClass
     String? title,
     int? price,
     int? originPrice,
-    String? status,
+    String? category,
   }) => FavoriteTableData(
     id: id ?? this.id,
     brand: brand ?? this.brand,
     title: title ?? this.title,
     price: price ?? this.price,
     originPrice: originPrice ?? this.originPrice,
-    status: status ?? this.status,
+    category: category ?? this.category,
   );
   FavoriteTableData copyWithCompanion(FavoriteTableCompanion data) {
     return FavoriteTableData(
@@ -280,7 +282,7 @@ class FavoriteTableData extends DataClass
       originPrice: data.originPrice.present
           ? data.originPrice.value
           : this.originPrice,
-      status: data.status.present ? data.status.value : this.status,
+      category: data.category.present ? data.category.value : this.category,
     );
   }
 
@@ -292,13 +294,14 @@ class FavoriteTableData extends DataClass
           ..write('title: $title, ')
           ..write('price: $price, ')
           ..write('originPrice: $originPrice, ')
-          ..write('status: $status')
+          ..write('category: $category')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, brand, title, price, originPrice, status);
+  int get hashCode =>
+      Object.hash(id, brand, title, price, originPrice, category);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -308,7 +311,7 @@ class FavoriteTableData extends DataClass
           other.title == this.title &&
           other.price == this.price &&
           other.originPrice == this.originPrice &&
-          other.status == this.status);
+          other.category == this.category);
 }
 
 class FavoriteTableCompanion extends UpdateCompanion<FavoriteTableData> {
@@ -317,7 +320,7 @@ class FavoriteTableCompanion extends UpdateCompanion<FavoriteTableData> {
   final Value<String> title;
   final Value<int> price;
   final Value<int> originPrice;
-  final Value<String> status;
+  final Value<String> category;
   final Value<int> rowid;
   const FavoriteTableCompanion({
     this.id = const Value.absent(),
@@ -325,7 +328,7 @@ class FavoriteTableCompanion extends UpdateCompanion<FavoriteTableData> {
     this.title = const Value.absent(),
     this.price = const Value.absent(),
     this.originPrice = const Value.absent(),
-    this.status = const Value.absent(),
+    this.category = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   FavoriteTableCompanion.insert({
@@ -334,19 +337,19 @@ class FavoriteTableCompanion extends UpdateCompanion<FavoriteTableData> {
     required String title,
     this.price = const Value.absent(),
     this.originPrice = const Value.absent(),
-    required String status,
+    required String category,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        brand = Value(brand),
        title = Value(title),
-       status = Value(status);
+       category = Value(category);
   static Insertable<FavoriteTableData> custom({
     Expression<String>? id,
     Expression<String>? brand,
     Expression<String>? title,
     Expression<int>? price,
     Expression<int>? originPrice,
-    Expression<String>? status,
+    Expression<String>? category,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -355,7 +358,7 @@ class FavoriteTableCompanion extends UpdateCompanion<FavoriteTableData> {
       if (title != null) 'title': title,
       if (price != null) 'price': price,
       if (originPrice != null) 'origin_price': originPrice,
-      if (status != null) 'status': status,
+      if (category != null) 'category': category,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -366,7 +369,7 @@ class FavoriteTableCompanion extends UpdateCompanion<FavoriteTableData> {
     Value<String>? title,
     Value<int>? price,
     Value<int>? originPrice,
-    Value<String>? status,
+    Value<String>? category,
     Value<int>? rowid,
   }) {
     return FavoriteTableCompanion(
@@ -375,7 +378,7 @@ class FavoriteTableCompanion extends UpdateCompanion<FavoriteTableData> {
       title: title ?? this.title,
       price: price ?? this.price,
       originPrice: originPrice ?? this.originPrice,
-      status: status ?? this.status,
+      category: category ?? this.category,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -398,8 +401,8 @@ class FavoriteTableCompanion extends UpdateCompanion<FavoriteTableData> {
     if (originPrice.present) {
       map['origin_price'] = Variable<int>(originPrice.value);
     }
-    if (status.present) {
-      map['status'] = Variable<String>(status.value);
+    if (category.present) {
+      map['category'] = Variable<String>(category.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -415,7 +418,7 @@ class FavoriteTableCompanion extends UpdateCompanion<FavoriteTableData> {
           ..write('title: $title, ')
           ..write('price: $price, ')
           ..write('originPrice: $originPrice, ')
-          ..write('status: $status, ')
+          ..write('category: $category, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -440,7 +443,7 @@ typedef $$FavoriteTableTableCreateCompanionBuilder =
       required String title,
       Value<int> price,
       Value<int> originPrice,
-      required String status,
+      required String category,
       Value<int> rowid,
     });
 typedef $$FavoriteTableTableUpdateCompanionBuilder =
@@ -450,7 +453,7 @@ typedef $$FavoriteTableTableUpdateCompanionBuilder =
       Value<String> title,
       Value<int> price,
       Value<int> originPrice,
-      Value<String> status,
+      Value<String> category,
       Value<int> rowid,
     });
 
@@ -488,8 +491,8 @@ class $$FavoriteTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get status => $composableBuilder(
-    column: $table.status,
+  ColumnFilters<String> get category => $composableBuilder(
+    column: $table.category,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -528,8 +531,8 @@ class $$FavoriteTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get status => $composableBuilder(
-    column: $table.status,
+  ColumnOrderings<String> get category => $composableBuilder(
+    column: $table.category,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -560,8 +563,8 @@ class $$FavoriteTableTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<String> get status =>
-      $composableBuilder(column: $table.status, builder: (column) => column);
+  GeneratedColumn<String> get category =>
+      $composableBuilder(column: $table.category, builder: (column) => column);
 }
 
 class $$FavoriteTableTableTableManager
@@ -606,7 +609,7 @@ class $$FavoriteTableTableTableManager
                 Value<String> title = const Value.absent(),
                 Value<int> price = const Value.absent(),
                 Value<int> originPrice = const Value.absent(),
-                Value<String> status = const Value.absent(),
+                Value<String> category = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => FavoriteTableCompanion(
                 id: id,
@@ -614,7 +617,7 @@ class $$FavoriteTableTableTableManager
                 title: title,
                 price: price,
                 originPrice: originPrice,
-                status: status,
+                category: category,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -624,7 +627,7 @@ class $$FavoriteTableTableTableManager
                 required String title,
                 Value<int> price = const Value.absent(),
                 Value<int> originPrice = const Value.absent(),
-                required String status,
+                required String category,
                 Value<int> rowid = const Value.absent(),
               }) => FavoriteTableCompanion.insert(
                 id: id,
@@ -632,7 +635,7 @@ class $$FavoriteTableTableTableManager
                 title: title,
                 price: price,
                 originPrice: originPrice,
-                status: status,
+                category: category,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
