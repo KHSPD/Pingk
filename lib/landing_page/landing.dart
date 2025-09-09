@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pingk/_common/item_info.dart';
-import 'package:pingk/_common/local_db.dart';
-import 'package:pingk/_common/my_datetime.dart';
 import 'package:pingk/_common/my_styles.dart';
 import 'package:pingk/_common/my_widget.dart';
 import 'package:pingk/_common/biometric_auth.dart';
@@ -42,8 +39,6 @@ class _LandingState extends State<Landing> {
   // 다음 절차 확인
   // --------------------------------------------------
   void _checkProcess() async {
-    // ----- 서버 시간 동기화 -----
-    await MyDateTime().startSync();
     // ----- 1초 딜레이 -----
     await Future.delayed(const Duration(milliseconds: 1000));
     // ----- Token 출력 -----
@@ -130,7 +125,6 @@ class _LandingState extends State<Landing> {
                 onTap: () {
                   // TODO: 테스트용 코드 - 삭제 할것!
                   LocalStorage().clearAll();
-                  LocalDatabase().deleteAllFavorites();
                   //
                   setState(() {
                     _showSignUpButton = true;

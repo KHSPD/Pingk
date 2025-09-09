@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:pingk/_common/constants.dart';
 import 'package:pingk/_common/item_info.dart';
-import 'package:pingk/_common/local_db.dart';
 import 'package:pingk/_common/token_manager.dart';
 
 class ApiService {
@@ -178,6 +177,7 @@ class ApiService {
                 category: item['category'],
               );
               cacheList.add(bestItem);
+              bestItem.syncWithFavoriteData();
             }
             _bestItemListLastUpdated = DateTime.now();
             _bestItemListNotifier.value = cacheList;

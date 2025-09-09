@@ -1,5 +1,8 @@
 import 'package:pingk/_common/constants.dart';
-import 'package:pingk/_common/local_db.dart';
+import 'package:pingk/_common/favorite_data.dart';
+import 'package:hive/hive.dart';
+
+part 'item_info.g.dart';
 
 // ====================================================================================================
 // 옥션 상품 정보
@@ -59,13 +62,14 @@ class LimitedItem {
 // ====================================================================================================
 // 상시특가 상품 정보
 // ====================================================================================================
-class AlwayslItem {
+@HiveType(typeId: 0)
+class AlwayslItem extends HiveObject {
   final String id;
-  final String brand;
-  final String title;
-  final int originPrice;
-  final int price;
-  final String category;
+  String brand;
+  String title;
+  int originPrice;
+  int price;
+  String category;
   bool isFavorite = false;
   String status;
 
@@ -85,27 +89,13 @@ class AlwayslItem {
   void toggleFavorite() {
     isFavorite = !isFavorite;
     if (isFavorite) {
-      LocalDatabase().insertFavorite(this);
+      FavoriteData().add(this);
     } else {
-      LocalDatabase().deleteFavorite(id);
+      FavoriteData().remove(id);
     }
   }
+
+  void syncWithFavoriteData() {
+    isFavorite = FavoriteData().list.any((item) => item.id == id);
+  }
 }
-
-// ====================================================================================================
-// 찜 상품 정보
-// ====================================================================================================
-/*
-class FavoriteItem {
-  String id;
-  final String brand;
-  final String title;
-  final int originPrice;
-  final int price;
-  String status;
-
-  FavoriteItem({required this.id, required this.brand, required this.title, required this.originPrice, required this.price, this.status = ''});
-
-  String get thumbnail => '$imageServerURL/${id}_thumb.png';
-}
-*/

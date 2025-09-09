@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:pingk/_common/constants.dart';
+import 'package:pingk/_common/favorite_data.dart';
+import 'package:pingk/_common/item_info.dart';
+import 'package:pingk/_common/my_datetime.dart';
 import 'package:pingk/favorite_page/favorite.dart';
 import 'package:pingk/main_page/body_always.dart';
 import 'package:pingk/detail_page/detail_always.dart';
@@ -20,6 +24,14 @@ import 'detail_page/detail_auction.dart';
 // main
 // ====================================================================================================
 void main() async {
+  // ----- Hive 초기화 및 어댑터 등록 -----
+  await Hive.initFlutter();
+  Hive.registerAdapter(AlwayslItemAdapter());
+  // ----- 찜 데이터 초기화 -----
+  FavoriteData();
+  // ----- 서버 시간 동기화 -----
+  await MyDateTime().startSync();
+  // ----- 앱 실행 -----
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const PingkApp());
 }

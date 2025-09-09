@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pingk/_common/api_service.dart';
+import 'package:pingk/_common/favorite_data.dart';
 import 'package:pingk/_common/item_info.dart';
 import 'package:pingk/_common/my_functions.dart';
 import 'package:pingk/_common/my_widget.dart';
@@ -16,7 +17,7 @@ class Always extends StatefulWidget {
 }
 
 class _AlwaysState extends State<Always> {
-  final List<AlwayslItem> _itemList = [];
+  final List<AlwayslItem> _itemDatas = [];
   final List<String> _categoryList = ['FOOD', 'BEAUTY', 'FASHION', 'LIFESTYLE', 'HOME', 'ELECTRONICS', 'SPORTS', 'BOOKS', 'MUSIC', 'MOVIES', 'GAMES', 'TOYS', 'OTHERS'];
   int _selectedCategoryIdx = 0;
   // ----- API Request 관련 -----
@@ -28,7 +29,7 @@ class _AlwaysState extends State<Always> {
   bool _dataIsLoading = false;
   bool _hasMoreData = true;
   // ----- 정렬 관련 -----
-  final List<String> _sortOptions = ['인기순', '가격낮은순', '가격높은순', '할인률높은순'];
+  final List<String> _sortOptions = ['인기순', '가격낮은순', '가격높은순', '최신순'];
   String _selectedSortOption = '인기순';
 
   // --------------------------------------------------
@@ -37,6 +38,7 @@ class _AlwaysState extends State<Always> {
   @override
   void initState() {
     super.initState();
+    FavoriteData().monitorCountNotifier.addListener(_onFavoriteListChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _fetchAlwaysItemList();
     });
@@ -72,7 +74,7 @@ class _AlwaysState extends State<Always> {
   Future<void> _fetchAlwaysItemList() async {
     try {
       if (_isNewRequest) {
-        _itemList.clear();
+        _itemDatas.clear();
         _currentPage = 1;
         _isNewRequest = false;
         _hasMoreData = true;
@@ -86,6 +88,28 @@ class _AlwaysState extends State<Always> {
       params['page'] = _currentPage;
       params['size'] = _requestCount;
       params['category'] = _categoryList[_selectedCategoryIdx];
+      switch (_selectedSortOption) {
+        case '인기순':
+          params['sortBy'] = ['rank'];
+          params['sort'] = 'DESC';
+          break;
+        case '가격낮은순':
+          params['sortBy'] = ['price'];
+          params['sort'] = 'ASC';
+          break;
+        case '가격높은순':
+          params['sortBy'] = ['price'];
+          params['sort'] = 'DESC';
+          break;
+        case '최신순':
+          params['sortBy'] = ['createdAt'];
+          params['sort'] = 'DESC';
+          break;
+        default:
+          params['sortBy'] = ['price'];
+          params['sort'] = 'DESC';
+          break;
+      }
 
       final response = await ApiService().authDio.get('/api/products', queryParameters: params);
       debugPrint('========== API Response ==========\nURL: ${response.requestOptions.uri}\nStatus: ${response.statusCode}\nBody: ${response.data}');
@@ -106,6 +130,7 @@ class _AlwaysState extends State<Always> {
               category: item['category'],
             );
             newItems.add(alwaysItem);
+            alwaysItem.syncWithFavoriteData();
           }
 
           // 로드할 데이터가 더 있는지 확인
@@ -114,7 +139,7 @@ class _AlwaysState extends State<Always> {
             _hasMoreData = false;
           }
           setState(() {
-            _itemList.addAll(newItems);
+            _itemDatas.addAll(newItems);
           });
         }
       } else {
@@ -122,6 +147,18 @@ class _AlwaysState extends State<Always> {
       }
     } catch (e) {
       debugPrint(e.toString());
+    }
+  }
+
+  // --------------------------------------------------
+  // 찜 목록 변경 이벤트
+  // --------------------------------------------------
+  void _onFavoriteListChanged() {
+    for (var item in _itemDatas) {
+      item.syncWithFavoriteData();
+    }
+    if (mounted) {
+      setState(() {});
     }
   }
 
@@ -185,8 +222,10 @@ class _AlwaysState extends State<Always> {
                     pinned: true,
                     delegate: _CategoryHeaderDelegate(_categoryList, _selectedCategoryIdx, (index) {
                       if (index != _selectedCategoryIdx) {
-                        _isNewRequest = true;
-                        _selectedCategoryIdx = index;
+                        setState(() {
+                          _isNewRequest = true;
+                          _selectedCategoryIdx = index;
+                        });
                         _fetchAlwaysItemList();
                       }
                     }),
@@ -202,7 +241,7 @@ class _AlwaysState extends State<Always> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            '총 ${_itemList.length}개의 쿠폰',
+                            '총 ${_itemDatas.length}개의 쿠폰',
                             style: const TextStyle(fontSize: 14, color: Color(0xFFBEBEBE), fontWeight: FontWeight.w600, letterSpacing: -0.3),
                           ),
                           _buildSortDropdown(),
@@ -218,11 +257,11 @@ class _AlwaysState extends State<Always> {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 padding: const EdgeInsets.fromLTRB(22, 0, 22, 150),
-                itemCount: _itemList.length,
+                itemCount: _itemDatas.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 30, crossAxisSpacing: 10, childAspectRatio: 168 / 275),
                 itemBuilder: (context, index) {
-                  return _alwaysCard(_itemList[index], () {
-                    _onFavoriteToggle(_itemList[index]);
+                  return _alwaysCard(_itemDatas[index], () {
+                    _onFavoriteToggle(_itemDatas[index]);
                   });
                 },
               ),
@@ -282,6 +321,8 @@ class _AlwaysState extends State<Always> {
           onChanged: (newValue) {
             if (newValue != null && newValue != _selectedSortOption) {
               setState(() => _selectedSortOption = newValue);
+              _isNewRequest = true;
+              _fetchAlwaysItemList();
             }
           },
         ),

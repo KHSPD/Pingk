@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pingk/_common/api_service.dart';
+import 'package:pingk/_common/favorite_data.dart';
 import 'package:pingk/_common/item_info.dart';
-import 'package:pingk/_common/local_db.dart';
 import 'package:pingk/_common/my_functions.dart';
 import 'package:pingk/_common/my_widget.dart';
 
@@ -13,7 +14,6 @@ class Favorite extends StatefulWidget {
 }
 
 class _FavoriteState extends State<Favorite> {
-  static final List<AlwayslItem> _itemList = [];
   static final List<AlwayslItem> _sortedItemList = [];
   bool _showOnlyAvailable = true;
 
@@ -40,58 +40,44 @@ class _FavoriteState extends State<Favorite> {
   // Favorite Data Load
   // --------------------------------------------------
   Future<void> _fetchFavoriteItemList() async {
-    // TODO: 테스트용 코드 - 삭제 할것!
-    _itemList.clear();
-    _itemList.addAll(await LocalDatabase().getAllFavorites());
-    _sortedItemList.clear();
-    _sortedItemList.addAll(_itemList.where((item) => item.status == 'ACTIVE'));
-    //
-
-    /*
     try {
-      if (_itemList.isNotEmpty) return;
-      _itemList.addAll(await LocalDatabase().getAllFavorites());
-      if (_itemList.isEmpty) return;
-
-      final String apiUrl = '$apiServerURL/api/products/favorites/';
-      final String? accessToken = await JwtManager().getAccessToken();
-
-      if (accessToken == null) {
-        debugPrint('토큰 없거나 만료됨');
-        return;
+      if (FavoriteData().list.isEmpty) return;
+      for (var item in FavoriteData().list) {
+        item.status = '';
       }
 
-      final List<String> itemIds = _itemList.map((item) => item.id).toList();
-      final uri = Uri.parse(apiUrl).replace(queryParameters: {'productIds': itemIds});
-      final response = await http.get(uri, headers: {'Content-Type': 'application/json', 'X-Access-Token': accessToken});
-      debugPrint('========== API Response ==========\nURL: $apiUrl\nParams: $uri\nStatus: ${response.statusCode}\nBody: ${response.body}');
+      // ----- Request Parameters -----
+      Map<String, dynamic> params = {};
+      params['productIds'] = FavoriteData().list.map((item) => item.id).toList();
+
+      final response = await ApiService().authDio.post('/api/products/favorites', data: params);
+      debugPrint('========== API Response ==========\nURL: ${response.requestOptions.uri}\nStatus: ${response.statusCode}\nBody: ${response.data}');
       if (response.statusCode == 200) {
-        final Map<String, dynamic> body = jsonDecode(response.body);
+        final Map<String, dynamic> body = response.data;
         if (body['code'] == '200') {
           final result = body['result'] as List<dynamic>;
           for (var item in result) {
-            final index = _itemList.indexWhere((fav) => fav.id == item['id']);
+            final index = FavoriteData().list.indexWhere((fav) => fav.id == item['id']);
             if (index != -1) {
-              _itemList[index] = FavoriteItem(
-                id: item['id'],
-                brand: item['brand'],
-                title: item['title'],
-                price: item['price'],
-                originPrice: item['originPrice'],
-                status: item['status'],
-              );
+              FavoriteData().list[index].status = item['status'];
+              FavoriteData().list[index].brand = item['brand'];
+              FavoriteData().list[index].title = item['title'];
+              FavoriteData().list[index].price = item['price'];
+              FavoriteData().list[index].originPrice = item['originPrice'];
+              FavoriteData().list[index].status = item['status'];
             }
           }
+          _sortedItemList.clear();
+          _sortedItemList.addAll(FavoriteData().list);
         }
       } else {
-        _itemList.clear();
+        _sortedItemList.clear();
         debugPrint('찜 상품 정보 조회 실패');
       }
     } catch (e) {
-      _itemList.clear();
+      _sortedItemList.clear();
       debugPrint(e.toString());
     }
-    */
   }
 
   // --------------------------------------------------
@@ -101,10 +87,10 @@ class _FavoriteState extends State<Favorite> {
     _showOnlyAvailable = !_showOnlyAvailable;
     if (_showOnlyAvailable) {
       _sortedItemList.clear();
-      _sortedItemList.addAll(_itemList.where((item) => item.status == 'ACTIVE'));
+      _sortedItemList.addAll(FavoriteData().list.where((item) => item.status == 'ON_SALE'));
     } else {
       _sortedItemList.clear();
-      _sortedItemList.addAll(_itemList);
+      _sortedItemList.addAll(FavoriteData().list);
     }
     setState(() {});
   }
@@ -122,9 +108,8 @@ class _FavoriteState extends State<Favorite> {
       btTxt2: '삭제',
       btCB2: () {
         setState(() {
-          LocalDatabase().deleteFavorite(item.id);
-          _itemList.remove(item);
           _sortedItemList.remove(item);
+          FavoriteData().remove(item.id);
         });
       },
     );
@@ -149,7 +134,7 @@ class _FavoriteState extends State<Favorite> {
       ),
 
       // ----- Body -----
-      body: _itemList.isEmpty
+      body: FavoriteData().list.isEmpty
           ? const Center(child: Text('찜한 상품이 없습니다.'))
           : CustomScrollView(
               slivers: [
@@ -263,7 +248,7 @@ class _FavoriteState extends State<Favorite> {
               ),
             ),
 
-            if (item.status == 'ACTIVE') ...[
+            if (item.status == 'ON_SALE') ...[
               // ----- 할인률 -----
               Positioned(
                 left: 10,

@@ -37,10 +37,11 @@ class _DetailAlwaysState extends State<DetailAlways> {
   // --------------------------------------------------
   // 상품 상세정보 로드
   // --------------------------------------------------
-  void _loadItemData() {
-    _itemData = ApiService().limitedItemListNotifier.value.firstWhere((item) => item.id == widget.itemId);
-  }
+  void _loadItemData() {}
 
+  // --------------------------------------------------
+  // 상품 상세정보 로드
+  // --------------------------------------------------
   @override
   Widget build(BuildContext context) {
     if (_itemData == null) {

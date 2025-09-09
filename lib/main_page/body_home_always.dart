@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pingk/_common/api_service.dart';
+import 'package:pingk/_common/favorite_data.dart';
 import 'package:pingk/_common/my_functions.dart';
 import 'package:pingk/_common/item_info.dart';
 import 'package:pingk/_common/my_widget.dart';
@@ -26,6 +27,7 @@ class _BodyHomeAlwaysState extends State<BodyHomeAlways> {
   void initState() {
     super.initState();
     _itemDatas.addListener(_onItemListChanged);
+    FavoriteData().monitorCountNotifier.addListener(_onFavoriteListChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ApiService().fetchBestItemList();
     });
@@ -34,6 +36,7 @@ class _BodyHomeAlwaysState extends State<BodyHomeAlways> {
   @override
   void dispose() {
     _itemDatas.removeListener(_onItemListChanged);
+    FavoriteData().monitorCountNotifier.removeListener(_onFavoriteListChanged);
     super.dispose();
   }
 
@@ -41,6 +44,18 @@ class _BodyHomeAlwaysState extends State<BodyHomeAlways> {
   // 아이템 목록 변경 이벤트
   // --------------------------------------------------
   void _onItemListChanged() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  // --------------------------------------------------
+  // 찜 목록 변경 이벤트
+  // --------------------------------------------------
+  void _onFavoriteListChanged() {
+    for (var item in _itemDatas.value) {
+      item.syncWithFavoriteData();
+    }
     if (mounted) {
       setState(() {});
     }
